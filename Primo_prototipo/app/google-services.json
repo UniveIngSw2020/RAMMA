@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "397105896947",
+    "firebase_url": "https://rent-scio-e819f.firebaseio.com",
+    "project_id": "rent-scio-e819f",
+    "storage_bucket": "rent-scio-e819f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397105896947:android:e38ba10a7a3722611d0686",
+        "android_client_info": {
+          "package_name": "com.example.rent_scio1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397105896947-fkfc0rj67nm8dsgb56hgnckc78ti6mo0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkUONKqQC0Xuag4ZjC1i1tMeukhw2uVlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397105896947-fkfc0rj67nm8dsgb56hgnckc78ti6mo0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
