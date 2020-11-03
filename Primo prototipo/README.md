@@ -3,10 +3,10 @@ Il primo prototipo dell’applicazione permette l’interazione tra negoziante e
 noleggio di risciò (e veicoli affini) elettronicamente:
 
 1. Il commerciante avrà la possibilità di configurare l'area dove questi veicoli potranno circolare; inoltre potrà controllare in ogni momento, tramite una mappa interattiva, le seguenti informazioni relative ai veicoli:
-    ● Posizione attuale;
-    ● Velocità;
-    ● Stato attuale;
-    ● Tempo residuo alla fine della corsa.
+    -Posizione attuale;
+    -Velocità;
+    -Stato attuale;
+    -Tempo residuo alla fine della corsa.
     
 Una notifica lo avviserà in caso di:
     ● Posizione non consentita;
