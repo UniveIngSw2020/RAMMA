@@ -1,22 +1,22 @@
 package com.example.rent_scio1;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.utils.PermissionUtils;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import androidx.core.content.ContextCompat;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -25,7 +25,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      *
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
+    private Button mLogout;
+    private TextView info;
+    private FirebaseAuth mAuth;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+
 
     /**
      * Flag indicating whether a requested permission has been denied after returning in
@@ -33,16 +38,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private boolean permissionDenied = false;
 
+
     private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        mAuth = FirebaseAuth.getInstance();
+        mLogout = findViewById(R.id.logout);
+        info = findViewById(R.id.infouser);
+
+        info.setText(mAuth.getUid());
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+            }
+        });
     }
 
     /**

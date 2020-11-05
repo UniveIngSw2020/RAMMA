@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "397105896947",
-    "firebase_url": "https://rent-scio-e819f.firebaseio.com",
-    "project_id": "rent-scio-e819f",
-    "storage_bucket": "rent-scio-e819f.appspot.com"
+    "project_number": "25740512055",
+    "firebase_url": "https://rent-scio-294523.firebaseio.com",
+    "project_id": "rent-scio-294523",
+    "storage_bucket": "rent-scio-294523.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:397105896947:android:e38ba10a7a3722611d0686",
+        "mobilesdk_app_id": "1:25740512055:android:787cd9bfe918ce869468b2",
         "android_client_info": {
           "package_name": "com.example.rent_scio1"
         }
       },
       "oauth_client": [
         {
-          "client_id": "397105896947-fkfc0rj67nm8dsgb56hgnckc78ti6mo0.apps.googleusercontent.com",
+          "client_id": "25740512055-2oj36clsgb29i884gli81spamvfcaent.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCkUONKqQC0Xuag4ZjC1i1tMeukhw2uVlM"
+          "current_key": "AIzaSyAufu7FvGg-huF_gPv7hubAqGBSHCQRHAg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "397105896947-fkfc0rj67nm8dsgb56hgnckc78ti6mo0.apps.googleusercontent.com",
+              "client_id": "25740512055-2oj36clsgb29i884gli81spamvfcaent.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
