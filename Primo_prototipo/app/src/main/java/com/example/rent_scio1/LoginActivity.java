@@ -13,12 +13,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.rent_scio1.utils.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class LoginActivity extends AppCompatActivity{
@@ -27,6 +30,7 @@ public class LoginActivity extends AppCompatActivity{
     EditText mEmail, mPassword;
     Button mLoginBtn;
     ProgressBar progressBar;
+    private Users u = new Users();
 
 
     // [START declare_auth]
@@ -128,27 +132,62 @@ public class LoginActivity extends AppCompatActivity{
 
 
                             //TODO: VERIFICARE SE è UN CLIENTE O COMMERICANTE
-                            db.collection("users")
+                            /*db.collection("users")
                                     .get()
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()) {
-                                               /* for (QueryDocumentSnapshot document : task.getResult()) {
+                                               for (QueryDocumentSnapshot document : task.getResult()) {
+                                                   document.getId()
                                                     if(document.get("piva").equals(false))
                                                         startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
                                                     else
                                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                                    Log.d(TAG, "\n\n\n\nINFOOOOOOOOOOO " + document.getData());
-                                                }*/
+                                                    Log.d(TAG, "\n\n\n\nINFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + document.getData());
+                                                }
                                                 startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
                                             } else {
                                                 Log.w(TAG, "Error getting documents.", task.getException());
                                             }
                                         }
-                                    });
+                                    });*/
 
-                            //startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                            Query userquery = db.collection("users").whereEqualTo("user_id", mAuth.getCurrentUser().getUid());
+                            userquery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        for(QueryDocumentSnapshot document : task.getResult()){
+                                            u = new Users(document.toObject(Users.class));
+                                            Log.d(TAG, "DOCUMENTTTTTTT " + document);
+                                            Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
+                                        }
+                                        Log.d(TAG, "INFOOOOOOOOO");
+                                    }else{
+                                        Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+                                    }
+
+                                    if(u.getTrader()){
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                    }else{
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                                    }
+                                }
+                            });
+
+
+                            /*for(Users a : users){
+                                if(a.getEmail().equals(user.getEmail()))
+                                    if(a.getTrader())
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                    else
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                            }*/
+
+
+
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());

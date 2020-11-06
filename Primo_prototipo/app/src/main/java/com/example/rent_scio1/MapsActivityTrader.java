@@ -45,7 +45,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps_client);
+        setContentView(R.layout.activity_maps_trader);
         mAuth = FirebaseAuth.getInstance();
         mLogout = findViewById(R.id.logout);
         info = findViewById(R.id.infouser);

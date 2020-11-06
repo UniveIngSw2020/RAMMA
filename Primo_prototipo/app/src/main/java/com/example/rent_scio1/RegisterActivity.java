@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.rent_scio1.utils.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +34,7 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
-
+    private Users u = new Users();
     EditText mName, mSourname, mEmail, mPassword, mPhone, mDate, mPiva;
     Button mRegisterBtn;
     FirebaseAuth mAuth;
@@ -119,6 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void signIn(String email, String password) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d(TAG, "signIn:" + email);
 
         progressBar.setVisibility(View.VISIBLE);
@@ -148,57 +152,35 @@ public class RegisterActivity extends AppCompatActivity {
                                     System.out.println("onFaiulure: "+ e.toString());
                                 }
                             });
-                            /*mStore.collection("users").add(u).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error adding document", e);
-                                }
-                            });*/
-
-
-
-
-                            //DocumentReference documentReference = mStore.collection("users").document(userID);
-                            //sendEmailVerification();
-                            /*documentReference.set(u).addOnSuccessListener(aVoid -> {
-                                Log.d(TAG, "onSuccess: user Profile is created for: " + userID);
-                                System.out.println("onSuccess: user Profile is created for: " + userID);
-                            }).addOnFailureListener(e -> System.out.println("onFaiulure: "+ e.toString()));*/
-                            //TODO: VERIFICARE SE è UN CLIENTE O COMMERICANTE
-                            for(Map.Entry<String, Object> entry : user.entrySet()) {
-                                String key = entry.getKey();
-                                Object value = entry.getValue();
-                                if(key.equals("trader")){
-                                    if(value.equals(true))
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                    else
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                            Query userquery = db.collection("users").whereEqualTo("user_id", mAuth.getCurrentUser().getUid());
+                            userquery.get().addOnCompleteListener(task1 -> {
+                                if(task1.isSuccessful()){
+                                    for(QueryDocumentSnapshot document : task1.getResult()){
+                                        u = new Users(document.toObject(Users.class));
+                                        Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
+                                    }
+                                }else{
+                                    Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task1.getException());
                                 }
 
-                            }
-
+                                if(u.getTrader()){
+                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                }else{
+                                    startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                                }
+                            });
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            // [START_EXCLUDE]
-                            // [END_EXCLUDE]
                         }
-
                         progressBar.setVisibility(View.INVISIBLE);
-                        // [END_EXCLUDE]
                     }
                 });
-        // [END sign_in_with_email]
     }
 
     private Map<String, Object> generateUser (){
         Map <String, Object> user = new HashMap<>();
+        user.put("user_id", mAuth.getUid());
         user.put("name", mName.getText().toString().trim());
         user.put("sourname", mSourname.getText().toString().trim());
         user.put("email", mEmail.getText().toString().trim());
@@ -216,24 +198,19 @@ public class RegisterActivity extends AppCompatActivity {
         // [START send_email_verification]
         final FirebaseUser user = mAuth.getCurrentUser();
         user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // [START_EXCLUDE]
-                        // Re-enable button
+                .addOnCompleteListener(this, task -> {
 
-                        if (task.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this,
-                                    "Verification email sent to " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e(TAG, "sendEmailVerification", task.getException());
-                            Toast.makeText(RegisterActivity.this,
-                                    "Failed to send verification email.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        // [END_EXCLUDE]
+                    if (task.isSuccessful()) {
+                        Toast.makeText(RegisterActivity.this,
+                                "Verification email sent to " + user.getEmail(),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e(TAG, "sendEmailVerification", task.getException());
+                        Toast.makeText(RegisterActivity.this,
+                                "Failed to send verification email.",
+                                Toast.LENGTH_SHORT).show();
                     }
+                    // [END_EXCLUDE]
                 });
         // [END send_email_verification]
     }
