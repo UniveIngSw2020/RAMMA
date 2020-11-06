@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -95,6 +96,14 @@ public class LoginActivity extends AppCompatActivity{
                 signIn(email,password);
             }
         });
+
+        //QUI C'È IL TASTO PER TORNARE INDIETRO
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+
+        // Capture the layout's TextView and set the string as its text
+        TextView textView = findViewById(R.id.textView);
+        textView.setText(message);
     }
 
     // [START on_start_check_user]

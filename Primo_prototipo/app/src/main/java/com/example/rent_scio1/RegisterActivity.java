@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -76,6 +77,15 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        //QUI C'È IL TASTO PER TORNARE INDIETRO
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+
+        // Capture the layout's TextView and set the string as its text
+        TextView textView = findViewById(R.id.textView2);
+        textView.setText(message);
     }
     @Override
     public void onStart() {
