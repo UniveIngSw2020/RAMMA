@@ -2,6 +2,8 @@ package com.example.rent_scio1.utils;
 
 import com.google.firebase.firestore.GeoPoint;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Users {
     private String Name;
     private String Sourname;
@@ -69,4 +71,18 @@ public class Users {
     /*public void setPiva(String piva) {
         Piva = piva;
     }*/
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "Users{" +
+                "Name='" + Name + '\'' +
+                ", Sourname='" + Sourname + '\'' +
+                ", Email='" + Email + '\'' +
+                ", Date='" + Date + '\'' +
+                ", Phone='" + Phone + '\'' +
+                ", Piva='" + Piva + '\'' +
+                ", Trader=" + Trader +
+                '}';
+    }
 }

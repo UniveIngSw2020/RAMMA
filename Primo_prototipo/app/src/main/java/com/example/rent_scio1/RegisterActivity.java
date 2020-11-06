@@ -14,8 +14,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rent_scio1.utils.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +24,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -57,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mRegisterBtn.setOnClickListener((View view) -> {
             if(chekForm())
-                signIn(mEmail.toString().trim(), mPassword.toString().trim());
+                signIn(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
         });
         mTrader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,38 +79,38 @@ public class RegisterActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if(mAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
             finish();
         }
     }
 
     private boolean chekForm(){
         boolean flag = true;
-        if(TextUtils.isEmpty(mPassword.toString())){
+        if(TextUtils.isEmpty(mPassword.getText().toString().trim())){
             mPassword.setError("Password is Required!");
             flag = false;
         }
-        if(TextUtils.isEmpty(mName.toString())){
-            mPassword.setError("Password is Required!");
+        if(TextUtils.isEmpty(mName.getText().toString().trim())){
+            mName.setError("Name is Required!");
             flag = false;
         }
-        if(TextUtils.isEmpty(mSourname.toString())){
-            mPassword.setError("Password is Required!");
+        if(TextUtils.isEmpty(mSourname.getText().toString().trim())){
+            mSourname.setError("Sourname is Required!");
             flag = false;
         }
-        if(TextUtils.isEmpty(mDate.toString())){
-            mPassword.setError("Password is Required!");
+        if(TextUtils.isEmpty(mDate.getText().toString().trim())){
+            mDate.setError("date of Birthday is Required!");
             flag = false;
-        }if(TextUtils.isEmpty(mEmail.toString())){
-            mPassword.setError("Password is Required!");
+        }if(TextUtils.isEmpty(mEmail.getText().toString().trim())){
+            mEmail.setError("Email is Required!");
             flag = false;
-        }if(TextUtils.isEmpty(mPhone.toString())){
-            mPassword.setError("Password is Required!");
+        }if(TextUtils.isEmpty(mPhone.getText().toString().trim())){
+            mPhone.setError("Phone is Required!");
             flag = false;
         }
         if(mTrader.isChecked()){
-            if(TextUtils.isEmpty(mPiva.toString())){
-                mPassword.setError("Password is Required!");
+            if(TextUtils.isEmpty(mPiva.getText().toString().trim())){
+                mPiva.setError("PIVA is Required!");
                 flag = false;
             }
         }
@@ -117,7 +121,6 @@ public class RegisterActivity extends AppCompatActivity {
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
 
-
         progressBar.setVisibility(View.VISIBLE);
 
         // [START create_user_with_email]
@@ -126,19 +129,59 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NotNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
                             userID = mAuth.getCurrentUser().getUid();
-                            Users u = new Users(mName.toString().trim(), mSourname.toString().trim(), mEmail.toString().trim(), mDate.toString().trim(), mPhone.toString().trim(), mPiva.toString().trim(), mTrader.isChecked());
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                             DocumentReference documentReference = mStore.collection("users").document(userID);
-                            sendEmailVerification();
-                            documentReference.set(u).addOnSuccessListener(aVoid -> {
+                            Map<String, Object> user = generateUser();
+
+                            Log.d(TAG, "signInWithEmail:success");
+
+                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //Log.d(TAG, "onSuccess: user Profile is created for: " + userID);
+                                    System.out.println("onSuccess: user Profile is created for: " + userID);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    System.out.println("onFaiulure: "+ e.toString());
+                                }
+                            });
+                            /*mStore.collection("users").add(u).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error adding document", e);
+                                }
+                            });*/
+
+
+
+
+                            //DocumentReference documentReference = mStore.collection("users").document(userID);
+                            //sendEmailVerification();
+                            /*documentReference.set(u).addOnSuccessListener(aVoid -> {
                                 Log.d(TAG, "onSuccess: user Profile is created for: " + userID);
                                 System.out.println("onSuccess: user Profile is created for: " + userID);
-                            }).addOnFailureListener(e -> System.out.println("onFaiulure: "+ e.toString()));
+                            }).addOnFailureListener(e -> System.out.println("onFaiulure: "+ e.toString()));*/
+                            //TODO: VERIFICARE SE è UN CLIENTE O COMMERICANTE
+                            for(Map.Entry<String, Object> entry : user.entrySet()) {
+                                String key = entry.getKey();
+                                Object value = entry.getValue();
+                                if(key.equals("trader")){
+                                    if(value.equals(true))
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                    else
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                                }
 
-                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                            }
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -152,6 +195,18 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
         // [END sign_in_with_email]
+    }
+
+    private Map<String, Object> generateUser (){
+        Map <String, Object> user = new HashMap<>();
+        user.put("name", mName.getText().toString().trim());
+        user.put("sourname", mSourname.getText().toString().trim());
+        user.put("email", mEmail.getText().toString().trim());
+        user.put("born", mDate.getText().toString().trim());
+        user.put("phone", mPhone.getText().toString().trim());
+        user.put("piva", mPiva.getText().toString().trim());
+        user.put("trader", mTrader.isChecked());
+        return user;
     }
 
     private void sendEmailVerification() {

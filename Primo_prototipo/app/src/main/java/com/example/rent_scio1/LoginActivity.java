@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -97,7 +99,7 @@ public class LoginActivity extends AppCompatActivity{
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if(mAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
             finish();
         }
     }
@@ -105,6 +107,8 @@ public class LoginActivity extends AppCompatActivity{
 
 
     private void signIn(String email, String password) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         Log.d(TAG, "signIn:" + email);
 
 
@@ -120,7 +124,31 @@ public class LoginActivity extends AppCompatActivity{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                            Toast.makeText(LoginActivity.this, "Authentication Successes.", Toast.LENGTH_SHORT).show();
+
+
+                            //TODO: VERIFICARE SE è UN CLIENTE O COMMERICANTE
+                            db.collection("users")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                               /* for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    if(document.get("piva").equals(false))
+                                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                                                    else
+                                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                                    Log.d(TAG, "\n\n\n\nINFOOOOOOOOOOO " + document.getData());
+                                                }*/
+                                                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                                            } else {
+                                                Log.w(TAG, "Error getting documents.", task.getException());
+                                            }
+                                        }
+                                    });
+
+                            //startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());

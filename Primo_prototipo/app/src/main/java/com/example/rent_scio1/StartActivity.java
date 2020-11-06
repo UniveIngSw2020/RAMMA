@@ -21,4 +21,5 @@ public class StartActivity extends AppCompatActivity {
 
         register_btn.setOnClickListener(v -> startActivity(new Intent(StartActivity.this, RegisterActivity.class)));
     }
+
 }
