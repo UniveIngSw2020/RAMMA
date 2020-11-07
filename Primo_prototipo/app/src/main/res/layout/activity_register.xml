@@ -37,31 +37,17 @@
     <Button
         android:id="@+id/confitmregister_btn"
         style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_width="211dp"
+        android:layout_height="56dp"
         android:layout_marginTop="16dp"
-        android:background="#FFFFFF"
+        android:background="@drawable/rounded_button"
         android:text="@string/registrati_confirm"
         app:iconTint="#267AB3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/piva"
-        app:layout_constraintVertical_bias="0.9" />
-
-    <ProgressBar
-        android:id="@+id/progressBarregister"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/confitmregister_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/piva"
-        app:layout_constraintVertical_bias="0.812" />
+        app:layout_constraintVertical_bias="0.369" />
 
     <EditText
         android:id="@+id/sourname"
@@ -156,14 +142,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateBorn" />
 
+    <ProgressBar
+        android:id="@+id/progressBarregister"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/confitmregister_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/piva"
+        app:layout_constraintVertical_bias="0.571" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:visibility="invisible"
-        tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="9dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="invisible" />
 
     <CheckBox
@@ -171,12 +170,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/ottieni_la_tua_posizione"
+        android:text="@string/ottieni_la_tua_posisizione"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/progressBarregister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/piva" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
