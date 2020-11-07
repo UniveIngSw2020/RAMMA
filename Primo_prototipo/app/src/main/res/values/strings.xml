@@ -35,4 +35,6 @@
     <string name="title_activity_maps_trader">Map</string>
     <string name="edit_message">Inserisci la tua mail e la password</string>
     <string name="hai_gi_un_account_accedi">Hai già un account? Accedi</string>
+    <string name="inserisci_la_tua_mail_e_la_password">Inserisci la tua mail e la password</string>
+    <string name="collegamento1">Collegamento1</string>
 </resources>
