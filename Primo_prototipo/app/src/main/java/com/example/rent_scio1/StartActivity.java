@@ -2,6 +2,7 @@ package com.example.rent_scio1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class StartActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-
+    private static final String TAG = "LOCATION: START ACTIVITY";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +25,10 @@ public class StartActivity extends AppCompatActivity {
 
         Button register_btn = (Button)findViewById(R.id.register_btn);
 
-        register_btn.setOnClickListener(v -> startActivity(new Intent(StartActivity.this, RegisterActivity.class)));
+        register_btn.setOnClickListener(v -> {
+            Log.d(TAG, "Tasto premutoooooooooooooo oooooooooooooooo ooooooooooooooo ooooooooooooo ");
+            startActivity(new Intent(StartActivity.this, RegisterActivity.class));
+        });
     }
 
     /*

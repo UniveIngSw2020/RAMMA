@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -17,8 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentScio1">
-        <activity android:name=".DelimitedAreaActivityTrader"></activity>
-        <activity android:name=".TableActivityTrader" />
+
+        <service
+            android:name=".services.LocationService"
+            android:enabled="true"
+            android:exported="true"></service>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -33,7 +37,7 @@
 
         <activity
             android:name=".LoginActivity"
-            android:parentActivityName=".StartActivity" />
+            android:parentActivityName=".StartActivity"></activity>
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".StartActivity" />
