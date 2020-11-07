@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rent_scio1.utils.Users;
+import com.example.rent_scio1.utils.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity{
     EditText mEmail, mPassword;
     Button mLoginBtn;
     ProgressBar progressBar;
-    private Users u = new Users();
+    private User u = new User();
 
 
     // [START declare_auth]
@@ -139,36 +139,13 @@ public class LoginActivity extends AppCompatActivity{
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Authentication Successes.", Toast.LENGTH_SHORT).show();
 
-
-                            //TODO: VERIFICARE SE è UN CLIENTE O COMMERICANTE
-                            /*db.collection("users")
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                               for (QueryDocumentSnapshot document : task.getResult()) {
-                                                   document.getId()
-                                                    if(document.get("piva").equals(false))
-                                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-                                                    else
-                                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                                    Log.d(TAG, "\n\n\n\nINFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + document.getData());
-                                                }
-                                                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-                                            } else {
-                                                Log.w(TAG, "Error getting documents.", task.getException());
-                                            }
-                                        }
-                                    });*/
-
                             Query userquery = db.collection("users").whereEqualTo("user_id", mAuth.getCurrentUser().getUid());
                             userquery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if(task.isSuccessful()){
                                         for(QueryDocumentSnapshot document : task.getResult()){
-                                            u = new Users(document.toObject(Users.class));
+                                            u = new User(document.toObject(User.class));
                                             Log.d(TAG, "DOCUMENTTTTTTT " + document);
                                             Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
                                         }
@@ -186,13 +163,6 @@ public class LoginActivity extends AppCompatActivity{
                             });
 
 
-                            /*for(Users a : users){
-                                if(a.getEmail().equals(user.getEmail()))
-                                    if(a.getTrader())
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                    else
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-                            }*/
 
 
 

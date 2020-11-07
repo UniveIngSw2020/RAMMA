@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rent_scio1.utils.Users;
+import com.example.rent_scio1.utils.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
-    private Users u = new Users();
+    private User u = new User();
     EditText mName, mSourname, mEmail, mPassword, mPhone, mDate, mPiva;
     Button mRegisterBtn;
     FirebaseAuth mAuth;
@@ -166,7 +166,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userquery.get().addOnCompleteListener(task1 -> {
                                 if(task1.isSuccessful()){
                                     for(QueryDocumentSnapshot document : task1.getResult()){
-                                        u = new Users(document.toObject(Users.class));
+                                        u = new User(document.toObject(User.class));
                                         Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
                                     }
                                 }else{

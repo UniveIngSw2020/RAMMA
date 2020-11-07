@@ -1,8 +1,6 @@
 package com.example.rent_scio1.utils;
 
-import com.google.firebase.firestore.GeoPoint;
-
-public class Users {
+public class User {
     private String user_id;
     private String name;
     private String sourname;
@@ -11,11 +9,10 @@ public class Users {
     private String phone;
     private String piva;
     private Boolean trader;
-    private GeoPoint Position;
 
-    public Users(){}
+    public User(){}
 
-    public Users(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader) {
+    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader) {
         this.user_id = user_id;
         this.name = name;
         this.sourname = sourname;
@@ -25,7 +22,7 @@ public class Users {
         this.piva = piva;
         this.trader = trader;
     }
-    public Users(Users o){
+    public User(User o){
         this.user_id = o.user_id;
         this.name = o.name;
         this.sourname = o.sourname;
@@ -92,20 +89,12 @@ public class Users {
         this.piva = piva;
     }
 
+    public Boolean getTrader() {
+        return trader;
+    }
+
     public void setTrader(Boolean trader) {
         this.trader = trader;
-    }
-
-    public GeoPoint getPosition() {
-        return Position;
-    }
-
-    public void setPosition(GeoPoint position) {
-        Position = position;
-    }
-
-    public boolean getTrader (){
-        return trader;
     }
 
     @Override
@@ -119,7 +108,6 @@ public class Users {
                 ", phone='" + phone + '\'' +
                 ", piva='" + piva + '\'' +
                 ", trader=" + trader +
-                ", Position=" + Position +
                 '}';
     }
 }
