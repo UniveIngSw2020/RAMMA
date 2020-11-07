@@ -38,4 +38,7 @@
     <string name="inserisci_la_tua_mail_e_la_password">Inserisci la tua mail e la password</string>
     <string name="collegamento1">Collegamento1</string>
     <string name="ottieni_la_tua_posisizione">Ottieni la tua posisizione</string>
+    <string name="benvenuto_in">Benvenuto in</string>
+    <string name="rent_sci">RENT-SCIÒ</string>
+    <string name="inserisci_la_tua_mail_e_la_password_per_poter_accedere_ai_servizi_di_rent_sci">Inserisci la tua mail e la password per poter accedere ai servizi di RENT-SCIÒ</string>
 </resources>
