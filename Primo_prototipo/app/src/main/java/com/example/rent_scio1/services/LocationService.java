@@ -65,7 +65,7 @@ public class LocationService extends Service {
                     .setContentTitle("")
                     .setContentText("").build();
 
-            //startForeground(1, notification);
+            startForeground(1, notification);
         }
     }
 
@@ -110,7 +110,7 @@ public class LocationService extends Service {
     private void saveUserLocation(final UserLocation userLocation){
         try{
             DocumentReference locationRef = FirebaseFirestore.getInstance()
-                    .collection("users")
+                    .collection("users_location")
                     .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
             locationRef.set(userLocation).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){

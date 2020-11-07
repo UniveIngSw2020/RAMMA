@@ -58,7 +58,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_client);
-
+        Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
         Button mLogout = findViewById(R.id.logout);
         TextView info = findViewById(R.id.infouser);
 

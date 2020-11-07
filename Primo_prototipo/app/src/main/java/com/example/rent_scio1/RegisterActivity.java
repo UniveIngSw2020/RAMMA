@@ -102,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView2);
         textView.setText(message);
     }
-    @Override
+   /*@Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -110,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
             finish();
         }
-    }
+    }*/
 
     private boolean chekForm(){
         boolean flag = true;
