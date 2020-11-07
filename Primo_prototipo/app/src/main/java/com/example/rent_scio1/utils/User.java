@@ -1,36 +1,47 @@
 package com.example.rent_scio1.utils;
 
+
+import com.google.firebase.firestore.GeoPoint;
+
 public class User {
     private String user_id;
     private String name;
     private String sourname;
     private String email;
-    private String date;
+
+    private String born;
     private String phone;
     private String piva;
     private Boolean trader;
+    private GeoPoint traderposition;
 
     public User(){}
 
-    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader) {
+
+    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, GeoPoint traderposition) {
+
         this.user_id = user_id;
         this.name = name;
         this.sourname = sourname;
         this.email = email;
-        this.date = date;
+        this.born = date;
         this.phone = phone;
         this.piva = piva;
         this.trader = trader;
+        this.traderposition = traderposition;
     }
+
     public User(User o){
         this.user_id = o.user_id;
         this.name = o.name;
         this.sourname = o.sourname;
         this.email = o.email;
-        this.date = o.date;
+        this.born = o.born;
         this.phone = o.phone;
-        this.piva = o.piva;
         this.trader = o.trader;
+        this.piva = o.piva;
+        this.traderposition = o.traderposition;
+
     }
 
     public String getUser_id() {
@@ -65,14 +76,6 @@ public class User {
         this.email = email;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -89,25 +92,44 @@ public class User {
         this.piva = piva;
     }
 
-    public Boolean getTrader() {
-        return trader;
-    }
-
     public void setTrader(Boolean trader) {
         this.trader = trader;
     }
 
+    public String getBorn() {
+        return born;
+    }
+
+    public void setBorn(String born) {
+        this.born = born;
+    }
+
+    public GeoPoint getTraderposition() {
+        return traderposition;
+    }
+
+    public void setTraderposition(GeoPoint traderposition) {
+        this.traderposition = traderposition;
+    }
+
+
+    public Boolean getTrader() {
+        return trader;
+    }
+
+
     @Override
     public String toString() {
-        return "Users{" +
+        return "User{" +
                 "user_id='" + user_id + '\'' +
                 ", name='" + name + '\'' +
                 ", sourname='" + sourname + '\'' +
                 ", email='" + email + '\'' +
-                ", date='" + date + '\'' +
+                ", born='" + born + '\'' +
                 ", phone='" + phone + '\'' +
                 ", piva='" + piva + '\'' +
                 ", trader=" + trader +
+                ", traderposition=" + traderposition +
                 '}';
     }
 }
