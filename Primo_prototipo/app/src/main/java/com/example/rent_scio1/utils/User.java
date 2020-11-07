@@ -4,11 +4,11 @@ package com.example.rent_scio1.utils;
 import com.google.firebase.firestore.GeoPoint;
 
 public class User {
+
     private String user_id;
     private String name;
     private String sourname;
     private String email;
-
     private String born;
     private String phone;
     private String piva;

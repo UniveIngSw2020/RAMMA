@@ -2,6 +2,7 @@ package com.example.rent_scio1;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
 import com.example.rent_scio1.utils.UserLocation;
 import com.example.rent_scio1.utils.User;
@@ -76,6 +78,31 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         });
+    }
+
+    private void startLocationService(){
+        if(!isLocationServiceRunning()){
+            Intent serviceIntent = new Intent(this, LocationService.class);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+
+                MapsActivityClient.this.startForegroundService(serviceIntent);
+            }else{
+                startService(serviceIntent);
+            }
+        }
+    }
+
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
+            if("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
     }
 
     private boolean checkMapServices(){
@@ -255,9 +282,11 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     private void getLastKnownLocation() {
         Log.d(TAG, "getLastKnownLocation: called.");
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
             @Override
             public void onComplete(@NonNull Task<android.location.Location> task) {
@@ -269,6 +298,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     mUserLocation.setGeoPoint(geoPoint);
                     mUserLocation.setTimestamp(null);
                     saveUserLocation();
+                    startLocationService();
                 }
             }
         });

@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.User;
@@ -20,6 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -81,17 +86,41 @@ public class LoginActivity extends AppCompatActivity implements
                 Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
+  /*
+                Query userquery = db.collection("users").whereEqualTo("user_id", user.getUid());
+                userquery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot document : task.getResult()){
+                                User u = new User(document.toObject(User.class));
+                                UserClient.setUser(u);
+                                Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
+                            }
+                        }else{
+                            Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+                        }
 
+                        if(UserClient.getUser().getTrader()){
+                            startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                        }else{
+                            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                        }
+                    }
+                });
+ */
                 DocumentReference userRef = db.collection("users")
                         .document(user.getUid());
 
                 userRef.get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
                         Log.d(TAG, "onComplete: successfully set the user client.");
+
                         User user1 = task.getResult().toObject(User.class);
-                        ((UserClient)(getApplicationContext())).setUser(user1);
+                         UserClient.setUser(user1);
 
                         if (user1 != null) {
+
                             if(user1.getTrader()){
                                 startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                             }else{

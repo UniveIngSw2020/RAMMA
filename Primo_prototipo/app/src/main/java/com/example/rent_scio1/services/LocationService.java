@@ -11,22 +11,28 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+
+import java.util.Objects;
 
 public class LocationService extends Service {
 
@@ -59,7 +65,7 @@ public class LocationService extends Service {
                     .setContentTitle("")
                     .setContentText("").build();
 
-            startForeground(1, notification);
+            //startForeground(1, notification);
         }
     }
 
@@ -90,12 +96,34 @@ public class LocationService extends Service {
 
                 if (location != null) {
 
-                    User user = ((UserClient)(getApplicationContext())).getUser();
-                    storeUser();
+                    User user = UserClient.getUser();
+                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    UserLocation userLocation = new UserLocation(geoPoint, null, user);
+                    saveUserLocation(userLocation);
                 }else{
                     Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
                 }
             }
-        });
+        },
+        Looper.myLooper()); // Looper.myLooper tells this to repeat forever until thread is destroyed
     }
+    private void saveUserLocation(final UserLocation userLocation){
+        try{
+            DocumentReference locationRef = FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+            locationRef.set(userLocation).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: \ninserted user location into database." +
+                            "\n latitude: " + userLocation.getGeoPoint().getLatitude() +
+                            "\n longitude: " + userLocation.getGeoPoint().getLongitude());
+                }
+            });
+        }catch(NullPointerException e){
+            Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
+            Log.e(TAG, "saveUserLocation: NullPointerException: "  + e.getMessage() );
+            stopSelf();
+        }
+    }
+
 }
