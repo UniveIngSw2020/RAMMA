@@ -8,6 +8,8 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -27,17 +29,29 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/maps_api_key" />
+            android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
+
+        <activity android:name=".LoginActivity"
+            android:parentActivityName=".StartActivity">
+        </activity>
+
+        <activity android:name=".RegisterActivity"
+            android:parentActivityName=".StartActivity"/>
+
+        <activity android:name=".StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MapsActivityClient"
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".MapsActivityTrader"
+            android:label="@string/title_activity_maps_trader" />
     </application>
 
 </manifest>
