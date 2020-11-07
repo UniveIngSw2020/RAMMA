@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="sendMessage"
-    tools:context=".StartActivity"
-    android:background="#dbfbff">
+    android:background="#dbfbff"
+    tools:context=".StartActivity">
 
     <ImageView
         android:id="@+id/logo"
@@ -41,7 +40,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button"
-        android:onClick="sendMessage"
         android:text="@string/registrati_startup"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,8 +55,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
         android:text="Benvenuto in RENT-SCIÒ"
-        android:textColor="#4b7ae7"
 
+        android:textColor="#4b7ae7"
         app:layout_constraintBottom_toTopOf="@+id/login_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
