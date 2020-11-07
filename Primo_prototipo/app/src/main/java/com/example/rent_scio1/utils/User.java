@@ -1,13 +1,14 @@
 package com.example.rent_scio1.utils;
 
-import com.google.firebase.firestore.GeoPoint;
 
+import com.google.firebase.firestore.GeoPoint;
 
 public class User {
     private String user_id;
     private String name;
     private String sourname;
     private String email;
+
     private String born;
     private String phone;
     private String piva;
@@ -30,7 +31,6 @@ public class User {
         this.traderposition = traderposition;
     }
 
-
     public User(User o){
         this.user_id = o.user_id;
         this.name = o.name;
@@ -41,6 +41,7 @@ public class User {
         this.trader = o.trader;
         this.piva = o.piva;
         this.traderposition = o.traderposition;
+
     }
 
     public String getUser_id() {
@@ -111,9 +112,11 @@ public class User {
         this.traderposition = traderposition;
     }
 
+
     public Boolean getTrader() {
         return trader;
     }
+
 
     @Override
     public String toString() {

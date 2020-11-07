@@ -10,8 +10,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -23,6 +27,7 @@ public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener{
 
     private static final String TAG = "LoginActivity";
+
 
     //Firebase
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -170,8 +175,6 @@ public class LoginActivity extends AppCompatActivity implements
                             Toast.makeText(LoginActivity.this, "Authentication Successes.", Toast.LENGTH_SHORT).show();
 
 
-
-
                             Query userquery = db.collection("users").whereEqualTo("user_id", mAuth.getCurrentUser().getUid());
                             userquery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
@@ -179,6 +182,7 @@ public class LoginActivity extends AppCompatActivity implements
                                     if(task.isSuccessful()){
                                         for(QueryDocumentSnapshot document : task.getResult()){
                                             u = new User(document.toObject(User.class));
+
                                             Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
                                         }
                                     }else{

@@ -16,9 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.core.app.ActivityCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "EmailPassword";
 
     private Map <String, Object> user = new HashMap<>();
+
 
     EditText mName, mSourname, mEmail, mPassword, mPhone, mDate, mPiva;
     Button mRegisterBtn;
@@ -163,6 +166,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userID = mAuth.getCurrentUser().getUid();
 
                             generateStoreUser();
+
 
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
