@@ -1,6 +1,9 @@
 package com.example.rent_scio1;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,11 +14,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rent_scio1.utils.Users;
+import androidx.core.app.ActivityCompat;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,28 +31,35 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
-    private Users u = new Users();
+
+    private Map <String, Object> user = new HashMap<>();
+
+
     EditText mName, mSourname, mEmail, mPassword, mPhone, mDate, mPiva;
     Button mRegisterBtn;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     FirebaseFirestore mStore;
     String userID;
-    CheckBox mTrader;
+    CheckBox mTrader, mPositionTrader;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         mName = findViewById(R.id.name);
         mSourname = findViewById(R.id.sourname);
@@ -62,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
         mDate = findViewById(R.id.dateBorn);
         mPiva = findViewById(R.id.piva);
         mTrader = findViewById(R.id.checkTrader);
+        mPositionTrader = findViewById(R.id.checkPositionTrader);
 
         mRegisterBtn.setOnClickListener((View view) -> {
             if(chekForm())
@@ -72,8 +85,10 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(mTrader.isChecked()){
                     mPiva.setVisibility(View.VISIBLE);
+                    mPositionTrader.setVisibility(View.VISIBLE);
                 }else{
                     mPiva.setVisibility(View.INVISIBLE);
+                    mPositionTrader.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -126,6 +141,10 @@ public class RegisterActivity extends AppCompatActivity {
                 mPiva.setError("PIVA is Required!");
                 flag = false;
             }
+            if(!mPositionTrader.isChecked()){
+                mPositionTrader.setError("Position is Required!");
+                flag = false;
+            }
         }
         return flag;
     }
@@ -145,51 +164,46 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
                             userID = mAuth.getCurrentUser().getUid();
-                            DocumentReference documentReference = mStore.collection("users").document(userID);
-                            Map<String, Object> user = generateUser();
 
-                            Log.d(TAG, "signInWithEmail:success");
+                            generateStoreUser();
 
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    //Log.d(TAG, "onSuccess: user Profile is created for: " + userID);
-                                    System.out.println("onSuccess: user Profile is created for: " + userID);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    System.out.println("onFaiulure: "+ e.toString());
-                                }
-                            });
-                            Query userquery = db.collection("users").whereEqualTo("user_id", mAuth.getCurrentUser().getUid());
-                            userquery.get().addOnCompleteListener(task1 -> {
-                                if(task1.isSuccessful()){
-                                    for(QueryDocumentSnapshot document : task1.getResult()){
-                                        u = new Users(document.toObject(Users.class));
-                                        Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
-                                    }
-                                }else{
-                                    Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task1.getException());
-                                }
 
-                                if(u.getTrader()){
-                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                }else{
-                                    startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-                                }
-                            });
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Authentication failed: ." + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 });
     }
 
-    private Map<String, Object> generateUser (){
-        Map <String, Object> user = new HashMap<>();
+    private void getPosition () {
+        if(mPositionTrader.isChecked()) {
+            Log.d(TAG, "getLastKnownLocation: called.");
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
+                @Override
+                public void onComplete(@NonNull Task<android.location.Location> task) {
+                    if (task.isSuccessful()) {
+                        Location location = task.getResult();
+                        user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
+                        Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
+                        storeUser();
+                    }else{
+                        Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                    }
+                }
+            });
+        }else{
+            user.put("traderposition",null);
+            storeUser();
+        }
+    }
+
+
+    private void generateStoreUser (){
         user.put("user_id", mAuth.getUid());
         user.put("name", mName.getText().toString().trim());
         user.put("sourname", mSourname.getText().toString().trim());
@@ -198,7 +212,28 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("phone", mPhone.getText().toString().trim());
         user.put("piva", mPiva.getText().toString().trim());
         user.put("trader", mTrader.isChecked());
-        return user;
+        getPosition();
+    }
+
+    private void storeUser () {
+        Log.d(TAG, "signInWithEmail:success");
+        DocumentReference documentReference = mStore.collection("users").document(userID);
+        documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + user);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("onFaiulure: "+ e.toString());
+            }
+        });
+        if(Objects.equals(user.get("trader"), true)){
+            startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+        }else{
+            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+        }
     }
 
     private void sendEmailVerification() {

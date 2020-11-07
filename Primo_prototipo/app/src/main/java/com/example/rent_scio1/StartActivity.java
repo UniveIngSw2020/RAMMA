@@ -27,12 +27,13 @@ public class StartActivity extends AppCompatActivity {
         register_btn.setOnClickListener(v -> startActivity(new Intent(StartActivity.this, RegisterActivity.class)));
     }
 
+    /*
     public void sendMessage(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         TextView textView = (TextView) findViewById(R.id.textView);
         String message = textView.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
-    }
+    }*/
 
 }
