@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -27,7 +26,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
     private Button mLogout;
-    private TextView info;
+    /*private TextView info;*/
     private FirebaseAuth mAuth;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
@@ -48,13 +47,14 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps_trader);
         mAuth = FirebaseAuth.getInstance();
         mLogout = findViewById(R.id.logout);
-        info = findViewById(R.id.infouser);
 
-        info.setText(mAuth.getUid());
+        /*info = findViewById(R.id.infouser);
+
+        info.setText(mAuth.getUid());*/
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.mapDelimit);
         mapFragment.getMapAsync(this);
 
         mLogout.setOnClickListener(new View.OnClickListener() {
@@ -102,4 +102,5 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
+    
 }
