@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rent_scio1.utils.Users;
+import com.example.rent_scio1.utils.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,7 +31,9 @@ public class LoginActivity extends AppCompatActivity{
     EditText mEmail, mPassword;
     Button mLoginBtn;
     ProgressBar progressBar;
-    private Users u = new Users();
+
+    private User u = new User();
+
 
 
     // [START declare_auth]
@@ -168,7 +170,7 @@ public class LoginActivity extends AppCompatActivity{
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if(task.isSuccessful()){
                                         for(QueryDocumentSnapshot document : task.getResult()){
-                                            u = new Users(document.toObject(Users.class));
+                                            u = new User(document.toObject(User.class));
                                             Log.d(TAG, "DOCUMENTTTTTTT " + document);
                                             Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
                                         }
