@@ -37,7 +37,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
         //inizializzazione mappa 1
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.mapDelimit);
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
     }

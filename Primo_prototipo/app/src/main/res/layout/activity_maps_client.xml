@@ -8,7 +8,7 @@
     tools:context=".MapsActivityClient">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/mapDelimit"
+        android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
         android:layout_width="106dp"
         android:layout_height="40dp"
         android:text="@string/logout"
-        app:layout_constraintBottom_toTopOf="@+id/mapDelimit"
+        app:layout_constraintBottom_toTopOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.052"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/textview"
-        app:layout_constraintBottom_toTopOf="@+id/mapDelimit"
+        app:layout_constraintBottom_toTopOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logout"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:text="@string/cliente"
         android:textSize="8sp"
-        app:layout_constraintBottom_toTopOf="@+id/mapDelimit"
+        app:layout_constraintBottom_toTopOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.958"
         app:layout_constraintStart_toStartOf="parent"

@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.utils.PermissionUtils;
+import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -26,6 +27,10 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
     private Button mLogout;
+
+    private Button nuovaCorsa;
+    private Button tabellaVeicoli;
+
     /*private TextView info;*/
     private FirebaseAuth mAuth;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -48,13 +53,16 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         mAuth = FirebaseAuth.getInstance();
         mLogout = findViewById(R.id.logout);
 
+        nuovaCorsa= findViewById(R.id.nuova_corsa);
+        tabellaVeicoli=findViewById(R.id.visualizza_tabella_veicoli);
+
         /*info = findViewById(R.id.infouser);
 
         info.setText(mAuth.getUid());*/
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.mapDelimit);
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         mLogout.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +70,20 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
             public void onClick(View view) {
                 mAuth.signOut();
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
+            }
+        });
+
+        nuovaCorsa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), NuovaCorsaActivityTrader.class));
+            }
+        });
+
+        tabellaVeicoli.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), VehicleListActivityTrader.class));
             }
         });
     }
@@ -102,5 +124,5 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
-    
+
 }
