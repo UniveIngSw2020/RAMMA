@@ -43,6 +43,7 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             maxID = extras.getInt(Intent_newVehicle);
+            maxID++;
         }
 
         //aggiungo bottone conferma e il comportamento al click
@@ -51,14 +52,12 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // Crea un nuovo veicolo tramite HashMap
-                Field[] allFields = Vehicle.class.getDeclaredFields();
 
                 Map<String, Object> newVehicle = new HashMap<>();
-                newVehicle.put(allFields[0].toString(), vehicle_type.getText().toString());
-                newVehicle.put(allFields[1].toString(), Integer.parseInt(seats.getText().toString()));
-                newVehicle.put(allFields[2].toString(), maxID++);
-                newVehicle.put(allFields[3].toString(), false);
+                newVehicle.put("vehicleType", vehicle_type.getText().toString());
+                newVehicle.put("seats", Integer.parseInt(seats.getText().toString()));
+                newVehicle.put("ID", maxID);
+                newVehicle.put("rented", false);
 
                 //aggiungo il veicolo al db
                 db.collection("vehicles")

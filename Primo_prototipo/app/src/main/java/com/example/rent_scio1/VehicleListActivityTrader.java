@@ -117,9 +117,11 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
             if(v.isRented()){
                 tv3.setText("OCCUPATO");
+                tv3.setTextColor(Color.RED);
             }
             else{
                 tv3.setText("DISPONIBILE");
+                tv3.setTextColor(Color.GREEN);
             }
 
             row.addView(tv);

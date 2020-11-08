@@ -10,13 +10,12 @@
         android:id="@+id/tipo_veicolo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginBottom="431dp"
+        android:layout_marginTop="156dp"
         android:ems="10"
         android:hint="Tipo veicolo"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/Conferma"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,18 +29,20 @@
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tipo_veicolo" />
+        app:layout_constraintTop_toBottomOf="@+id/tipo_veicolo"
+        app:layout_constraintVertical_bias="0.215" />
 
     <Button
         android:id="@+id/Conferma"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="103dp"
+        android:layout_marginBottom="200dp"
         android:text="Conferma"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tipo_veicolo" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
