@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item android:id="@+id/nuova_corsa"
+            android:title="@string/nuova_corsa" />
+
+        <item android:id="@+id/Parco_mezzi"
+            android:title="@string/visualizza_parco_mezzi" />
+    </group>
+
+    <item android:id="@+id/logout"
+    android:title="@string/logout" />
+</menu>

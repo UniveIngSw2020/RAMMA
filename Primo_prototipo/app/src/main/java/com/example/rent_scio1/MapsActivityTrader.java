@@ -5,31 +5,32 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.utils.PermissionUtils;
-import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
+
+    private NavigationView navigationView;
 
     /**
      * Request code for location permission request.
      *
      * @see #onRequestPermissionsResult(int, String[], int[])
      */
-    private Button mLogout;
-
-    private Button nuovaCorsa;
-    private Button tabellaVeicoli;
 
     /*private TextView info;*/
     private FirebaseAuth mAuth;
@@ -50,11 +51,9 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_trader);
-        mAuth = FirebaseAuth.getInstance();
-        mLogout = findViewById(R.id.logout);
 
-        nuovaCorsa= findViewById(R.id.nuova_corsa);
-        tabellaVeicoli=findViewById(R.id.visualizza_tabella_veicoli);
+        navigationView = findViewById(R.id.navigationView_Map_Trader);
+        mAuth = FirebaseAuth.getInstance();
 
         /*info = findViewById(R.id.infouser);
 
@@ -65,28 +64,10 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAuth.signOut();
-                startActivity(new Intent(getApplicationContext(), StartActivity.class));
-            }
-        });
-
-        nuovaCorsa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), NuovaCorsaActivityTrader.class));
-            }
-        });
-
-        tabellaVeicoli.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), VehicleListActivityTrader.class));
-            }
-        });
+        navigationView.setNavigationItemSelectedListener(this);
     }
+
+
 
     /**
      * Manipulates the map once available.
@@ -125,4 +106,22 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.logout:
+                mAuth.signOut();
+                startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                break;
+            case R.id.nuova_corsa:
+                startActivity(new Intent(getApplicationContext(), NuovaCorsaActivityTrader.class));
+                break;
+            case R.id.Parco_mezzi:
+                startActivity(new Intent(getApplicationContext(), VehicleListActivityTrader.class));
+                break;
+        }
+
+        return true;
+    }
 }
