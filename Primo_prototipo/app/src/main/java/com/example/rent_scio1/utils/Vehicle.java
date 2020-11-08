@@ -1,5 +1,7 @@
 package com.example.rent_scio1.utils;
 
+import androidx.annotation.NonNull;
+
 public class Vehicle {
 
     //tipo veicolo, posti, ID , noleggiato(bool)
