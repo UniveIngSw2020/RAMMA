@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:flow_firstHorizontalStyle="spread_inside"
     tools:context=".VehicleListActivityTrader">
 
     <Button
@@ -12,19 +13,21 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="17dp"
         android:layout_marginTop="17dp"
-        android:layout_marginBottom="89dp"
         android:text="Nuovo"
-        app:layout_constraintBottom_toTopOf="@+id/tabella_veicoli"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TableLayout
         android:id="@+id/tabella_veicoli"
-        android:layout_width="221dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="154dp"
+        android:layout_width="334dp"
+        android:layout_height="400dp"
+        android:layout_margin="10dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nuovo_veicolo"/>
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

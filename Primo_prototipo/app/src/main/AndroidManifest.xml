@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentScio1">
-        <activity android:name=".VehicleListActivityTrader"></activity>
+        <activity android:name=".NewVehicleActivityTrader"></activity>
+        <activity android:name=".VehicleListActivityTrader" />
         <activity android:name=".NuovaCorsaActivityTrader" />
 
         <service

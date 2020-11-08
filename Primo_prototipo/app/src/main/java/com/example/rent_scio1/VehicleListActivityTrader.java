@@ -4,8 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.VerifiedInputEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -17,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +31,10 @@ import java.util.Map;
 public class VehicleListActivityTrader extends AppCompatActivity {
 
     private static final String TAG="VehicleListActivityTrader";
+
+    private static final String Intent_newVehicle="Intent_newVehicle";
+
+    private static int maxID=0;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -49,25 +59,53 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
 
-                            createTable(vehicleArrayList);
+                            maxID=createTable(vehicleArrayList);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
+
+        Button nuovo=findViewById(R.id.nuovo_veicolo);
+        nuovo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
+                toNewVehicleActivityTrader.putExtra(Intent_newVehicle,maxID);
+                startActivity(toNewVehicleActivityTrader);
+            }
+        });
+
+
     }
 
-    private void createTable(ArrayList<Vehicle> vehicles){
+    //ritona l'ID massimo
+    private int createTable(ArrayList<Vehicle> vehicles){
 
         TableLayout table = findViewById(R.id.tabella_veicoli);
 
+        //titoli tabella
+        String[] titlesString={"ID ", "Posti a sedere ", "Tipo veicolo ", "Noleggiato? "};
+        TableRow titles = new TableRow(VehicleListActivityTrader.this);
+        for (int i=0;i<4;i++){
+            TextView tv = new TextView(VehicleListActivityTrader.this);
+            tv.setText(titlesString[i]);
+            tv.setTextColor(Color.BLUE);
+            titles.addView(tv);
+        }
+        table.addView(titles);
+
+        int max=0;
+
+        //dati tabella
         for (Vehicle v : vehicles ) {
 
             TableRow row = new TableRow(VehicleListActivityTrader.this);
 
 
             TextView tv = new TextView(VehicleListActivityTrader.this);
-            tv.setText(Integer.toString(v.getID()));
+            int ID=v.getID();
+            tv.setText(Integer.toString(ID));
 
             TextView tv1 = new TextView(VehicleListActivityTrader.this);
             tv1.setText(Integer.toString(v.getSeats()));
@@ -90,7 +128,12 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             row.addView(tv3);
 
             table.addView(row);
+
+            if(ID>max){
+                max=ID;
+            }
         }
 
+        return max;
     }
 }
