@@ -24,15 +24,19 @@ import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
-import com.example.rent_scio1.utils.UserLocation;
 import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +48,7 @@ import com.google.firebase.firestore.GeoPoint;
 public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private static final String TAG = "LOCATION: ";
+    private static final String TAG = "MapsActivityClient: ";
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
@@ -53,6 +57,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
+    private LatLngBounds mMapBoundary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +71,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         mStore = FirebaseFirestore.getInstance();
         info.setText(FirebaseAuth.getInstance().getUid());
 
-
-
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimit);
         mapFragment.getMapAsync(this);
 
 
@@ -80,6 +82,21 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             finish();
         });
     }
+
+    private void setCameraView(){
+        double bottomBundary = mUserLocation.getGeoPoint().getLatitude() - .01;
+        double leftBoundary = mUserLocation.getGeoPoint().getLongitude() - .01;
+        double topBoundary = mUserLocation.getGeoPoint().getLatitude() + .01;
+        double rightBoundary = mUserLocation.getGeoPoint().getLongitude() + .01;
+
+        mMapBoundary = new LatLngBounds(
+                new LatLng(bottomBundary, leftBoundary),
+                new LatLng(topBoundary, rightBoundary)
+        );
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+    }
+
 
     private void startLocationService(){
         if(!isLocationServiceRunning()){
@@ -230,7 +247,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        enableMyLocation();  // TODO attivare GPS in automatico
+        enableMyLocation();
     }
 
 
@@ -239,6 +256,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
+                geUserDetails();
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
@@ -258,10 +276,13 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                         Log.d(TAG, "onComplete: successfully get teh user details");
                         User user = task.getResult().toObject(User.class);
                         mUserLocation.setUser(user);
+                        UserClient.setUser(user);
                         getLastKnownLocation();
                     }
                 }
             });
+        }else{
+            getLastKnownLocation();
         }
     }
 
@@ -300,6 +321,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     mUserLocation.setTimestamp(null);
                     saveUserLocation();
                     startLocationService();
+                    setCameraView();
                 }
             }
         });
