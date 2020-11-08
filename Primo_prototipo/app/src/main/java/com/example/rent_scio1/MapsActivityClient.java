@@ -58,6 +58,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
     private LatLngBounds mMapBoundary;
+    private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     private void startLocationService(){
         if(!isLocationServiceRunning()){
-            Intent serviceIntent = new Intent(this, LocationService.class);
+            serviceIntent = new Intent(this, LocationService.class);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
 
@@ -327,5 +328,14 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        serviceIntent.setAction("STOP");
+        stopService(serviceIntent);
+        //super.onDestroy();
+        if (isLocationServiceRunning()) {
+            stopService(new Intent(this, LocationService.class));
+        }
+    }
 }

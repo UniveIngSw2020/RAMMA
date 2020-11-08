@@ -89,24 +89,25 @@ public class LocationService extends Service {
             return;
         }
         mFusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy, new LocationCallback(){
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
-                Location location = locationResult.getLastLocation();
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
+                    Location location = locationResult.getLastLocation();
 
-                if (location != null) {
+                    if (location != null) {
 
-                    User user = UserClient.getUser();
-                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    UserLocation userLocation = new UserLocation(geoPoint, null, user);
-                    saveUserLocation(userLocation);
-                }else{
-                    Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                        User user = UserClient.getUser();
+                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        UserLocation userLocation = new UserLocation(geoPoint, null, user);
+                        saveUserLocation(userLocation);
+                    }else{
+                        Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                    }
                 }
-            }
-        },
-        Looper.myLooper()); // Looper.myLooper tells this to repeat forever until thread is destroyed
+            }, Looper.myLooper());// Looper.myLooper tells this to repeat forever until thread is destroyed
     }
+
+
     private void saveUserLocation(final UserLocation userLocation){
         try{
             DocumentReference locationRef = FirebaseFirestore.getInstance()
@@ -123,7 +124,17 @@ public class LocationService extends Service {
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
             Log.e(TAG, "saveUserLocation: NullPointerException: "  + e.getMessage() );
             stopSelf();
+            onDestroy();
         }
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopSelf();
+        stopForeground(true);//Add this. Since stopping a service in started in foreground is different from normal services.
+        Log.d("","SERVICE HAS BEEN DESTROYED!!!");
     }
 
 }

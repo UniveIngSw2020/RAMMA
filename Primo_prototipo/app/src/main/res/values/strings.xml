@@ -37,4 +37,5 @@
     <string name="hai_gi_un_account_accedi">Hai già un account? Accedi</string>
     <string name="checkbox">CheckBox</string>
     <string name="ottieni_la_tua_posizione">Ottieni la tua posizione</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>
