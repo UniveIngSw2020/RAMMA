@@ -26,7 +26,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -95,11 +94,16 @@ public class LocationService extends Service {
                     Location location = locationResult.getLastLocation();
 
                     if (location != null) {
-
-                        User user = UserClient.getUser();
-                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                        UserLocation userLocation = new UserLocation(geoPoint, null, user);
-                        saveUserLocation(userLocation);
+                        Log.d(TAG,"IIIIIIIIIIDDDDDDDDDDD" + FirebaseAuth.getInstance().getUid());
+                        if(FirebaseAuth.getInstance().getUid() == null){
+                            onDestroy();
+                        }else {
+                            User user = UserClient.getUser();
+                            GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                            UserLocation userLocation = new UserLocation(geoPoint, null, user);
+                            Log.d(TAG, user.toString());
+                            saveUserLocation(userLocation);
+                        }
                     }else{
                         Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
                     }
@@ -109,10 +113,11 @@ public class LocationService extends Service {
 
 
     private void saveUserLocation(final UserLocation userLocation){
-        try{
+        /*try{*/
             DocumentReference locationRef = FirebaseFirestore.getInstance()
                     .collection("users_location")
                     .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+            Log.d(TAG,userLocation.getUser().toString());
             locationRef.set(userLocation).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Log.d(TAG, "onComplete: \ninserted user location into database." +
@@ -120,21 +125,25 @@ public class LocationService extends Service {
                             "\n longitude: " + userLocation.getGeoPoint().getLongitude());
                 }
             });
-        }catch(NullPointerException e){
+        /*}catch(NullPointerException e){
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
             Log.e(TAG, "saveUserLocation: NullPointerException: "  + e.getMessage() );
             stopSelf();
-            onDestroy();
-        }
+        }*/
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopSelf();
         stopForeground(true);//Add this. Since stopping a service in started in foreground is different from normal services.
-        Log.d("","SERVICE HAS BEEN DESTROYED!!!");
+        stopSelf();
+        /*try {
+            Looper.myLooper().getThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        //TODO: E' IL LOOPER CHE CONTINUA A FAR ANDARE IL SERVIZIO SENZA FERMARLO, IL ONDESTROY NON ELIMINA NULLA
+        Log.d(TAG,"SERVICE HAS BEEN DESTROYED!!!");
     }
-
 }

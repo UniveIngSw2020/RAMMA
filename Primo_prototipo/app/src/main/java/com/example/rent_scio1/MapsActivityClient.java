@@ -329,13 +329,10 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        serviceIntent.setAction("STOP");
-        stopService(serviceIntent);
-        //super.onDestroy();
+    protected void onDestroy() {
+        super.onDestroy();
         if (isLocationServiceRunning()) {
-            stopService(new Intent(this, LocationService.class));
+           stopService(serviceIntent);
         }
     }
 }
