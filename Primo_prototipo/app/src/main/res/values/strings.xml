@@ -41,10 +41,15 @@
     <string name="inserisci_la_tua_mail_e_la_password_per_poter_accedere_ai_servizi_di_rent_sci">Inserisci la tua mail e la password per poter accedere ai servizi di RENT-SCIÒ</string>
     <string name="textview">TextView</string>
     <string name="ottieni_la_tua_posizione">Ottieni la tua posizione</string>
+
+    <string name="confirm_password">Confirm Password</string>
+    <string name="assistenzaBtn">assistenza</string>
+
     <string name="visualizza_parco_mezzi">Visualizza parco mezzi</string>
     <string name="nuova_corsa">Nuova corsa</string>
     <string name="logout">Logout</string>
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
     <string name="inserisci_la_tua_email_e_la_password">Inserisci la tua email e la password</string>
+
 </resources>

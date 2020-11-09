@@ -14,13 +14,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,61 +38,41 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private static final String TAG = "EmailPassword";
+    private static final String TAG = "RegisterActivity";
 
     private Map <String, Object> user = new HashMap<>();
 
+    //widgets
+    private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva;
+    private CheckBox mTrader, mPositionTrader;
+    private ProgressBar progressBar;
+    private Button mRegisterBtn;
 
-    EditText mName, mSourname, mEmail, mPassword, mPhone, mDate, mPiva;
-    Button mRegisterBtn;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    FirebaseFirestore mStore;
-    String userID;
-    CheckBox mTrader, mPositionTrader;
+    //vars
+    private FirebaseFirestore mStore;
+    private String userID;
     private FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        findViewById(R.id.confitmregister_btn).setOnClickListener(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         mName = findViewById(R.id.name);
         mSourname = findViewById(R.id.sourname);
         mEmail = findViewById(R.id.email_register);
         mPassword = findViewById(R.id.password_register);
+        mConfirmPasswod = findViewById(R.id.passwordregister_confirm);
         mPhone = findViewById(R.id.phone_register);
-        mRegisterBtn = findViewById(R.id.confitmregister_btn);
-
-        mAuth = FirebaseAuth.getInstance();
-        mStore = FirebaseFirestore.getInstance();
         progressBar = findViewById(R.id.progressBarregister);
         mDate = findViewById(R.id.dateBorn);
         mPiva = findViewById(R.id.piva);
-        mTrader = findViewById(R.id.checkTrader);
         mPositionTrader = findViewById(R.id.checkPositionTrader);
-
-        mRegisterBtn.setOnClickListener((View view) -> {
-            if(chekForm())
-                signIn(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
-        });
-        mTrader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mTrader.isChecked()){
-                    mPiva.setVisibility(View.VISIBLE);
-                    mPositionTrader.setVisibility(View.VISIBLE);
-                }else{
-                    mPiva.setVisibility(View.INVISIBLE);
-                    mPositionTrader.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
+        mStore = FirebaseFirestore.getInstance();
 
         //QUI C'È IL TASTO PER TORNARE INDIETRO
         Intent intent = getIntent();
@@ -102,68 +82,60 @@ public class RegisterActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView2);
         textView.setText(message);
     }
-   /*@Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        if(mAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-            finish();
-        }
-    }*/
+
+
 
     private boolean chekForm(){
         boolean flag = true;
         if(TextUtils.isEmpty(mPassword.getText().toString().trim())){
-            mPassword.setError("Password is Required!");
+            mPassword.setError("Password Richesta!");
             flag = false;
-        }
-        if(TextUtils.isEmpty(mName.getText().toString().trim())){
-            mName.setError("Name is Required!");
+        }if(TextUtils.isEmpty(mName.getText().toString().trim())){
+            mName.setError("Nome Richeisto!");
             flag = false;
-        }
-        if(TextUtils.isEmpty(mSourname.getText().toString().trim())){
-            mSourname.setError("Sourname is Required!");
+        }if(TextUtils.isEmpty(mSourname.getText().toString().trim())){
+            mSourname.setError("Cognome Richiesto!");
             flag = false;
-        }
-        if(TextUtils.isEmpty(mDate.getText().toString().trim())){
-            mDate.setError("date of Birthday is Required!");
+        }if(TextUtils.isEmpty(mDate.getText().toString().trim())){
+            mDate.setError("Data di Nascita  Richiesto!");
             flag = false;
         }if(TextUtils.isEmpty(mEmail.getText().toString().trim())){
-            mEmail.setError("Email is Required!");
+            mEmail.setError("Email Richeista!");
             flag = false;
         }if(TextUtils.isEmpty(mPhone.getText().toString().trim())){
-            mPhone.setError("Phone is Required!");
+            mPhone.setError("Numero di Cellulare Richiesto!");
             flag = false;
-        }
-        if(mTrader.isChecked()){
+        }if(mTrader.isChecked()){
             if(TextUtils.isEmpty(mPiva.getText().toString().trim())){
-                mPiva.setError("PIVA is Required!");
+                mPiva.setError("Partita IVA Richesta!");
                 flag = false;
             }
             if(!mPositionTrader.isChecked()){
-                mPositionTrader.setError("Position is Required!");
+                mPositionTrader.setError("Posizione Richesta!");
                 flag = false;
             }
+        }
+        if(!mPassword.getText().toString().trim().equals(mConfirmPasswod.getText().toString().trim())){
+            mConfirmPasswod.setError("Entrambe le Passowrd devono essere Uguali!");
+            flag = false;
         }
         return flag;
     }
 
 
     private void signIn(String email, String password) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d(TAG, "signIn:" + email);
 
         progressBar.setVisibility(View.VISIBLE);
 
-        // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
+        Log.d(TAG, "CREDENZIALIIIIIIIIIIIIIIIIII:        email: " + email + " password: " +password);
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NotNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
-                            userID = mAuth.getCurrentUser().getUid();
+                            userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                             generateStoreUser();
 
@@ -189,10 +161,10 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Location location = task.getResult();
                         user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
-                        Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
                         storeUser();
                     }else{
-                        Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
                     }
                 }
             });
@@ -202,9 +174,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-
     private void generateStoreUser (){
-        user.put("user_id", mAuth.getUid());
+        user.put("user_id", FirebaseAuth.getInstance().getUid());
         user.put("name", mName.getText().toString().trim());
         user.put("sourname", mSourname.getText().toString().trim());
         user.put("email", mEmail.getText().toString().trim());
@@ -237,14 +208,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void sendEmailVerification() {
-        // Disable button
-
-        // Send verification email
-        // [START send_email_verification]
-        final FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         user.sendEmailVerification()
                 .addOnCompleteListener(this, task -> {
-
                     if (task.isSuccessful()) {
                         Toast.makeText(RegisterActivity.this,
                                 "Verification email sent to " + user.getEmail(),
@@ -255,9 +221,26 @@ public class RegisterActivity extends AppCompatActivity {
                                 "Failed to send verification email.",
                                 Toast.LENGTH_SHORT).show();
                     }
-                    // [END_EXCLUDE]
                 });
-        // [END send_email_verification]
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.confitmregister_btn:
+                if(chekForm())
+                    signIn(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
+                break;
+
+            case R.id.checkTrader:
+                if(mTrader.isChecked()){
+                    mPiva.setVisibility(View.VISIBLE);
+                    mPositionTrader.setVisibility(View.VISIBLE);
+                }else{
+                    mPiva.setVisibility(View.INVISIBLE);
+                    mPositionTrader.setVisibility(View.INVISIBLE);
+                }
+                break;
+        }
+    }
 }
