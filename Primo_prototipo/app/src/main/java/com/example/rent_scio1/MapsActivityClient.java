@@ -193,7 +193,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-            geUserDetails();
+            getUserDetails();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -245,7 +245,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
                 if(mLocationPermissionGranted){
-                    geUserDetails();
+                    getUserDetails();
                 }
                 else{
                     getLocationPermission();
@@ -260,7 +260,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         super.onResume();
         if(checkMapServices()){
             if(mLocationPermissionGranted){
-                geUserDetails();
+                getUserDetails();
             }
             else{
                 getLocationPermission();
@@ -283,7 +283,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
-                geUserDetails();
+                getUserDetails();
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
@@ -292,7 +292,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    private void geUserDetails(){
+    private void getUserDetails(){
         if(mUserLocation == null){
             mUserLocation = new UserLocation();
             DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
