@@ -10,6 +10,7 @@
     android:focusableInTouchMode="true"
     android:focusable="true">
 
+
     <EditText
         android:id="@+id/piva"
         android:layout_width="0dp"
@@ -64,6 +65,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/piva"
         app:layout_constraintVertical_bias="0.583" />
+
+    <ProgressBar
+        android:id="@+id/progressBarregister"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/confitmregister_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/piva" />
 
     <EditText
         android:id="@+id/sourname"
@@ -126,25 +139,6 @@
         app:layout_constraintTop_toBottomOf="@+id/checkTrader" />
 
     <EditText
-        android:id="@+id/dateBorn"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="50dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/data_di_nascita"
-        android:textColor="@color/teal_200"
-        android:fontFamily="@font/comfortaa_light"
-        android:textColorHint="@color/text"
-        android:backgroundTint="@color/text"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_register" />
-
-    <EditText
         android:id="@+id/password_register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -153,15 +147,42 @@
         android:layout_marginEnd="50dp"
         android:autofillHints=""
         android:ems="10"
+
+        android:hint="@string/password_register"
+        android:inputType="textPassword"
+  
+        android:textColor="@color/teal_200"
+        android:fontFamily="@font/comfortaa_light"
+        android:textColorHint="@color/text"
+        android:backgroundTint="@color/text"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email_register" />
+
+    <EditText
+        android:id="@+id/passwordregister_confirm"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="50dp"
+        android:ems="10"
+
         android:hint="@string/password_register"
         android:textColor="@color/teal_200"
         android:fontFamily="@font/comfortaa_light"
         android:textColorHint="@color/text"
         android:backgroundTint="@color/text"
+
         android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/dateBorn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_register" />
+        app:layout_constraintTop_toBottomOf="@+id/password_register"
+        app:layout_constraintVertical_bias="0.0"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/phone_register"
@@ -179,8 +200,43 @@
         android:backgroundTint="@color/text"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateBorn" />
+
+
+    <EditText
+        android:id="@+id/dateBorn"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="50dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/data_di_nascita"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordregister_confirm" />
+
+    <EditText
+        android:id="@+id/piva"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="50dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/partita_iva"
+        android:inputType="textPersonName"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone_register" />
 
     <ProgressBar
         android:id="@+id/progressBarregister"
@@ -194,6 +250,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/piva"
         app:layout_constraintVertical_bias="1.0" />
+
 
     <TextView
         android:id="@+id/textView2"

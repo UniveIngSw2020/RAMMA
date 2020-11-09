@@ -8,11 +8,13 @@
     tools:context=".MapsActivityClient">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/map"
+        android:id="@+id/mapDelimiter"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -20,7 +22,7 @@
         android:layout_width="106dp"
         android:layout_height="40dp"
         android:text="@string/logout"
-        app:layout_constraintBottom_toTopOf="@+id/map"
+        app:layout_constraintBottom_toTopOf="@+id/mapDelimiter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.052"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/textview"
-        app:layout_constraintBottom_toTopOf="@+id/map"
+        app:layout_constraintBottom_toTopOf="@+id/mapDelimiter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/logout"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,11 +45,21 @@
         android:layout_height="wrap_content"
         android:text="@string/cliente"
         android:textSize="8sp"
-        app:layout_constraintBottom_toTopOf="@+id/map"
+        app:layout_constraintBottom_toTopOf="@+id/mapDelimiter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.958"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.153" />
+
+    <Button
+        android:id="@+id/helpBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/assistenzaBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

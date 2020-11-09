@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -24,15 +25,19 @@ import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
-import com.example.rent_scio1.utils.UserLocation;
 import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,11 +45,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private static final String TAG = "LOCATION: ";
+    private static final String TAG = "MapsActivityClient: ";
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
@@ -53,6 +60,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
+    private LatLngBounds mMapBoundary;
+    private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +69,14 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
         Button mLogout = findViewById(R.id.logout);
+        Button mAssistant = findViewById(R.id.helpBtn);
         TextView info = findViewById(R.id.infouser);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mStore = FirebaseFirestore.getInstance();
         info.setText(FirebaseAuth.getInstance().getUid());
 
-
-
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
 
 
@@ -79,11 +86,48 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         });
+        mAssistant.setOnClickListener(view -> {
+            // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Query getTrader = db.collection("users").whereEqualTo("user_id", "7NimVBuSZVhBd6GT0fcsNDOewFo1");  // TODO Prendere l'ID del commerciante giusto
+            getTrader.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String phoneNumber = new String();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        phoneNumber = new User(document.toObject(User.class)).getPhone();
+
+                        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO phone:"+ phoneNumber);
+                    }
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + phoneNumber));
+                    startActivity(intent);
+                } else {
+                    Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+                }
+            });
+
+
+        });
     }
+
+    private void setCameraView(){
+        double bottomBundary = mUserLocation.getGeoPoint().getLatitude() - .01;
+        double leftBoundary = mUserLocation.getGeoPoint().getLongitude() - .01;
+        double topBoundary = mUserLocation.getGeoPoint().getLatitude() + .01;
+        double rightBoundary = mUserLocation.getGeoPoint().getLongitude() + .01;
+
+        mMapBoundary = new LatLngBounds(
+                new LatLng(bottomBundary, leftBoundary),
+                new LatLng(topBoundary, rightBoundary)
+        );
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+    }
+
 
     private void startLocationService(){
         if(!isLocationServiceRunning()){
-            Intent serviceIntent = new Intent(this, LocationService.class);
+            serviceIntent = new Intent(this, LocationService.class);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
 
@@ -230,7 +274,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        enableMyLocation();  // TODO attivare GPS in automatico
+        enableMyLocation();
     }
 
 
@@ -239,6 +283,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
+                geUserDetails();
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
@@ -258,10 +303,13 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                         Log.d(TAG, "onComplete: successfully get teh user details");
                         User user = task.getResult().toObject(User.class);
                         mUserLocation.setUser(user);
+                        UserClient.setUser(user);
                         getLastKnownLocation();
                     }
                 }
             });
+        }else{
+            getLastKnownLocation();
         }
     }
 
@@ -300,10 +348,17 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     mUserLocation.setTimestamp(null);
                     saveUserLocation();
                     startLocationService();
+                    setCameraView();
                 }
             }
         });
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isLocationServiceRunning()) {
+           stopService(serviceIntent);
+        }
+    }
 }
