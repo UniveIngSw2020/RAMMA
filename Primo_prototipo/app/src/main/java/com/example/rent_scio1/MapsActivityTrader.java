@@ -8,14 +8,18 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.utils.PermissionUtils;
+import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -25,6 +29,10 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private NavigationView navigationView;
+    private DrawerLayout drawer_map_trader;
+    private Toolbar toolbar;
+    private TextView textView;
+
 
     /**
      * Request code for location permission request.
@@ -64,10 +72,21 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        initViews();
+        setSupportActionBar(toolbar);
         navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawer_map_trader.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
-
+    private void initViews(){
+        textView =  (TextView)  navigationView.getHeaderView(0).findViewById(R.id.text_email);
+        textView.setText(mAuth.getCurrentUser().getEmail());
+        drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
+    }
 
     /**
      * Manipulates the map once available.

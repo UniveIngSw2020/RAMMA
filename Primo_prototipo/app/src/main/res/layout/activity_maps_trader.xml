@@ -5,7 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivityTrader">
+    tools:context=".MapsActivityTrader"
+    tools:openDrawer="start"
+    android:id="@+id/drawer_map_trader1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/text"
+            android:id="@+id/toolbar_map_trader"
+            android:elevation="4dp"/>
+    </RelativeLayout>
 
 
     <androidx.fragment.app.FragmentContainerView
@@ -23,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/commerciante"
+        android:visibility="invisible"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,6 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        app:headerLayout="@layout/navigation_header_map_trader"
         app:menu="@menu/navigation_menu_map_trader" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

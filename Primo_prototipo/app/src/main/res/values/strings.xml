@@ -44,4 +44,6 @@
     <string name="visualizza_parco_mezzi">Visualizza parco mezzi</string>
     <string name="nuova_corsa">Nuova corsa</string>
     <string name="logout">Logout</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
 </resources>
