@@ -46,4 +46,5 @@
     <string name="logout">Logout</string>
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
+    <string name="inserisci_la_tua_email_e_la_password">Inserisci la tua email e la password</string>
 </resources>

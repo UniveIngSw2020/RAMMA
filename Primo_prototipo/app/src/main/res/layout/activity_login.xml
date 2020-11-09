@@ -112,7 +112,7 @@
         android:layout_width="315dp"
         android:layout_height="138dp"
         android:fontFamily="@font/comfortaa_light"
-        android:text="Inserisci la tua email e la password"
+        android:text="@string/inserisci_la_tua_email_e_la_password"
         android:textAlignment="center"
         android:textColor="@color/text"
         android:textSize="30sp"
