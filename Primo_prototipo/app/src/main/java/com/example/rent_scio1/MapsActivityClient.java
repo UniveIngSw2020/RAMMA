@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -44,6 +45,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -66,6 +70,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
         Button mLogout = findViewById(R.id.logout);
+        Button mAssistant = findViewById(R.id.helpBtn);
         TextView info = findViewById(R.id.infouser);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -81,6 +86,28 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
+        });
+        mAssistant.setOnClickListener(view -> {
+            // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Query getTrader = db.collection("users").whereEqualTo("user_id", "7NimVBuSZVhBd6GT0fcsNDOewFo1");  // TODO Prendere l'ID del commerciante giusto
+            getTrader.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String phoneNumber = new String();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        phoneNumber = new User(document.toObject(User.class)).getPhone();
+
+                        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO phone:"+ phoneNumber);
+                    }
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + phoneNumber));
+                    startActivity(intent);
+                } else {
+                    Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+                }
+            });
+
+
         });
     }
 

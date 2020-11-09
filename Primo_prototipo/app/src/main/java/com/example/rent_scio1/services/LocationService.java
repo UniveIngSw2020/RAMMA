@@ -115,7 +115,7 @@ public class LocationService extends Service {
 
 
     private void saveUserLocation(final UserLocation userLocation){
-        /*try{*/
+        try{
             DocumentReference locationRef = FirebaseFirestore.getInstance()
                     .collection("users_location")
                     .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
@@ -127,14 +127,11 @@ public class LocationService extends Service {
                             "\n longitude: " + userLocation.getGeoPoint().getLongitude());
                 }
             });
-        /*}catch(NullPointerException e){
+        }catch(NullPointerException e){
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
             Log.e(TAG, "saveUserLocation: NullPointerException: "  + e.getMessage() );
             stopSelf();
-        }*/
-    }
-    public static void stopLooper(){
-        Looper.myLooper().quit();
+        }
     }
 
     @Override
@@ -143,12 +140,6 @@ public class LocationService extends Service {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         stopForeground(true);//Add this. Since stopping a service in started in foreground is different from normal services.
         stopSelf();
-        /*try {
-            Looper.myLooper().getThread().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-        //TODO: E' IL LOOPER CHE CONTINUA A FAR ANDARE IL SERVIZIO SENZA FERMARLO, IL ONDESTROY NON ELIMINA NULLA
         Log.d(TAG,"SERVICE HAS BEEN DESTROYED!!!");
     }
 }
