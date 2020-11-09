@@ -37,7 +37,7 @@ public class LocationService extends Service {
 
     private static final String TAG = "LocationService";
     private FusedLocationProviderClient mFusedLocationClient;
-
+    private LocationCallback mLocationCallback;
     private final static long UPDATE_INTERVAL = 4 * 1000;  /* 4 secs */
     private final static long FASTEST_INTERVAL = 2000;     /* 2 sec */
 
@@ -51,7 +51,28 @@ public class LocationService extends Service {
     public void onCreate(){
         super.onCreate();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
+                Location location = locationResult.getLastLocation();
 
+                if (location != null) {
+                    Log.d(TAG,"IIIIIIIIIIDDDDDDDDDDD" + FirebaseAuth.getInstance().getUid());
+                    if(FirebaseAuth.getInstance().getUid() == null){
+                        onDestroy();
+                    }else {
+                        User user = UserClient.getUser();
+                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        UserLocation userLocation = new UserLocation(geoPoint, null, user);
+                        Log.d(TAG, user.toString());
+                        saveUserLocation(userLocation);
+                    }
+                }else{
+                    Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                }
+            }
+        };
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -87,28 +108,9 @@ public class LocationService extends Service {
             stopSelf();
             return;
         }
-        mFusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy, new LocationCallback(){
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
-                    Location location = locationResult.getLastLocation();
 
-                    if (location != null) {
-                        Log.d(TAG,"IIIIIIIIIIDDDDDDDDDDD" + FirebaseAuth.getInstance().getUid());
-                        if(FirebaseAuth.getInstance().getUid() == null){
-                            onDestroy();
-                        }else {
-                            User user = UserClient.getUser();
-                            GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                            UserLocation userLocation = new UserLocation(geoPoint, null, user);
-                            Log.d(TAG, user.toString());
-                            saveUserLocation(userLocation);
-                        }
-                    }else{
-                        Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
-                    }
-                }
-            }, Looper.myLooper());// Looper.myLooper tells this to repeat forever until thread is destroyed
+        mFusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy, mLocationCallback, Looper.myLooper());// Looper.myLooper tells this to repeat forever until thread is destroyed
+
     }
 
 
@@ -131,11 +133,14 @@ public class LocationService extends Service {
             stopSelf();
         }*/
     }
-
+    public static void stopLooper(){
+        Looper.myLooper().quit();
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         stopForeground(true);//Add this. Since stopping a service in started in foreground is different from normal services.
         stopSelf();
         /*try {
