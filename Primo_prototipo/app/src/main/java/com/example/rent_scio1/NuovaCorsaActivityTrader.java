@@ -2,6 +2,7 @@ package com.example.rent_scio1;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -19,10 +20,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
     private static final String TAG="NuovaCorsaActivityTrader";
+    private Toolbar toolbar_new_corsa_java;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -77,5 +80,16 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
+
+
+        initViews();
+    }
+
+    private void initViews(){
+        toolbar_new_corsa_java = findViewById(R.id.toolbar_new_corsa);
+        setSupportActionBar(toolbar_new_corsa_java);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

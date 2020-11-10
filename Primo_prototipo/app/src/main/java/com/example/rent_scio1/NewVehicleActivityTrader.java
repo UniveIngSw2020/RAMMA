@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,11 +20,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class NewVehicleActivityTrader extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG="NewVehicleActivityTrader";
+    private Toolbar toolbar_new_vehicle_trader;
 
     private static final String Intent_newVehicle="Intent_newVehicle";
 
@@ -79,5 +82,15 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), VehicleListActivityTrader.class));
             }
         });
+
+        initViews();
+    }
+
+    private void initViews(){
+        toolbar_new_vehicle_trader = findViewById(R.id.toolbar_new_vehicle);
+        setSupportActionBar(toolbar_new_vehicle_trader);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

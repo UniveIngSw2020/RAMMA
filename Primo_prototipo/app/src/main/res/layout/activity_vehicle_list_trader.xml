@@ -5,22 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:flow_firstHorizontalStyle="spread_inside"
-    tools:context=".VehicleListActivityTrader">
+    tools:context=".VehicleListActivityTrader"
+    android:background="@color/back"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_vehicle_list"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/back"
+        android:theme="@style/ToolbarTheme"/>
 
     <Button
         android:id="@+id/nuovo_veicolo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="17dp"
+        android:layout_width="137dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="96dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/comfortaa_light"
         android:text="Nuovo"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TableLayout
         android:id="@+id/tabella_veicoli"
-        android:layout_width="334dp"
-        android:layout_height="400dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:layout_marginStart="3dp"
         android:layout_marginEnd="3dp"
@@ -29,5 +45,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.644" />
 </androidx.constraintlayout.widget.ConstraintLayout>

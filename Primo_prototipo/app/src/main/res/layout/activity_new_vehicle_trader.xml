@@ -4,16 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewVehicleActivityTrader">
+    tools:context=".NewVehicleActivityTrader"
+    android:background="@color/back"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_new_vehicle"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/back"
+        android:theme="@style/ToolbarTheme"/>
 
     <EditText
         android:id="@+id/tipo_veicolo"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginTop="208dp"
+        android:backgroundTint="@color/text"
         android:ems="10"
+        android:fontFamily="@font/comfortaa_light"
         android:hint="Tipo veicolo"
         android:inputType="textPersonName"
+        android:textColor="@color/teal_200"
+        android:textColorHint="@color/text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,22 +40,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
+        android:backgroundTint="@color/text"
         android:ems="10"
+        android:fontFamily="@font/comfortaa_light"
         android:hint="Posti a sedere"
         android:inputType="number"
+        android:textColor="@color/teal_200"
+        android:textColorHint="@color/text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tipo_veicolo"
-        app:layout_constraintVertical_bias="0.215" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/Conferma"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="174dp"
+        android:layout_height="42dp"
         android:layout_marginBottom="200dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/comfortaa_light"
         android:text="Conferma"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

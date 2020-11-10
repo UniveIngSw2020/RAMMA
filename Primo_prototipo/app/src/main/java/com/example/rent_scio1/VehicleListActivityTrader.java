@@ -2,6 +2,7 @@ package com.example.rent_scio1;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
@@ -27,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class VehicleListActivityTrader extends AppCompatActivity {
 
     private static final String TAG="VehicleListActivityTrader";
+    private Toolbar toolbar_vehicle_list_java;
 
     private static final String Intent_newVehicle="Intent_newVehicle";
 
@@ -76,7 +79,14 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             }
         });
 
-
+        initViews();
+    }
+    public void initViews(){
+        toolbar_vehicle_list_java = findViewById(R.id.toolbar_vehicle_list);
+        setSupportActionBar(toolbar_vehicle_list_java);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     //ritona l'ID massimo
