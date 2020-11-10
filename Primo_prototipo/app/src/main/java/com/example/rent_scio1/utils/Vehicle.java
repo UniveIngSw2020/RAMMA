@@ -1,5 +1,8 @@
 package com.example.rent_scio1.utils;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 public class Vehicle {
@@ -67,12 +70,14 @@ public class Vehicle {
     @NonNull
     @Override
     public String toString() {
+
         if(vehicleType==null){
-            return "Seleziona un veicolo ";
+            return "Seleziona un veicolo: ";
         }
         else{
-            return String.format("%s , con %d posti",this.getVehicleType(),this.getSeats());
+            return  (this.getSeats()==1) ? String.format("%s (%d posto)",this.getVehicleType(),this.getSeats()) : String.format("%s (%d posti)",this.getVehicleType(),this.getSeats());
         }
 
     }
+
 }

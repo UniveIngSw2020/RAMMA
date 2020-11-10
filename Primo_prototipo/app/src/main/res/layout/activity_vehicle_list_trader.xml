@@ -64,7 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/posti_a_sedere"
+                android:text="@string/posti"
                 android:fontFamily="@font/comfortaa_light"
                 android:textColor="@color/text"
                 android:textStyle="bold"

@@ -1,9 +1,9 @@
 package com.example.rent_scio1;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,24 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rent_scio1.utils.Vehicle;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
     private static final String TAG="NuovaCorsaActivityTrader";
+
+    private static final String ToQR="QR_code_creation";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -80,14 +79,27 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                Vehicle vehicle = (Vehicle) parent.getItemAtPosition(position);
 
-                Log.d(TAG,"4444444444444444444444444444444444444444444444444444444444444444444444444");
+                Button conferma = findViewById(R.id.conferma_veicolo);
+                conferma.setOnClickListener(v -> {
+
+                    if(vehicle.getVehicleType()!=null) {
+                        Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
+                        intent.putExtra(ToQR, vehicle.getID());
+
+                        startActivity(intent);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"Seleziona un veicolo prima!!!!! ",Toast.LENGTH_LONG).show();
+                    }
+                });
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Log.d(TAG,"5555555555555555555555555555555555555555555555555555555555");
+
             }
         });
 
