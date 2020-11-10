@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.rent_scio1.utils.UserClient;
 import com.google.zxing.WriterException;
@@ -32,6 +33,8 @@ public class QRGeneratorTrader extends AppCompatActivity {
         final int ID_veicolo=getIntent().getIntExtra(ToQR,0);
 
         //Utente commerciante usare la classe statica UserClient.getID()
+        
+        Toast.makeText(this,UserClient.getUser().toString(),Toast.LENGTH_LONG).show();
 
 
         //Genero QR e ne faccio il display
@@ -46,6 +49,6 @@ public class QRGeneratorTrader extends AppCompatActivity {
             Log.v("ciao", e.toString());
         }
 
-        
+
     }
 }
