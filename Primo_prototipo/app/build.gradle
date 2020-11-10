@@ -56,5 +56,12 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
 
     //libreria per QR
+
+    //generator
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
+
+    //reader
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
+    implementation 'com.google.zxing:core:3.3.3'
 }
