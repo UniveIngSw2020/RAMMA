@@ -33,6 +33,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
         //Utente commerciante usare la classe statica UserClient.getID()
 
+
         //Genero QR e ne faccio il display
         QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().toString(), null, QRGContents.Type.TEXT,500);
 
