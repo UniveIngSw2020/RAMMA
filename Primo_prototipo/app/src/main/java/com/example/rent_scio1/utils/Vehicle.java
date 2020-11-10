@@ -26,7 +26,10 @@ public class Vehicle {
     }
 
     public Vehicle(){
-
+        vehicleType=null;
+        seats=0;
+        ID=0;
+        rented=false;
     }
 
     public String getVehicleType() {
@@ -59,5 +62,17 @@ public class Vehicle {
 
     public void setRented(boolean rented) {
         this.rented = rented;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        if(vehicleType==null){
+            return "Seleziona un veicolo ";
+        }
+        else{
+            return String.format("%s , con %d posti",this.getVehicleType(),this.getSeats());
+        }
+
     }
 }

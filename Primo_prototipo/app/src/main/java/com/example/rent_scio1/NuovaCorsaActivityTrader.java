@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,68 +29,102 @@ import java.util.Objects;
 public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
     private static final String TAG="NuovaCorsaActivityTrader";
-    private Toolbar toolbar_new_corsa_java;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuova_corsa_trader);
 
-        Spinner spinner = findViewById(R.id.veicoli_disponibili);
+        Spinner selezionaVeicoli = findViewById(R.id.veicoli_disponibili);
 
+        ArrayList<Vehicle> veicoliDisponibili = new ArrayList<>();
 
-        // Spinner Drop down elements
-        ArrayList<String> veicoliDisponibili = new ArrayList<>();
+        //aggiungo un elemento per il "titolo" dello spinner
+        veicoliDisponibili.add(0, new Vehicle());
+
+        query(veicoliDisponibili,selezionaVeicoli);
+
+        initViews();
+    }
+
+    private void query(ArrayList<Vehicle> veicoliDisponibili, Spinner spinner){
 
         db.collection("vehicles")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                Vehicle v=new Vehicle(document.toObject(Vehicle.class));
+                            Vehicle v = new Vehicle(document.toObject(Vehicle.class));
 
-                                if(!v.isRented())
-                                    veicoliDisponibili.add(String.format("%s , con %d posti",v.getVehicleType(),v.getSeats()));
+                            if (!v.isRented())
+                                veicoliDisponibili.add(v);
 
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
+                            Log.d(TAG, document.getId() + " => " + document.getData());
                         }
+                        spinnerAdd(veicoliDisponibili , spinner);
+
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
+    }
 
 
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, veicoliDisponibili);
+
+    private void spinnerAdd(ArrayList<Vehicle> veicoliDisponibili, Spinner selezionaVeicoli){
 
         // Spinner click listener
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        selezionaVeicoli.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                Log.d(TAG,"4444444444444444444444444444444444444444444444444444444444444444444444444");
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                Log.d(TAG,"5555555555555555555555555555555555555555555555555555555555");
             }
         });
 
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+        // Creating adapter for spinner
+        ArrayAdapter<Vehicle> dataAdapter = new ArrayAdapter<Vehicle>(this, R.layout.support_simple_spinner_dropdown_item, veicoliDisponibili){
 
+                @Override
+                public boolean isEnabled(int position){
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return position != 0;
+                }
 
-        initViews();
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getDropDownView(position, convertView, parent);
+                    TextView tv = (TextView) view;
+                    if(position == 0){
+                        // Set the hint text color gray
+                        tv.setTextColor(Color.GRAY);
+                    }
+                    else {
+                        tv.setTextColor(Color.BLACK);
+                    }
+
+                    return view;
+                }
+        };
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        selezionaVeicoli.setAdapter(dataAdapter);
+
     }
 
     private void initViews(){
-        toolbar_new_corsa_java = findViewById(R.id.toolbar_new_corsa);
+        Toolbar toolbar_new_corsa_java = findViewById(R.id.toolbar_new_corsa);
         setSupportActionBar(toolbar_new_corsa_java);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
