@@ -78,7 +78,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="#7198F1"
-        android:textSize="36sp"
+        android:textSize="56sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/login_btn"
         app:layout_constraintEnd_toEndOf="parent"
