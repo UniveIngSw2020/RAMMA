@@ -3,13 +3,13 @@ package com.example.rent_scio1;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.VerifiedInputEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -23,11 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class VehicleListActivityTrader extends AppCompatActivity {
@@ -91,19 +87,10 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
     //ritona l'ID massimo
     private int createTable(ArrayList<Vehicle> vehicles){
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.tabella_veicoli);
-
-        //titoli tabella
-        String[] titlesString={"ID ", "Posti a sedere ", "Tipo veicolo ", "Noleggiato? "};
-        TableRow titles = new TableRow(VehicleListActivityTrader.this);
-        for (int i=0;i<4;i++){
-            TextView tv = new TextView(VehicleListActivityTrader.this);
-            tv.setText(titlesString[i]);
-            tv.setTextColor(Color.BLUE);
-            titles.addView(tv);
-        }
-        table.addView(titles);
+        /*ID, Posti a sedere, Tipo veicolo, Disponibilità*/
 
         int max=0;
 
@@ -111,27 +98,44 @@ public class VehicleListActivityTrader extends AppCompatActivity {
         for (Vehicle v : vehicles ) {
 
             TableRow row = new TableRow(VehicleListActivityTrader.this);
+            row.setBackgroundColor(Color.rgb(3,50,73));
+            row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+            row.setPadding(15,15,20,15);
+            row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-
-            TextView tv = new TextView(VehicleListActivityTrader.this);
+            TextView tv;
+            /*tv = findViewById(R.id.textview_dyna);*/
+            tv = new TextView(VehicleListActivityTrader.this);
             int ID=v.getID();
             tv.setText(Integer.toString(ID));
+            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv.setTypeface(typeface);
+            tv.setTextColor(Color.rgb(113,152,241));
 
             TextView tv1 = new TextView(VehicleListActivityTrader.this);
             tv1.setText(Integer.toString(v.getSeats()));
+            tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv1.setTypeface(typeface);
+            tv1.setTextColor(Color.rgb(113,152,241));
 
             TextView tv2 = new TextView(VehicleListActivityTrader.this);
             tv2.setText(v.getVehicleType());
+            tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv2.setTypeface(typeface);
+            tv2.setTextColor(Color.rgb(113,152,241));
 
             TextView tv3 = new TextView(VehicleListActivityTrader.this);
+            tv3.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+            tv3.setTypeface(typeface);
+
 
             if(v.isRented()){
                 tv3.setText("OCCUPATO");
-                tv3.setTextColor(Color.RED);
+                tv3.setTextColor(Color.rgb(236,124,124));
             }
             else{
                 tv3.setText("DISPONIBILE");
-                tv3.setTextColor(Color.GREEN);
+                tv3.setTextColor(Color.rgb(94,214,121));
             }
 
             row.addView(tv);
