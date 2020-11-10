@@ -33,7 +33,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
         final int ID_veicolo=getIntent().getIntExtra(ToQR,0);
 
         //Utente commerciante usare la classe statica UserClient.getID()
-        
+
         Toast.makeText(this,UserClient.getUser().toString(),Toast.LENGTH_LONG).show();
 
 
