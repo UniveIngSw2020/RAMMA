@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,10 +28,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Objects;
+
 import static android.text.TextUtils.isEmpty;
 
-public class LoginActivity extends AppCompatActivity implements
-        View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "LoginActivity";
 
@@ -40,6 +43,7 @@ public class LoginActivity extends AppCompatActivity implements
     //Widgets
     private EditText mEmail, mPassword;
     private ProgressBar mProgressBar;
+    private Toolbar toolbar_act_login;
 
 
     @Override
@@ -52,16 +56,16 @@ public class LoginActivity extends AppCompatActivity implements
         mProgressBar = findViewById(R.id.progressBarlogin);
 
         setupFirebaseAuth();
-
+        initViews();
         findViewById(R.id.confirmlogin_btn).setOnClickListener(this);
+    }
 
-        //QUI C'È IL TASTO PER TORNARE INDIETRO
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
-
-        // Capture the layout's TextView and set the string as its text
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(message);
+    private void initViews(){
+        toolbar_act_login = findViewById(R.id.toolbar_login);
+        setSupportActionBar(toolbar_act_login);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 

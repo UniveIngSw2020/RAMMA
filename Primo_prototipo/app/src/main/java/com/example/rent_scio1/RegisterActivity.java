@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private CheckBox mTrader, mPositionTrader;
     private ProgressBar progressBar;
     private Button mRegisterBtn;
+    private Toolbar toolbar_regist;
 
     //vars
     private FirebaseFirestore mStore;
@@ -74,13 +76,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mPositionTrader = findViewById(R.id.checkPositionTrader);
         mStore = FirebaseFirestore.getInstance();
 
-        //QUI C'È IL TASTO PER TORNARE INDIETRO
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+        initViews();
+    }
 
-        // Capture the layout's TextView and set the string as its text
-        TextView textView = findViewById(R.id.textView2);
-        textView.setText(message);
+    private void initViews(){
+        toolbar_regist = findViewById(R.id.toolbar_register);
+        setSupportActionBar(toolbar_regist);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
