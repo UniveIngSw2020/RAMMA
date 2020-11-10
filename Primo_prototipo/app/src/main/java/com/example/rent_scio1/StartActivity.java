@@ -10,25 +10,42 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.rent_scio1.utils.UserClient;
+
 public class StartActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     private static final String TAG = "LOCATION: START ACTIVITY";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
 
+        if(UserClient.getUser()!=null){
 
-        Button login_btn = (Button)findViewById(R.id.login_btn);
+            if(UserClient.getUser().getTrader()){
+                startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+            }
+            else{
+                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+            }
 
-        login_btn.setOnClickListener(v -> startActivity(new Intent(StartActivity.this, LoginActivity.class)));
+            finishAffinity();
+        }
+        else{
 
-        Button register_btn = (Button)findViewById(R.id.register_btn);
+            setContentView(R.layout.activity_start);
 
-        register_btn.setOnClickListener(v -> {
-            Log.d(TAG, "Tasto premutoooooooooooooo oooooooooooooooo ooooooooooooooo ooooooooooooo ");
-            startActivity(new Intent(StartActivity.this, RegisterActivity.class));
-        });
+            Button login_btn = (Button)findViewById(R.id.login_btn);
+
+            login_btn.setOnClickListener(v -> startActivity(new Intent(StartActivity.this, LoginActivity.class)));
+
+            Button register_btn = (Button)findViewById(R.id.register_btn);
+
+            register_btn.setOnClickListener(v -> {
+                Log.d(TAG, "Tasto premutoooooooooooooo oooooooooooooooo ooooooooooooooo ooooooooooooo ");
+                startActivity(new Intent(StartActivity.this, RegisterActivity.class));
+            });
+        }
+
     }
 
     /*

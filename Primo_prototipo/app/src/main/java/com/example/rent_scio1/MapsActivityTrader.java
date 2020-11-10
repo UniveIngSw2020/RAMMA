@@ -82,7 +82,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                         User user = task.getResult().toObject(User.class);
                         mTraderLocation.setUser(user);
                         mTraderLocation.setGeoPoint(user.getTraderposition());
-                        UserClient.setUser(user);
+                        /*UserClient.setUser(user);*/
                         setCameraView(googleMap);
                     }
                 }
@@ -142,7 +142,9 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         switch (item.getItemId()){
             case R.id.logout:
                 mAuth.signOut();
+                UserClient.setUser(null);
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                finishAffinity();
                 break;
             case R.id.nuova_corsa:
                 startActivity(new Intent(getApplicationContext(), NuovaCorsaActivityTrader.class));

@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Log.d(TAG, "onComplete: successfully set the user client.");
 
                         User user1 = task.getResult().toObject(User.class);
-                         UserClient.setUser(user1);
+                        UserClient.setUser(user1);
 
                         if (user1 != null) {
 
@@ -130,6 +130,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }else{
                                 startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
                             }
+                            finishAffinity();
                         }
                     }
                 });
