@@ -26,6 +26,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,7 +43,8 @@ public class LocationService extends Service {
     private LocationCallback mLocationCallback;
     private final static long UPDATE_INTERVAL = 4 * 1000;  /* 4 secs */
     private final static long FASTEST_INTERVAL = 2000;     /* 2 sec */
-
+    private UserLocation mUserLocation;
+    private LatLngBounds mMapBoundary;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -56,11 +60,10 @@ public class LocationService extends Service {
             public void onLocationResult(LocationResult locationResult) {
                 Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
                 Location location = locationResult.getLastLocation();
-
                 if (location != null) {
                     Log.d(TAG,"IIIIIIIIIIDDDDDDDDDDD" + FirebaseAuth.getInstance().getUid());
                     if(FirebaseAuth.getInstance().getUid() == null){
-                        onDestroy();
+                       onDestroy();
                     }else {
                         User user = UserClient.getUser();
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -142,4 +145,25 @@ public class LocationService extends Service {
         stopSelf();
         Log.d(TAG,"SERVICE HAS BEEN DESTROYED!!!");
     }
+
+    private LatLngBounds setCameraView(){
+        try {
+            double bottomBundary = mUserLocation.getGeoPoint().getLatitude() - .01;
+            double leftBoundary = mUserLocation.getGeoPoint().getLongitude() - .01;
+            double topBoundary = mUserLocation.getGeoPoint().getLatitude() + .01;
+            double rightBoundary = mUserLocation.getGeoPoint().getLongitude() + .01;
+
+            mMapBoundary = new LatLngBounds(
+                    new LatLng(bottomBundary, leftBoundary),
+                    new LatLng(topBoundary, rightBoundary)
+            );
+
+
+        }catch (Exception e){
+            Log.d(TAG, "Errore setCameraView");
+        }finally {
+            return mMapBoundary;
+        }
+    }
+
 }

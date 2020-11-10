@@ -151,9 +151,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onComplete(@NotNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            generateStoreUser();
                             userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
+                            generateStoreUser();
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this, "Authentication failed: ." + task.getException(), Toast.LENGTH_SHORT).show();
