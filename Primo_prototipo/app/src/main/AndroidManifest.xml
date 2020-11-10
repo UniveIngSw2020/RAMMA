@@ -20,7 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentScio1">
-        <activity android:name=".QRScannerClient"></activity>
+        <activity android:name=".QRScannerClient" />
         <activity android:name=".QRGeneratorTrader" />
         <activity
             android:name=".NewVehicleActivityTrader"

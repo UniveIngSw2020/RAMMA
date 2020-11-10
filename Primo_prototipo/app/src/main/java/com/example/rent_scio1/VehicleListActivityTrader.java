@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class VehicleListActivityTrader extends AppCompatActivity {
@@ -59,12 +60,15 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
 
+                            vehicleArrayList.sort( (o1, o2) -> o1.getID()-o2.getID() );
+
                             maxID=createTable(vehicleArrayList);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
+
 
         Button nuovo=findViewById(R.id.nuovo_veicolo);
         nuovo.setOnClickListener(new View.OnClickListener() {

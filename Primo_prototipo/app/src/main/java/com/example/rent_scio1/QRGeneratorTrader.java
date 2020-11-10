@@ -34,7 +34,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
         //Utente commerciante usare la classe statica UserClient.getID()
         
-        Toast.makeText(this,UserClient.getUser().toString(),Toast.LENGTH_LONG).show();
+        Log.d("ciao", UserClient.getUser().toString());
 
 
         //Genero QR e ne faccio il display
