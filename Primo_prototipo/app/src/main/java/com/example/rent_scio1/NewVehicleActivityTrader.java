@@ -90,7 +90,7 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         toolbar_new_vehicle_trader = findViewById(R.id.toolbar_new_vehicle);
         setSupportActionBar(toolbar_new_vehicle_trader);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }
