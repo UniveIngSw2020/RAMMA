@@ -58,7 +58,7 @@
     <string name="veicolo">Veicolo</string>
     <string name="disponibilit">Disponibilità</string>
     <string name="nuovo">Nuovo</string>
-    <string name="posti">Posti</string>
     <string name="posti_a_sedere">Posti a sedere</string>
+    <string name="posti">Posti</string>
 
 </resources>
