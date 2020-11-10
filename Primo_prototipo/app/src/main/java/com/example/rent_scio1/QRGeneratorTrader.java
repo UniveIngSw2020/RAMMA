@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.example.rent_scio1.utils.UserClient;
 import com.google.zxing.WriterException;
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -32,16 +33,18 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
         //Utente commerciante usare la classe statica UserClient.getID()
 
-        QRGEncoder qrgEncoder = new QRGEncoder(, null, QRGContents.Type.TEXT,500);
+        //Genero QR e ne faccio il display
+        QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().toString(), null, QRGContents.Type.TEXT,500);
 
         try {
             // Getting QR-Code as Bitmap
             bitmap = qrgEncoder.encodeAsBitmap();
-
             // Setting Bitmap to ImageView
             qrImage.setImageBitmap(bitmap);
         } catch (WriterException e) {
             Log.v("ciao", e.toString());
         }
+
+        
     }
 }
