@@ -100,8 +100,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
             TableRow row = new TableRow(VehicleListActivityTrader.this);
             row.setBackgroundColor(Color.rgb(3,50,73));
-            row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            row.setPadding(15,15,20,15);
+            /*row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));*/
             row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
             TextView tv;
@@ -109,6 +108,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             tv = new TextView(VehicleListActivityTrader.this);
             int ID=v.getID();
             tv.setText(Integer.toString(ID));
+            tv.setPaddingRelative(65, 10, 50, 10);
             tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tv.setTypeface(typeface);
             tv.setTextColor(Color.rgb(113,152,241));
@@ -116,17 +116,20 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             TextView tv1 = new TextView(VehicleListActivityTrader.this);
             tv1.setText(Integer.toString(v.getSeats()));
             tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv1.setPaddingRelative(90, 10, 50, 10);
             tv1.setTypeface(typeface);
             tv1.setTextColor(Color.rgb(113,152,241));
 
             TextView tv2 = new TextView(VehicleListActivityTrader.this);
             tv2.setText(v.getVehicleType());
             tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv2.setPaddingRelative(80, 10, 10, 10);
             tv2.setTypeface(typeface);
             tv2.setTextColor(Color.rgb(113,152,241));
 
             TextView tv3 = new TextView(VehicleListActivityTrader.this);
-            tv3.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+            tv3.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv3.setPaddingRelative(100, 10, 10, 10);
             tv3.setTypeface(typeface);
 
 
