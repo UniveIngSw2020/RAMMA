@@ -28,10 +28,13 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -149,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     public void onComplete(@NotNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             generateStoreUser();
-
+                            userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -166,7 +169,36 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
+
+            mFusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
+                @Override
+                public boolean isCancellationRequested() {
+                    Log.d(TAG, " isCancellationRequested !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -> POSIZONE NON PRESA");
+                    return false;
+                }
+
+                @NonNull
+                @Override
+                public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                    Log.d(TAG, " onCanceledRequested %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -> POSIZONE NON PRESA");
+                    return null;
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if (task.isSuccessful()){
+                        Location location = task.getResult();
+                        Log.d(TAG, String.valueOf(location));
+                        Log.d(TAG, "POSIZIONE: " + location.toString());
+                        user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
+                        Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
+                        storeUser();
+                    }else{
+                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                    }
+                }
+            });
+            /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
                     task.addOnFailureListener(new OnFailureListener() {
@@ -185,13 +217,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             storeUser();
                         }
                     });
-                    /*if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
                     }else{
                         Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
-                    }*/
+                    }
                 }
-            });
+            });*/
         }else{
             user.put("traderposition",null);
             storeUser();
@@ -226,7 +258,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
 
         Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
-        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
