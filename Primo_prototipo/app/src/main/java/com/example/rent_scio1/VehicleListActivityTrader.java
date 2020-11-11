@@ -19,9 +19,12 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -66,9 +69,6 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
                         maxID=createTable(vehicleArrayList);
 
-                        if(vehicleArrayList.size()==Vehicle.maxVehicles){
-
-                        }
 
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
@@ -78,10 +78,20 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
         Button nuovo=findViewById(R.id.nuovo_veicolo);
         nuovo.setOnClickListener(v -> {
-            Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
-            toNewVehicleActivityTrader.putExtra(Intent_newVehicle_maxID,maxID);
-            toNewVehicleActivityTrader.putExtra(Intent_newVehicle_nVehicle,vehicleArrayList.size());
-            startActivity(toNewVehicleActivityTrader);
+            if(vehicleArrayList.size()>=Vehicle.maxVehicles){
+                Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di 10 veicoli",Toast.LENGTH_LONG).show();
+            }
+            else{
+                Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
+                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_maxID,maxID);
+                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_nVehicle,vehicleArrayList.size());
+                startActivity(toNewVehicleActivityTrader);
+            }
+        });
+
+        Button elimina=findViewById(R.id.elimina);
+        elimina.setOnClickListener(v -> {
+
         });
 
         initViews();
