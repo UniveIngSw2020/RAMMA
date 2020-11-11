@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/rounded_button"
         android:fontFamily="@font/comfortaa_regular"
         android:text="@string/nuovo"
@@ -40,10 +40,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/elimina"
-        app:layout_constraintHorizontal_bias="0.38"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_vehicle_list"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.205" />
 
     <Button
         android:id="@+id/elimina"
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="212dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_button"
         android:fontFamily="@font/comfortaa_regular"
         android:text="@string/elimina"
@@ -59,11 +59,11 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.99"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/nuovo_veicolo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_vehicle_list"
-        app:layout_constraintVertical_bias="0.165" />
+        app:layout_constraintVertical_bias="0.205" />
 
     <TableLayout
         android:id="@+id/tabella_veicoli"
@@ -138,20 +138,21 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="382dp"
+        android:layout_height="118dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/comfortaa_regular"
+        android:justificationMode="inter_word"
         android:text="@string/qui_puoi_vedere_i_tuoi_mezzi_tocca_il_pulsante_nuovo_per_aggiungere_un_veicolo_al_tuo_negozio_oppure_tocca_elimina_se_vuoi_levarlo_definitivamente"
         android:textAlignment="viewStart"
         android:textColor="#7198F1"
-        android:justificationMode="inter_word"
-        android:textSize="18sp"
+        android:textSize="19sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/elimina"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_vehicle_list"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.562" />
 </androidx.constraintlayout.widget.ConstraintLayout>
