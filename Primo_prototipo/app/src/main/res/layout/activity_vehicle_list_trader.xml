@@ -34,7 +34,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_button"
         android:fontFamily="@font/comfortaa_regular"
-        android:text="@string/nuovo_veicolo"
+        android:text="@string/aggiungi_veicolo"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

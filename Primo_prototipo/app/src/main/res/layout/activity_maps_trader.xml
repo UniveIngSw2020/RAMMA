@@ -32,20 +32,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/commerciante"
-        android:visibility="invisible"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/mapDelimiter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.958"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.153" />
-
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView_Map_Trader"
         android:layout_width="wrap_content"

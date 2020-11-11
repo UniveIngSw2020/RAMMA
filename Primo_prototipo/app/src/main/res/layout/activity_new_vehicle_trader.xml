@@ -76,11 +76,10 @@
     <TextView
         android:id="@+id/textView4"
         android:layout_width="355dp"
-        android:layout_height="224dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/comfortaa_regular"
-        android:justificationMode="inter_word"
-        android:text="@string/nella_sezione_tipo_veicolo_inserisci_il_tipo_di_veicolo_da_aggiungere_al_tuo_parco_mezzi_nella_sezione_posti_a_sedere_indica_con_un_numero_quante_persone_possono_stare_sul_tuo_veicolo"
+        android:text="@string/seleziona_il_tipo_di_veicolo_e_la_quantit_di_posti_a_sedere_presenti"
         android:textColor="#7198F1"
         android:textSize="24sp"
         android:textStyle="bold"
