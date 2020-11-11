@@ -21,28 +21,51 @@
 
     <Button
         android:id="@+id/conferma_veicolo"
-        android:layout_width="194dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="280dp"
+        android:layout_width="225dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
         android:background="@drawable/rounded_button"
-        android:fontFamily="@font/comfortaa_light"
-        android:text="Conferma"
-        android:textSize="18sp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/conferma"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/veicoli_disponibili" />
+        app:layout_constraintTop_toBottomOf="@+id/veicoli_disponibili"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Spinner
         android:id="@+id/veicoli_disponibili"
-        android:layout_width="232dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="138dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="230dp"
-        app:layout_constraintBottom_toTopOf="@+id/conferma_veicolo"
+        android:background="@drawable/shape_spinner_new_trade"
+        android:focusableInTouchMode="true"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.766" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="366dp"
+        android:layout_height="232dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/per_poter_rimuovere_un_veicolo_clicca_seleziona_un_veicolo_e_poi_seleziona_il_mezzo_da_rimuovere"
+        android:textColor="@color/text"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/veicoli_disponibili"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.644"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_new_corsa"
+        app:layout_constraintVertical_bias="0.45" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
