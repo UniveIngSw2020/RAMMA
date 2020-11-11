@@ -124,7 +124,7 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
                     else {
                         tv.setTextColor(Color.rgb(3,50,73));
                     }
-
+                    tv.setTextSize(25);
                     return view;
                 }
         };
