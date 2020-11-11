@@ -65,5 +65,6 @@
     <string name="nuovo" />
     <string name="seleziona_il_tipo_di_veicolo_e_la_quantit_di_posti_a_sedere_presenti">Seleziona il tipo di veicolo e la quantità di posti a sedere presenti.</string>
     <string name="conferma">Conferma</string>
+    <string name="per_poter_rimuovere_un_veicolo_clicca_seleziona_un_veicolo_e_poi_seleziona_il_mezzo_da_rimuovere">Per poter rimuovere un veicolo clicca Seleziona un veicolo e poi seleziona il mezzo da rimuovere.</string>
 
 </resources>
