@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="toolbar_vehicle_list" type="id" />
+    <item name="elimina" type="id" />
+    <item name="textView" type="id" />
+    <item name="nuovo_veicolo" type="id" />
+    <item name="tabella_veicoli" type="id" />
+</resources>
