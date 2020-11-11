@@ -17,7 +17,8 @@
     <style name="Style_TextView">
         <item name="fontFamily">@font/comfortaa_regular</item>
         <item name="backgroundColor">@color/back</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:layout_width">match_parent</item>
     </style>
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- Customize color of navigation drawer icon and back arrow -->
