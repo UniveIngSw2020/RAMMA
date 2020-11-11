@@ -104,7 +104,7 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
         });
 
         // Creating adapter for spinner
-        ArrayAdapter<Vehicle> dataAdapter = new ArrayAdapter<Vehicle>(this, R.layout.support_simple_spinner_dropdown_item, veicoliDisponibili){
+        ArrayAdapter<Vehicle> dataAdapter = new ArrayAdapter<Vehicle>(this, R.xml.spinner_item, veicoliDisponibili){
 
                 @Override
                 public boolean isEnabled(int position){
@@ -119,17 +119,17 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
                     TextView tv = (TextView) view;
                     if(position == 0){
                         // Set the hint text color gray
-                        tv.setTextColor(Color.GRAY);
+                        tv.setTextColor(Color.rgb(3,50,73));
                     }
                     else {
-                        tv.setTextColor(Color.BLACK);
+                        tv.setTextColor(Color.rgb(3,50,73));
                     }
 
                     return view;
                 }
         };
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
         selezionaVeicoli.setAdapter(dataAdapter);
 

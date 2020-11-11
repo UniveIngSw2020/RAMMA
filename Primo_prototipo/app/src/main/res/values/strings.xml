@@ -53,7 +53,6 @@
     <string name="inserisci_la_tua_email_e_la_password">Inserisci la tua email e la password</string>
     <string name="benvenuto_in_rent_sci">Benvenuto in RENT-SCIÒ</string>
     <string name="tipo_veicolo">Tipo veicolo</string>
-    <string name="conferma">Conferma</string>
     <string name="id">ID</string>
     <string name="veicolo">Veicolo</string>
     <string name="disponibilit">Disponibilità</string>
@@ -65,5 +64,6 @@
     <string name="elimina" />
     <string name="nuovo" />
     <string name="seleziona_il_tipo_di_veicolo_e_la_quantit_di_posti_a_sedere_presenti">Seleziona il tipo di veicolo e la quantità di posti a sedere presenti.</string>
+    <string name="conferma">Conferma</string>
 
 </resources>
