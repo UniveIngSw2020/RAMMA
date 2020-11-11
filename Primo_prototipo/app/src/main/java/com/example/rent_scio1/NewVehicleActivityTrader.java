@@ -63,7 +63,14 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
             if(nVehicle<=Vehicle.maxVehicles) {
                 Map<String, Object> newVehicle = new HashMap<>();
                 newVehicle.put("vehicleType", vehicle_type.getText().toString());
-                newVehicle.put("seats", Integer.parseInt(seats.getText().toString()));
+
+                Integer seatsInteger=tryParse( seats.getText().toString() );
+                if(seatsInteger==null){
+                    Toast.makeText(getApplicationContext(),"Non è mica un concerto dei metallica! Troppe persone a bordo",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                newVehicle.put("seats", seatsInteger);
+
                 newVehicle.put("ID", maxID);
                 newVehicle.put("rented", false);
 
@@ -86,6 +93,14 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         });
 
         initViews();
+    }
+
+    public static Integer tryParse(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private void initViews(){
