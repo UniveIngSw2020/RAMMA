@@ -91,7 +91,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
         Button elimina=findViewById(R.id.elimina);
         elimina.setOnClickListener(v -> {
-            
+
         });
 
         initViews();

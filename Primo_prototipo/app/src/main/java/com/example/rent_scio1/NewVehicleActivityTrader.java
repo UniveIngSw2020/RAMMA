@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -72,7 +74,10 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
                         .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
 
                 //ritorno alla tabella dei veicoli
-                startActivity(new Intent(getApplicationContext(), VehicleListActivityTrader.class));
+                Intent intent=new Intent(getApplicationContext(),VehicleListActivityTrader.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
             }
             else {
                 Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di 10 veicoli",Toast.LENGTH_LONG).show();
