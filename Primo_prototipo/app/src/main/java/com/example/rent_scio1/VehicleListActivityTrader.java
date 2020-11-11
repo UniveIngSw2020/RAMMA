@@ -53,36 +53,35 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
         db.collection("vehicles")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                vehicleArrayList.add(new Vehicle(document.toObject(Vehicle.class)));
+                            vehicleArrayList.add(new Vehicle(document.toObject(Vehicle.class)));
 
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-
-                            vehicleArrayList.sort( (o1, o2) -> o1.getID()-o2.getID() );
-
-                            maxID=createTable(vehicleArrayList);
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
+                            Log.d(TAG, document.getId() + " => " + document.getData());
                         }
+
+                        vehicleArrayList.sort( (o1, o2) -> o1.getID()-o2.getID() );
+
+                        maxID=createTable(vehicleArrayList);
+
+                        if(vehicleArrayList.size()==Vehicle.maxVehicles){
+
+                        }
+
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
 
 
         Button nuovo=findViewById(R.id.nuovo_veicolo);
-        nuovo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
-                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_maxID,maxID);
-                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_nVehicle,vehicleArrayList.size());
-                startActivity(toNewVehicleActivityTrader);
-            }
+        nuovo.setOnClickListener(v -> {
+            Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
+            toNewVehicleActivityTrader.putExtra(Intent_newVehicle_maxID,maxID);
+            toNewVehicleActivityTrader.putExtra(Intent_newVehicle_nVehicle,vehicleArrayList.size());
+            startActivity(toNewVehicleActivityTrader);
         });
 
         initViews();

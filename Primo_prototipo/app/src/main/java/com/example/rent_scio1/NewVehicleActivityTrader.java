@@ -58,7 +58,7 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         conferma.setOnClickListener(v -> {
 
             //non si può inserire più di 10 veicoli
-            if(nVehicle<=10) {
+            if(nVehicle<=Vehicle.maxVehicles) {
                 Map<String, Object> newVehicle = new HashMap<>();
                 newVehicle.put("vehicleType", vehicle_type.getText().toString());
                 newVehicle.put("seats", Integer.parseInt(seats.getText().toString()));
