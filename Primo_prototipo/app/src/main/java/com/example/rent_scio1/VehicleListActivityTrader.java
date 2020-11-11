@@ -34,15 +34,16 @@ import java.util.Objects;
 public class VehicleListActivityTrader extends AppCompatActivity {
 
     private static final String TAG="VehicleListActivityTrader";
+
     private Toolbar toolbar_vehicle_list_java;
 
-    private static final String Intent_newVehicle="Intent_newVehicle";
-
+    private static final String Intent_newVehicle_maxID="Intent_newVehicle_maxID";
+    private static final String Intent_newVehicle_nVehicle="Intent_newVehicle_nVehicle";
     private static int maxID=0;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private ArrayList<Vehicle> vehicleArrayList = new ArrayList<>();
+    private final ArrayList<Vehicle> vehicleArrayList = new ArrayList<>();
 
 
     @Override
@@ -78,7 +79,8 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
-                toNewVehicleActivityTrader.putExtra(Intent_newVehicle,maxID);
+                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_maxID,maxID);
+                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_nVehicle,vehicleArrayList.size());
                 startActivity(toNewVehicleActivityTrader);
             }
         });
@@ -160,6 +162,8 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             if (ID > max) {
                 max = ID;
             }
+
+
         }
 
         return max;
