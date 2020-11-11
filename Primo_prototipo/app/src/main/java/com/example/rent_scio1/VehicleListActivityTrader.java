@@ -49,11 +49,16 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
     private final ArrayList<Vehicle> vehicleArrayList = new ArrayList<>();
 
+    private TextView warningEmpty;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_list_trader);
+
+        warningEmpty=findViewById(R.id.warning_empty_table);
+        warningEmpty.setVisibility(View.INVISIBLE);
 
         db.collection("vehicles")
                 .get()
@@ -70,11 +75,14 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
                         maxID=createTable(vehicleArrayList);
 
+                        if( vehicleArrayList.size()==0 )
+                            warningEmpty.setVisibility(View.VISIBLE);
 
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
+
 
 
         Button nuovo=findViewById(R.id.nuovo_veicolo);
@@ -207,6 +215,9 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                                                     findViewById(R.id.conferma_eliminazione_veicolo).setVisibility(View.INVISIBLE);
                                                     wasSelected.set(false);
 
+                                                    if( vehicleArrayList.size()==0 )
+                                                        warningEmpty.setVisibility(View.VISIBLE);
+
                                                 }
 
                                                 Log.d(TAG, document.getId() + " => " + document.getData());
@@ -313,8 +324,6 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             if (ID > max) {
                 max = ID;
             }
-
-
         }
 
         return max;
