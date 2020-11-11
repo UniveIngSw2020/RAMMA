@@ -27,9 +27,8 @@ import java.util.Objects;
 
 public class NewVehicleActivityTrader extends AppCompatActivity {
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG="NewVehicleActivityTrader";
-    private Toolbar toolbar_new_vehicle_trader;
 
     private static final String Intent_newVehicle_maxID="Intent_newVehicle_maxID";
     private static final String Intent_newVehicle_nVehicle="Intent_newVehicle_nVehicle";
@@ -104,7 +103,7 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
     }
 
     private void initViews(){
-        toolbar_new_vehicle_trader = findViewById(R.id.toolbar_new_vehicle);
+        Toolbar toolbar_new_vehicle_trader = findViewById(R.id.toolbar_new_vehicle);
         setSupportActionBar(toolbar_new_vehicle_trader);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
