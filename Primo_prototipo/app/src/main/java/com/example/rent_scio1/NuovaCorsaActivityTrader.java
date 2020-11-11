@@ -133,6 +133,7 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
         selezionaVeicoli.setAdapter(dataAdapter);
 
+
     }
 
     private void initViews(){

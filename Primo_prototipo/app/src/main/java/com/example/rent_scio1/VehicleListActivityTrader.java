@@ -3,19 +3,19 @@ package com.example.rent_scio1;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.transition.Slide;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -30,15 +30,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
 public class VehicleListActivityTrader extends AppCompatActivity {
 
     private static final String TAG="VehicleListActivityTrader";
-
-    private Toolbar toolbar_vehicle_list_java;
 
     private static final String Intent_newVehicle_maxID="Intent_newVehicle_maxID";
     private static final String Intent_newVehicle_nVehicle="Intent_newVehicle_nVehicle";
@@ -78,6 +79,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
         Button nuovo=findViewById(R.id.nuovo_veicolo);
         nuovo.setOnClickListener(v -> {
+
             if(vehicleArrayList.size()>=Vehicle.maxVehicles){
                 Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di 10 veicoli",Toast.LENGTH_LONG).show();
             }
@@ -89,16 +91,155 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             }
         });
 
+        AtomicBoolean wasSelected= new AtomicBoolean(false);
         Button elimina=findViewById(R.id.elimina);
         elimina.setOnClickListener(v -> {
+
+            if(vehicleArrayList.size()==0){
+
+                Toast.makeText(getApplicationContext(),"Nulla da eliminare qui",Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Button conferma=findViewById(R.id.conferma_eliminazione_veicolo);
+            Spinner spinner=findViewById(R.id.seleziona_veicolo_eliminare);
+
+            if(wasSelected.get()){
+
+                //nascondi tasto conferma e spinner
+                conferma.setVisibility(View.INVISIBLE);
+                spinner.setVisibility(View.INVISIBLE);
+                wasSelected.set(false);
+            }
+            else{
+
+                //mostra tasto conferma e spinner
+                conferma.setVisibility(View.VISIBLE);
+                spinner.setVisibility(View.VISIBLE);
+
+                //avvia procedura di eliminazione
+                creaEliminazione(wasSelected);
+                wasSelected.set(true);
+            }
 
         });
 
         initViews();
     }
 
+    private void creaEliminazione(AtomicBoolean wasSelected){
+
+
+        ArrayList<Vehicle> forDataAdapter=new ArrayList<>(vehicleArrayList);
+
+        //aggiungo riga di selezione a Arraylist
+        forDataAdapter.add(0,new Vehicle());
+
+
+        //getto lo spinner
+        Spinner selezionaVeicolo = findViewById(R.id.seleziona_veicolo_eliminare);
+
+        //adatto i dati da Arraylist di veicolo
+        ArrayAdapter<Vehicle> dataAdapter = new ArrayAdapter<Vehicle>(this, R.layout.support_simple_spinner_dropdown_item, forDataAdapter ){
+
+            @Override
+            public boolean isEnabled(int position){
+                // Disable the first item from Spinner
+                // First item will be use for hint
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+
+                return view;
+            }
+        };
+
+        //aggiungo dati adattati a spinner
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        selezionaVeicolo.setAdapter(dataAdapter);
+
+
+        //dico cosa accade quando seleziono un item
+        selezionaVeicolo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Vehicle vehicle = (Vehicle) parent.getItemAtPosition(position);
+
+                Button conferma = findViewById(R.id.conferma_eliminazione_veicolo);
+                conferma.setOnClickListener(v -> {
+
+                    if( vehicle.getVehicleType()!=null ) {
+
+                        db.collection("vehicles")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                if( (new Vehicle(document.toObject(Vehicle.class))).getID()==vehicle.getID() ){
+
+                                                    //elimina veicolo da DB
+                                                    eliminazione(document.getId());
+
+                                                    //reinizializza tabella
+                                                    vehicleArrayList.remove(vehicle);
+                                                    recreateTable(vehicleArrayList);
+
+                                                    //reinizializza spinner
+                                                    creaEliminazione(wasSelected);
+
+                                                    //setta visibilità
+                                                    findViewById(R.id.seleziona_veicolo_eliminare).setVisibility(View.INVISIBLE);
+                                                    findViewById(R.id.conferma_eliminazione_veicolo).setVisibility(View.INVISIBLE);
+                                                    wasSelected.set(false);
+
+                                                }
+
+                                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                            }
+                                        } else {
+                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                        }
+                                    }
+                                });
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"Seleziona un veicolo prima!!!!! ",Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+    private void eliminazione(String ID){
+        db.collection("vehicles").document(ID)
+                .delete()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully deleted!"))
+                .addOnFailureListener(e -> Log.w(TAG, "Error deleting document", e));
+    }
+
     public void initViews(){
-        toolbar_vehicle_list_java = findViewById(R.id.toolbar_vehicle_list);
+        Toolbar toolbar_vehicle_list_java = findViewById(R.id.toolbar_vehicle_list);
         setSupportActionBar(toolbar_vehicle_list_java);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -110,6 +251,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.tabella_veicoli);
+
         /*ID, Posti a sedere, Tipo veicolo, Disponibilità*/
 
         int max=0;
@@ -176,5 +318,12 @@ public class VehicleListActivityTrader extends AppCompatActivity {
         }
 
         return max;
+    }
+
+    private void recreateTable(ArrayList<Vehicle> vehicles){
+        TableLayout table = findViewById(R.id.tabella_veicoli);
+        table.removeViews(1,vehicles.size()+1);
+
+        maxID=createTable(vehicles);
     }
 }

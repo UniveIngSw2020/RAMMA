@@ -16,18 +16,12 @@ public class Vehicle {
     private int ID;
     private boolean rented;
 
+
     public Vehicle(Vehicle v) {
         this.vehicleType = v.vehicleType;
         this.seats = v.seats;
         this.ID = v.ID;
         this.rented = v.rented;
-    }
-
-    public Vehicle(String vehicleType, int seats, int ID, boolean rented) {
-        this.vehicleType = vehicleType;
-        this.seats = seats;
-        this.ID = ID;
-        this.rented = rented;
     }
 
     public Vehicle(){
@@ -68,6 +62,7 @@ public class Vehicle {
     public void setRented(boolean rented) {
         this.rented = rented;
     }
+
 
     @NonNull
     @Override
