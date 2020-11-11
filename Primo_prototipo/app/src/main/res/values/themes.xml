@@ -16,8 +16,9 @@
     </style>
     <style name="Style_TextView">
         <item name="fontFamily">@font/comfortaa_regular</item>
-        <item name="backgroundColor">@color/back</item>
+        <item name="android:textColor">@color/back</item>
         <item name="android:textSize">17dp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:layout_width">match_parent</item>
     </style>
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
