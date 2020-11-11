@@ -3,9 +3,11 @@ package com.example.rent_scio1;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.transition.Slide;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -96,6 +99,9 @@ public class VehicleListActivityTrader extends AppCompatActivity {
     //ritona l'ID massimo
     private int createTable(ArrayList<Vehicle> vehicles){
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.setBackgroundColor(Color.rgb(3,50,73));
+
 
         TableLayout table = findViewById(R.id.tabella_veicoli);
         /*ID, Posti a sedere, Tipo veicolo, Disponibilità*/
@@ -108,32 +114,33 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             TableRow row;
             row = new TableRow(this);
             row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            row.setBackgroundColor(Color.rgb(3,50,73));
+            scrollView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT, 1.0f));
+            row.setBackgroundColor(Color.rgb(3, 50, 73));
             row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
             TextView tv;
             /*tv = findViewById(R.id.textview_dyna);*/
             tv = new TextView(VehicleListActivityTrader.this);
             tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            int ID=v.getID();
+            int ID = v.getID();
             tv.setText(Integer.toString(ID));
             tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tv.setTypeface(typeface);
-            tv.setTextColor(Color.rgb(113,152,241));
+            tv.setTextColor(Color.rgb(113, 152, 241));
 
             TextView tv1 = new TextView(VehicleListActivityTrader.this);
             tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
             tv1.setText(Integer.toString(v.getSeats()));
             tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tv1.setTypeface(typeface);
-            tv1.setTextColor(Color.rgb(113,152,241));
+            tv1.setTextColor(Color.rgb(113, 152, 241));
 
             TextView tv2 = new TextView(VehicleListActivityTrader.this);
             tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
             tv2.setText(v.getVehicleType());
             tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tv2.setTypeface(typeface);
-            tv2.setTextColor(Color.rgb(113,152,241));
+            tv2.setTextColor(Color.rgb(113, 152, 241));
 
             TextView tv3 = new TextView(VehicleListActivityTrader.this);
             tv3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
@@ -141,13 +148,12 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             tv3.setTypeface(typeface);
 
 
-            if(v.isRented()){
+            if (v.isRented()) {
                 tv3.setText("OCCUPATO");
-                tv3.setTextColor(Color.rgb(236,124,124));
-            }
-            else{
+                tv3.setTextColor(Color.rgb(236, 124, 124));
+            } else {
                 tv3.setText("DISPONIBILE");
-                tv3.setTextColor(Color.rgb(94,214,121));
+                tv3.setTextColor(Color.rgb(94, 214, 121));
             }
 
             row.addView(tv);
@@ -157,8 +163,8 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
             table.addView(row);
 
-            if(ID>max){
-                max=ID;
+            if (ID > max) {
+                max = ID;
             }
 
 
