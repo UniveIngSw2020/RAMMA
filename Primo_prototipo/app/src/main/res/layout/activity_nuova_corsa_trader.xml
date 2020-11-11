@@ -37,7 +37,7 @@
 
     <Spinner
         android:id="@+id/veicoli_disponibili"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="230dp"
         android:background="@drawable/shape_spinner_new_trade"
@@ -48,24 +48,24 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.766" />
+        app:layout_constraintVertical_bias="0.792" />
 
     <TextView
         android:id="@+id/textView5"
-        android:layout_width="366dp"
-        android:layout_height="232dp"
+        android:layout_width="369dp"
+        android:layout_height="254dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:fontFamily="@font/comfortaa_regular"
         android:text="@string/per_poter_rimuovere_un_veicolo_clicca_seleziona_un_veicolo_e_poi_seleziona_il_mezzo_da_rimuovere"
         android:textColor="@color/text"
-        android:textSize="30sp"
+        android:textSize="29sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/veicoli_disponibili"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.644"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_new_corsa"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.448" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

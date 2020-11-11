@@ -161,13 +161,18 @@
 
     <TextView
         android:id="@+id/warning_empty_table"
-        android:layout_width="315dp"
-        android:layout_height="172dp"
-        android:layout_marginTop="40dp"
-        android:text="TextView"
+        android:layout_width="389dp"
+        android:layout_height="215dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/ops_la_tua_tabella_vuota_prima_di_avviare_una_nuova_corsa_assicurati_di_avere_almeno_un_veicolo_disponibile"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/seleziona_veicolo_eliminare"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabella_veicoli"
         app:layout_constraintVertical_bias="0.0" />
