@@ -20,9 +20,9 @@
 
     <EditText
         android:id="@+id/tipo_veicolo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="208dp"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="328dp"
         android:backgroundTint="@color/text"
         android:ems="10"
         android:fontFamily="@font/comfortaa_light"
@@ -31,15 +31,16 @@
         android:textColor="@color/teal_200"
         android:textColorHint="@color/text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/posti_a_sedere"
-        android:layout_width="wrap_content"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="@color/text"
         android:ems="10"
         android:fontFamily="@font/comfortaa_light"
@@ -49,24 +50,43 @@
         android:textColorHint="@color/text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tipo_veicolo"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.039" />
 
     <Button
         android:id="@+id/Conferma"
-        android:layout_width="174dp"
-        android:layout_height="42dp"
-        android:layout_marginBottom="200dp"
+        android:layout_width="267dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="100dp"
         android:background="@drawable/rounded_button"
-        android:fontFamily="@font/comfortaa_light"
+        android:fontFamily="@font/comfortaa_regular"
         android:text="@string/conferma"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/posti_a_sedere"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="355dp"
+        android:layout_height="224dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:justificationMode="inter_word"
+        android:text="@string/nella_sezione_tipo_veicolo_inserisci_il_tipo_di_veicolo_da_aggiungere_al_tuo_parco_mezzi_nella_sezione_posti_a_sedere_indica_con_un_numero_quante_persone_possono_stare_sul_tuo_veicolo"
+        android:textColor="#7198F1"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tipo_veicolo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_new_vehicle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

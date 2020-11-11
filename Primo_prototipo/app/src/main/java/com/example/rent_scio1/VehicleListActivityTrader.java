@@ -98,9 +98,6 @@ public class VehicleListActivityTrader extends AppCompatActivity {
     //ritona l'ID massimo
     private int createTable(ArrayList<Vehicle> vehicles){
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
-        ScrollView scrollView = new ScrollView(this);
-        scrollView.setBackgroundColor(Color.rgb(3,50,73));
-
 
         TableLayout table = findViewById(R.id.tabella_veicoli);
         /*ID, Posti a sedere, Tipo veicolo, Disponibilità*/
@@ -113,7 +110,6 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             TableRow row;
             row = new TableRow(this);
             row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            scrollView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT, 1.0f));
             row.setBackgroundColor(Color.rgb(3, 50, 73));
             row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
