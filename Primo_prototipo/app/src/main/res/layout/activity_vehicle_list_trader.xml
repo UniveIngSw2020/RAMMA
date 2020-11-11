@@ -137,37 +137,51 @@
 
     <Spinner
         android:id="@+id/seleziona_veicolo_eliminare"
-        android:layout_width="186dp"
-        android:layout_height="39dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="184dp"
+        android:visibility="invisible"
+        android:background="@drawable/shape_spinner_new_trade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabella_veicoli"
-        app:layout_constraintVertical_bias="0.292"
-        android:visibility="invisible"/>
+        app:layout_constraintVertical_bias="0.36" />
 
     <Button
         android:id="@+id/conferma_eliminazione_veicolo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/conferma_eliminazione_tabella"
+        android:textAlignment="center"
+        android:textColor="@color/back"
+        android:textSize="20sp"
+        android:textStyle="bold"
+
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seleziona_veicolo_eliminare"
-        android:visibility="invisible"/>
+        app:layout_constraintTop_toBottomOf="@+id/seleziona_veicolo_eliminare" />
 
     <TextView
         android:id="@+id/warning_empty_table"
-        android:layout_width="315dp"
-        android:layout_height="172dp"
-        android:layout_marginTop="40dp"
-        android:text="TextView"
+        android:layout_width="389dp"
+        android:layout_height="215dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/ops_la_tua_tabella_vuota_prima_di_avviare_una_nuova_corsa_assicurati_di_avere_almeno_un_veicolo_disponibile"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/seleziona_veicolo_eliminare"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabella_veicoli"
         app:layout_constraintVertical_bias="0.0" />

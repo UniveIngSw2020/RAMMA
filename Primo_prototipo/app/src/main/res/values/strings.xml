@@ -65,6 +65,8 @@
     <string name="nuovo" />
     <string name="seleziona_il_tipo_di_veicolo_e_la_quantit_di_posti_a_sedere_presenti">Seleziona il tipo di veicolo e la quantità di posti a sedere presenti.</string>
     <string name="conferma">Conferma</string>
-    <string name="per_poter_rimuovere_un_veicolo_clicca_seleziona_un_veicolo_e_poi_seleziona_il_mezzo_da_rimuovere">Per poter rimuovere un veicolo clicca <u><i>Seleziona un veicolo</i></u>. Seleziona il mezzo da rimuovere e infine <u><i>Conferma</i></u>.</string>
+    <string name="per_poter_rimuovere_un_veicolo_clicca_seleziona_un_veicolo_e_poi_seleziona_il_mezzo_da_rimuovere">Per poter iniziare una nuova corsa clicca <u><i>Seleziona un veicolo</i></u>. Seleziona il mezzo con cui far partire il noleggio e infine <u><i>Conferma</i></u>.</string>
+    <string name="ops_la_tua_tabella_vuota_prima_di_avviare_una_nuova_corsa_assicurati_di_avere_almeno_un_veicolo_disponibile">Ops… La tua tabella è vuota. Prima di avviare una nuova corsa assicurati di avere almeno un veicolo disponibile!</string>
+    <string name="conferma_eliminazione_tabella">CONFERMA</string>
 
 </resources>
