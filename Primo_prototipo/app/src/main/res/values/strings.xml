@@ -70,5 +70,10 @@
     <string name="conferma_eliminazione_tabella">CONFERMA</string>
     <string name="registrati">REGISTRATI</string>
     <string name="imposta_area_limitata">Imposta area limitata</string>
+    <string name="costruisci">Costruisci</string>
+    <string name="elimina_ultimo_mark">Elimina ultimo mark</string>
+    <string name="pulisci_area">Pulisci area</string>
+    <string name="elimina_l_ultimo">Elimina l\'ultimo</string>
+    <string name="conferma_modifiche">Conferma modifiche</string>
 
 </resources>

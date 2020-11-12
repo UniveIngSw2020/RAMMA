@@ -17,7 +17,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:titleTextColor="@color/text"
-            android:theme="@style/ToolbarTheme_inverted"/>
+            android:theme="@style/ToolbarTheme_inverted"
+            app:menu="@menu/confirm_changes_limited_area"
+            />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mapDelimiterSettaArea"
@@ -33,6 +35,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/toolbar_map_trader_delimiter"
             app:layout_constraintTop_toTopOf="@id/toolbar_map_trader_delimiter" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/text"
+            android:theme="@style/Widget.BottomNavigationView"
+            app:menu="@menu/horyzontal_navbar_delimited_area"
+            app:itemIconTint="@color/back"
+            app:itemIconSize="25dp"
+            app:itemTextColor="@color/back" />
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

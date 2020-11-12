@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/costruisci"
+            android:title="@string/costruisci"
+            android:icon="@drawable/ic_costruisci"/>
+
+        <item android:id="@+id/clear_last"
+            android:title="@string/elimina_l_ultimo"
+            android:icon="@drawable/ic_clear_last_marker"/>
+
+        <item android:id="@+id/clear_all"
+            android:title="@string/pulisci_area"
+            android:icon="@drawable/ic_clear_all"/>
+    </group>
+
+</menu>

@@ -14,10 +14,19 @@
         <!-- Customize your theme here. -->
 
     </style>
+
+    <style name="Widget.BottomNavigationView"
+        parent="Widget.Design.BottomNavigationView">
+        <item name="fontFamily">@font/comfortaa_regular</item>
+        <item name="android:textColor">@color/back</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
     <style name="Style_TextView">
         <item name="fontFamily">@font/comfortaa_regular</item>
         <item name="android:textColor">@color/back</item>
-        <item name="android:textSize">17dp</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_width">match_parent</item>
     </style>
@@ -28,5 +37,9 @@
     <style name="ToolbarTheme_inverted" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- Customize color of navigation drawer icon and back arrow -->
         <item name="colorControlNormal">@color/back</item>
+        <item name="android:textColor">@color/back</item>
+        <item name="fontFamily">@font/comfortaa_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
     </style>
 </resources>
