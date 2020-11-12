@@ -40,6 +40,7 @@
             app:layout_constraintTop_toTopOf="@id/toolbar_map_trader_delimiter" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_area_delimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
