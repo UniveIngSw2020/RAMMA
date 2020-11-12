@@ -18,20 +18,20 @@
             android:layout_height="wrap_content"
             android:background="@color/text"
             android:id="@+id/toolbar_map_trader"
-            android:elevation="2dp" />
+            android:elevation="5dp" />
 
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mapDelimiter"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="594dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar_map_trader"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="0dp"
-            android:layout_marginEnd="-2dp"
-            android:layout_marginBottom="-1dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/toolbar_map_trader"
             app:layout_constraintTop_toTopOf="@id/toolbar_map_trader" />
@@ -42,11 +42,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:itemIconPadding="5dp"
+        app:itemIconPadding="15dp"
         android:layout_marginStart="0dp"
         app:itemTextAppearance="@style/Style_TextView"
         app:itemIconTint="@color/back"
-        app:itemIconSize="30dp"
+        app:itemIconSize="25dp"
         android:background="@color/text"
         app:headerLayout="@layout/navigation_header_map_trader"
         app:menu="@menu/navigation_menu_map_trader" />
