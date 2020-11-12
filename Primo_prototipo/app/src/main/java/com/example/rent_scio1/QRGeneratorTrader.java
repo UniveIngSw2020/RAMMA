@@ -54,6 +54,5 @@ public class QRGeneratorTrader extends AppCompatActivity {
             Log.v("ciao", e.toString());
         }
 
-
     }
 }

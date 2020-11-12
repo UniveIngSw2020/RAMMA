@@ -254,7 +254,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.w(TAG, "Error deleting document", e));
     }
 
-    public void initViews(){
+    private void initViews(){
         Toolbar toolbar_vehicle_list_java = findViewById(R.id.toolbar_vehicle_list);
         setSupportActionBar(toolbar_vehicle_list_java);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
