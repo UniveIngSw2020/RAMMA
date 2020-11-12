@@ -34,12 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
-    private NavigationView navigationView;
-    private DrawerLayout drawer_map_trader;
-    private Toolbar toolbar;
-    private TextView textView;
     private UserLocation mTraderLocation;
-    private LatLngBounds mMapBoundary;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mStore;
@@ -53,7 +48,6 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_trader);
 
-        navigationView = findViewById(R.id.navigationView_Map_Trader);
         mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
 
@@ -62,12 +56,6 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         initViews();
-        setSupportActionBar(toolbar);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawer_map_trader.addDrawerListener(toggle);
-        toggle.syncState();
     }
 
     private void getUserDetails(GoogleMap googleMap){
@@ -96,7 +84,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         double topBoundary = mTraderLocation.getGeoPoint().getLatitude() + .01;
         double rightBoundary = mTraderLocation.getGeoPoint().getLongitude() + .01;
 
-        mMapBoundary = new LatLngBounds(
+        LatLngBounds mMapBoundary = new LatLngBounds(
                 new LatLng(bottomBundary, leftBoundary),
                 new LatLng(topBoundary, rightBoundary)
         );
@@ -109,10 +97,17 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     }
 
     private void initViews(){
-        textView =  (TextView)  navigationView.getHeaderView(0).findViewById(R.id.text_email);
+        NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
+        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email);
         textView.setText(mAuth.getCurrentUser().getEmail());
-        drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
-        toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
+        DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
+        setSupportActionBar(toolbar);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawer_map_trader.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @SuppressLint("MissingPermission")
