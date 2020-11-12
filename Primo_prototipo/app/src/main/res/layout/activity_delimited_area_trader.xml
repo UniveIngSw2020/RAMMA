@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/text"
-    tools:context=".DelimitedAreaActivityTrader">
+    tools:context=".DelimitedAreaActivityTrader"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:clickable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,11 +18,11 @@
             android:id="@+id/toolbar_map_trader_delimiter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:titleTextColor="@color/text"
             android:theme="@style/ToolbarTheme_inverted"
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/confirm_changes_limited_area"
-            />
+            app:titleTextColor="@color/text" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mapDelimiterSettaArea"
