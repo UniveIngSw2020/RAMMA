@@ -1,6 +1,7 @@
 package com.example.rent_scio1;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
+import java.util.Objects;
+
 public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener{
 
     private Button setArea;
@@ -24,8 +27,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delimited_area_trader);
 
-
-
+        initViews();
 
 
         //inizializzazione mappa 1
@@ -33,6 +35,14 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 .findFragmentById(R.id.mapDelimiterSettaArea);
         mapFragment.getMapAsync(this);
 
+    }
+
+    private void initViews(){
+        Toolbar map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
+        setSupportActionBar(map_trader_delim);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     //inizializzazione mappa 2
