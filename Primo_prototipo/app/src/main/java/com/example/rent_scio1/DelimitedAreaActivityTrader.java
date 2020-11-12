@@ -5,12 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.rent_scio1.utils.PositionIterable;
 import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +30,8 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,8 +39,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.function.Predicate;
 
-public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback {
+public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener{
 
     private UserLocation mTraderLocation;
     private GoogleMap mMap;
@@ -40,8 +49,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     private static final String TAG = "DelimitedAreaActivityTrader";
 
-
-    private final ArrayList<LatLng> markers =new ArrayList<>();
+    private Polygon polygon=null;
+    private final PositionIterable markers =new PositionIterable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +68,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     }
 
 
-    private void initViews(){
-        Toolbar map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
-        setSupportActionBar(map_trader_delim);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
     //inizializzazione mappa 2
     @SuppressLint("MissingPermission")
     @Override
@@ -77,11 +78,55 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         //mMap.setMyLocationEnabled(true);
 
         mMap.setOnMapClickListener(latLng -> {
-            mMap.addMarker(new MarkerOptions().position(latLng));
-            markers.add(latLng);
+            Marker marker=mMap.addMarker(new MarkerOptions().position(latLng));
+            marker.setDraggable(true);
+            Log.d(TAG,marker.getPosition().toString());
+            markers.add(marker);
             Log.d(TAG,((Integer)markers.size()).toString());
         });
 
+    }
+
+    private void costruisci(){
+
+        if(markers.size()>=3){
+
+            if(polygon!=null){
+                polygon.remove();
+                polygon=null;
+            }
+
+            PolygonOptions polygonOptions=new PolygonOptions().addAll(markers).clickable(true);
+            polygon=mMap.addPolygon(polygonOptions);
+            polygon.setStrokeColor(Color.rgb(0,0,0));
+            polygon.setFillColor(Color.rgb(100,100,100));
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"Non puoi settare come area una retta",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void initViews(){
+        Toolbar map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
+        setSupportActionBar(map_trader_delim);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_area_delimited);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Log.d(TAG,"SIAMO ENTRATI QUA SI");
+            switch (item.getItemId()){
+                case R.id.costruisci:
+                    costruisci();
+                    break;
+                case R.id.clear_last:
+                    break;
+                case R.id.clear_all:
+                    break;
+            }
+            return true;
+        });
     }
 
     private void getUserDetails(GoogleMap googleMap){
@@ -119,4 +164,20 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
 
     }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        Log.d(TAG,marker.getPosition().toString());
+    }
+
 }

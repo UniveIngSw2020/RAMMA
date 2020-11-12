@@ -5,4 +5,5 @@
     <item name="textView" type="id" />
     <item name="nuovo_veicolo" type="id" />
     <item name="tabella_veicoli" type="id" />
+    <item name="bottom_navigation_area_delimited" type="id" />
 </resources>
