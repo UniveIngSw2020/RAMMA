@@ -137,8 +137,9 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
     private void creaEliminazione(AtomicBoolean wasSelected){
 
-
+        //creo copia ArrayList per trasformarlo in ArrayAdapter
         ArrayList<Vehicle> forDataAdapter=new ArrayList<>(vehicleArrayList);
+        //forDataAdapter.removeIf(Vehicle::isRented);
 
         //aggiungo riga di selezione a Arraylist
         forDataAdapter.add(0,new Vehicle());
@@ -200,6 +201,10 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
                                                 if( (new Vehicle(document.toObject(Vehicle.class))).getID()==vehicle.getID() ){
 
+                                                    if( vehicle.isRented() ){
+                                                        Toast.makeText(getApplicationContext(),"Non puoi eliminare un veicolo che è attualmente in corsa!",Toast.LENGTH_LONG).show();
+                                                        return;
+                                                    }
                                                     //elimina veicolo da DB
                                                     eliminazione(document.getId());
 
