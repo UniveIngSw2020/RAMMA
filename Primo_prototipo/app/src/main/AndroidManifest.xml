@@ -24,6 +24,7 @@
         android:theme="@style/Theme.RentScio1">
         <activity android:name=".QRScannerClient" />
         <activity android:name=".QRGeneratorTrader" />
+
         <activity
             android:name=".NewVehicleActivityTrader"
             android:parentActivityName=".VehicleListActivityTrader" />
@@ -32,6 +33,9 @@
             android:parentActivityName=".MapsActivityTrader" />
         <activity
             android:name=".NuovaCorsaActivityTrader"
+            android:parentActivityName=".MapsActivityTrader" />
+        <activity
+            android:name=".DelimitedAreaActivityTrader"
             android:parentActivityName=".MapsActivityTrader" />
 
         <service

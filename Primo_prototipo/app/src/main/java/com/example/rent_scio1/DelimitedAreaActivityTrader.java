@@ -25,19 +25,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         setContentView(R.layout.activity_delimited_area_trader);
 
 
-        //bottone conferma area limitata
-        setArea=findViewById(R.id.set_area);
-        setArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
 
 
         //inizializzazione mappa 1
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.mapDelimiter);
+                .findFragmentById(R.id.mapDelimiterSettaArea);
         mapFragment.getMapAsync(this);
 
     }
@@ -48,10 +41,10 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         mMap=googleMap;
 
         //aggiunta di un poligono senza punti
-        areaLimitata = mMap.addPolygon(new PolygonOptions().clickable(true));
+        //areaLimitata = mMap.addPolygon(new PolygonOptions().clickable(true));
 
         //tag poligono
-        areaLimitata.setTag("Area Limitata");
+        //areaLimitata.setTag("Area Limitata");
     }
 
 

@@ -152,6 +152,9 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
             case R.id.Parco_mezzi:
                 startActivity(new Intent(getApplicationContext(), VehicleListActivityTrader.class));
                 break;
+            case R.id.area_limited:
+                startActivity(new Intent(getApplicationContext(), DelimitedAreaActivityTrader.class));
+                break;
         }
         return true;
     }
