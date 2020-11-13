@@ -14,14 +14,18 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
@@ -44,6 +48,7 @@ import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -54,7 +59,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener {
+public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MapsActivityClient: ";
@@ -69,6 +74,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private LatLngBounds mMapBoundary;
     private Intent serviceIntent;
     private ArrayList<User> listTrader = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +91,36 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
+    }
+
+    private void initViews(){
+        NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
+        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email);
+        textView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
+        setSupportActionBar(toolbar);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawer_map_trader.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.logout_client:
+                FirebaseAuth.getInstance().signOut();
+                UserClient.setUser(null);
+                startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                finishAffinity();
+                break;
+            case R.id.nuova_corsa:
+                startActivity(new Intent(getApplicationContext(), NuovaCorsaActivityClient.class));
+                break;
+        }
+        return true;
     }
 
     private void getPositionTrader(){

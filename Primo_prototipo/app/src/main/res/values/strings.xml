@@ -75,5 +75,7 @@
     <string name="pulisci_area">Pulisci area</string>
     <string name="elimina_l_ultimo">Elimina l\'ultimo</string>
     <string name="conferma_modifiche">Conferma modifiche</string>
+    <string name="nuova_corsa">Nuova corsa</string>
+    <string name="logout">Logout</string>
 
 </resources>
