@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -58,11 +57,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Map <String, Object> user = new HashMap<>();
 
     //widgets
-    private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva;
+    private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva, mShopname;
     private CheckBox mTrader, mPositionTrader;
     private ProgressBar progressBar;
     private Toolbar toolbar_regist;
-    private boolean mLocationPermissionGranted = false;
 
     //vars
     private FirebaseFirestore mStore;
@@ -86,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mDate = findViewById(R.id.dateBorn);
         mPiva = findViewById(R.id.piva);
         mTrader = findViewById(R.id.check_Trader);
+        mShopname = findViewById(R.id.shopName);
         mPositionTrader = findViewById(R.id.checkPositionTrader);
         mStore = FirebaseFirestore.getInstance();
         initViews();
@@ -129,6 +128,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
             if(!mPositionTrader.isChecked()){
                 mPositionTrader.setError("Posizione Richesta!");
+                flag = false;
+            }if(TextUtils.isEmpty(mShopname.getText().toString().trim())){
+                mPhone.setError("Nome del Negozio Richiesto!");
                 flag = false;
             }
         }
@@ -238,6 +240,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user.put("phone", mPhone.getText().toString().trim());
         user.put("piva", mPiva.getText().toString().trim());
         user.put("trader", mTrader.isChecked());
+        user.put("shopname", mShopname.getText().toString().trim());
         getPosition();
     }
 
@@ -292,12 +295,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
+    /*private void getLocationPermission() {
+
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -307,7 +306,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-    }
+    }*/
 
     private void checkTraderRegister (){
         mTrader.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -333,7 +332,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: called.");
@@ -355,7 +354,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 getLocationPermission();
             }
         }
-    }
+    }*/
 
 
 
