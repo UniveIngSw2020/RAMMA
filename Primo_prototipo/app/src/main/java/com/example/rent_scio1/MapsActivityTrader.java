@@ -98,7 +98,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
 
     private void initViews(){
         NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
-        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email);
+        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email_trader);
         textView.setText(mAuth.getCurrentUser().getEmail());
         DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);

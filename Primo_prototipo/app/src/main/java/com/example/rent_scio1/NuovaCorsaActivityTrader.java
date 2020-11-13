@@ -1,8 +1,5 @@
 package com.example.rent_scio1;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,8 +13,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.rent_scio1.utils.Vehicle;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
     private void query(ArrayList<Vehicle> veicoliDisponibili, Spinner spinner){
 
-        db.collection("vehicles")
+        /*db.collection("vehicles")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -67,7 +69,24 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
-                });
+                });*/
+        Query getVehiclesTrader = db.collection("vehicles").whereEqualTo("fk_trader", FirebaseAuth.getInstance().getUid());
+
+        getVehiclesTrader.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Vehicle v = new Vehicle(document.toObject(Vehicle.class));
+
+                    if (!v.isRented())
+                        veicoliDisponibili.add(v);
+
+                    Log.d(TAG, document.getId() + " => " + document.getData());
+                }
+                spinnerAdd(veicoliDisponibili , spinner);
+            } else {
+                Log.w(TAG, "Error getting documents.", task.getException());
+            }
+        });
     }
 
 
@@ -86,7 +105,7 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
                     if(vehicle.getVehicleType()!=null) {
                         Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                        intent.putExtra(ToQR, vehicle.getID());
+                        intent.putExtra(ToQR, vehicle.getVehicleUID());
 
                         startActivity(intent);
                     }

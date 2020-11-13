@@ -1,8 +1,5 @@
 package com.example.rent_scio1.utils;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 
 public class Vehicle {
@@ -12,6 +9,8 @@ public class Vehicle {
 
     //tipo veicolo, posti, ID , noleggiato(bool)
     private String vehicleType;
+    private String fk_trader;
+    private String vehicleUID;
     private int seats;
     private int ID;
     private boolean rented;
@@ -19,16 +18,20 @@ public class Vehicle {
 
     public Vehicle(Vehicle v) {
         this.vehicleType = v.vehicleType;
+        this.fk_trader = v.fk_trader;
         this.seats = v.seats;
         this.ID = v.ID;
         this.rented = v.rented;
+        this.vehicleUID = v.vehicleUID;
     }
 
     public Vehicle(){
-        vehicleType=null;
-        seats=0;
-        ID=0;
-        rented=false;
+        vehicleType = null;
+        seats = 0;
+        ID = 0;
+        fk_trader = null;
+        rented = false;
+        vehicleUID = null;
     }
 
     public String getVehicleType() {
@@ -63,6 +66,13 @@ public class Vehicle {
         this.rented = rented;
     }
 
+    public String getFk_trader() { return fk_trader; }
+
+    public void setFk_trader(String fk_trader) { this.fk_trader = fk_trader; }
+
+    public String getVehicleUID() { return vehicleUID; }
+
+    public void setVehicleUID(String vehicleUID) { this.vehicleUID = vehicleUID; }
 
     @NonNull
     @Override

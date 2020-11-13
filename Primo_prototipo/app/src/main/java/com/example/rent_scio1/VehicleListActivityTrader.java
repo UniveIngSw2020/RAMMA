@@ -1,10 +1,5 @@
 package com.example.rent_scio1;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -21,12 +16,17 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -35,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 
 public class VehicleListActivityTrader extends AppCompatActivity {
 
@@ -60,7 +59,23 @@ public class VehicleListActivityTrader extends AppCompatActivity {
         warningEmpty=findViewById(R.id.warning_empty_table);
         warningEmpty.setVisibility(View.INVISIBLE);
 
-        db.collection("vehicles")
+        Query getVehiclesTrader = db.collection("vehicles").whereEqualTo("fk_trader", FirebaseAuth.getInstance().getUid());
+
+        getVehiclesTrader.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    vehicleArrayList.add(new Vehicle(document.toObject(Vehicle.class)));
+                    Log.d(TAG, document.getId() + " => " + document.getData());
+                }
+                vehicleArrayList.sort( (o1, o2) -> o1.getID()-o2.getID() );
+                maxID=createTable(vehicleArrayList);
+                if( vehicleArrayList.size()==0 )
+                    warningEmpty.setVisibility(View.VISIBLE);
+            } else {
+                Log.w(TAG, "Error getting documents.", task.getException());
+            }
+        });
+       /* db.collection("vehicles")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -81,7 +96,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
-                });
+                });*/
 
 
 
