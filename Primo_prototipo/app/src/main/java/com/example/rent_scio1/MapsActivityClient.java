@@ -90,11 +90,11 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     }
 
     private void initViews(){
-        NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
+        NavigationView navigationView = findViewById(R.id.navigationView_Map_Client);
         TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email_client);
         textView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
+        DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_client1);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_client);
         setSupportActionBar(toolbar);
         navigationView.setNavigationItemSelectedListener(this);
 

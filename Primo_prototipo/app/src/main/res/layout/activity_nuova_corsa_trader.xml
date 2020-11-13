@@ -8,8 +8,7 @@
     android:background="@color/back"
     android:clickable="true"
     android:focusableInTouchMode="true"
-    android:focusable="true"
-    >
+    android:focusable="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_new_corsa"

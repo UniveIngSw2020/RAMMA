@@ -75,5 +75,6 @@
     <string name="pulisci_area">Pulisci area</string>
     <string name="elimina_l_ultimo">Elimina l\'ultimo</string>
     <string name="conferma_modifiche">Conferma modifiche</string>
+    <string name="nome_negozio">Nome Negozio</string>
 
 </resources>

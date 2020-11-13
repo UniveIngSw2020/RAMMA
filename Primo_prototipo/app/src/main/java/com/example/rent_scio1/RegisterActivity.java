@@ -309,16 +309,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }*/
 
     private void checkTraderRegister (){
-        mTrader.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(mTrader.isChecked()){
-                    mPiva.setVisibility(View.VISIBLE);
-                    mPositionTrader.setVisibility(View.VISIBLE);
-                }else{
-                    mPiva.setVisibility(View.INVISIBLE);
-                    mPositionTrader.setVisibility(View.INVISIBLE);
-                }
+        mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(mTrader.isChecked()){
+                mPiva.setVisibility(View.VISIBLE);
+                mPositionTrader.setVisibility(View.VISIBLE);
+                mShopname.setVisibility(View.VISIBLE);
+            }else{
+                mShopname.setVisibility(View.INVISIBLE);
+                mPiva.setVisibility(View.INVISIBLE);
+                mPositionTrader.setVisibility(View.INVISIBLE);
             }
         });
 
