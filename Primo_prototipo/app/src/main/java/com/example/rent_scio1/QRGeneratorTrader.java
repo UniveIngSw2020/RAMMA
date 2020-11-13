@@ -1,12 +1,12 @@
 package com.example.rent_scio1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rent_scio1.utils.UserClient;
 import com.google.zxing.WriterException;
@@ -19,8 +19,8 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
     private static final String ToQR="QR_code_creation";
 
-    Bitmap bitmap;
-    ImageView qrImage;
+    private Bitmap bitmap;
+    private ImageView qrImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
         qrImage=findViewById(R.id.QR_code);
 
         //ID univoco del veicolo
-        final int ID_veicolo=getIntent().getIntExtra(ToQR,0);
+        final String UID_veicolo = getIntent().getStringExtra("QR_code_creation");
 
         //Utente commerciante usare la classe statica UserClient.getID()
 
@@ -43,7 +43,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
 
         //Genero QR e ne faccio il display
-        QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().toString(), null, QRGContents.Type.TEXT,500);
+        QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().getUser_id() + " " + UID_veicolo, null, QRGContents.Type.TEXT,500);
 
         try {
             // Getting QR-Code as Bitmap

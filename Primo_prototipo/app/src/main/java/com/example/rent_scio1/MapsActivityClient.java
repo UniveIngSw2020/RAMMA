@@ -11,11 +11,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,7 +57,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MapsActivityClient: ";
@@ -81,13 +79,11 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
-        TextView info = findViewById(R.id.infouser);
-        findViewById(R.id.logout).setOnClickListener(this);
-        findViewById(R.id.helpBtn).setOnClickListener(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mStore = FirebaseFirestore.getInstance();
-        info.setText(FirebaseAuth.getInstance().getUid());
+
+        initViews();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
@@ -95,7 +91,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     private void initViews(){
         NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
-        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email);
+        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email_client);
         textView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
@@ -117,7 +113,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 finishAffinity();
                 break;
             case R.id.nuova_corsa:
-                startActivity(new Intent(getApplicationContext(), NuovaCorsaActivityClient.class));
+                startActivity(new Intent(getApplicationContext(), QRScannerClient.class));
                 break;
         }
         return true;
@@ -146,7 +142,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
             mMap.addMarker(new MarkerOptions()
                     .position( new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
-                    .title(trader.getShopname()));
+                    .title(trader.getShopname())
+                    .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
         }
     }
 
@@ -418,12 +415,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.helpBtn:
                 // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                /*FirebaseFirestore db = FirebaseFirestore.getInstance();
                 Query getTrader = db.collection("users").whereEqualTo("user_id", "7NimVBuSZVhBd6GT0fcsNDOewFo1");  // TODO Prendere l'ID del commerciante giusto -> POSSIBILE SONO DOPO AVER ATTIVATO AL CORSA
                 getTrader.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -439,14 +432,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     } else {
                         Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
                     }
-                });
-                break;
-            case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                UserClient.setUser(null);
-                startActivity(new Intent(getApplicationContext(), StartActivity.class));
-                finishAffinity();
-                break;
-        }
-    }
+                });*/
+
 }
