@@ -14,7 +14,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +39,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
@@ -51,9 +52,9 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.Objects;
+import java.util.ArrayList;
 
-public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String TAG = "MapsActivityClient: ";
@@ -67,15 +68,16 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private GoogleMap mMap;
     private LatLngBounds mMapBoundary;
     private Intent serviceIntent;
+    private ArrayList<User> listTrader = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
-        Button mLogout = findViewById(R.id.logout);
-        Button mAssistant = findViewById(R.id.helpBtn);
         TextView info = findViewById(R.id.infouser);
+        findViewById(R.id.logout).setOnClickListener(this);
+        findViewById(R.id.helpBtn).setOnClickListener(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mStore = FirebaseFirestore.getInstance();
@@ -83,39 +85,34 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
+    }
 
-
-        mLogout.setOnClickListener(view -> {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
-        });
-        mAssistant.setOnClickListener(view -> {
-            // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            Query getTrader = db.collection("users").whereEqualTo("user_id", "7NimVBuSZVhBd6GT0fcsNDOewFo1");  // TODO Prendere l'ID del commerciante giusto
-            getTrader.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    String phoneNumber = new String();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        phoneNumber = new User(document.toObject(User.class)).getPhone();
-
-                        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO phone:" + phoneNumber);
-                    }
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + phoneNumber));
-                    startActivity(intent);
-                } else {
-                    Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+    private void getPositionTrader(){
+        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query getTrader = db.collection("users").whereEqualTo("trader", true);
+        getTrader.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "DAIIIIIIIIIIIIIII: " + task.getResult());
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    listTrader.add(new User(document.toObject(User.class))) ;
+                    Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO22222222222222 POSIZIONEEEEEEEEEEEEEEE");
                 }
-            });
-
-
+                setMarkerTrader();
+            } else {
+                Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+            }
         });
     }
 
-
-
+    private void setMarkerTrader(){
+        for(User trader : listTrader){
+            Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
+            mMap.addMarker(new MarkerOptions()
+                    .position( new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
+                    .title(trader.getShopname()));
+        }
+    }
 
     private void startLocationService() {
         if (!isLocationServiceRunning()) {
@@ -176,11 +173,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     }
 
     private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -263,6 +255,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         enableMyLocation();
+        getPositionTrader();
     }
 
 
@@ -386,6 +379,38 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         super.onDestroy();
         if (isLocationServiceRunning()) {
            stopService(serviceIntent);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.helpBtn:
+                // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Query getTrader = db.collection("users").whereEqualTo("user_id", "7NimVBuSZVhBd6GT0fcsNDOewFo1");  // TODO Prendere l'ID del commerciante giusto -> POSSIBILE SONO DOPO AVER ATTIVATO AL CORSA
+                getTrader.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String phoneNumber = new String();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            phoneNumber = new User(document.toObject(User.class)).getPhone();
+
+                            Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO phone:" + phoneNumber);
+                        }
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + phoneNumber));
+                        startActivity(intent);
+                    } else {
+                        Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+                    }
+                });
+                break;
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                UserClient.setUser(null);
+                startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                finishAffinity();
+                break;
         }
     }
 }
