@@ -7,29 +7,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.rent_scio1.utils.UserClient;
-import com.example.rent_scio1.utils.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import androidx.appcompat.widget.Toolbar;
 
+import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Objects;
 
 import static android.text.TextUtils.isEmpty;
 
-public class LoginActivity extends AppCompatActivity implements
-        View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "LoginActivity";
 
@@ -40,6 +34,7 @@ public class LoginActivity extends AppCompatActivity implements
     //Widgets
     private EditText mEmail, mPassword;
     private ProgressBar mProgressBar;
+    private Toolbar toolbar_act_login;
 
 
     @Override
@@ -52,16 +47,16 @@ public class LoginActivity extends AppCompatActivity implements
         mProgressBar = findViewById(R.id.progressBarlogin);
 
         setupFirebaseAuth();
-
+        initViews();
         findViewById(R.id.confirmlogin_btn).setOnClickListener(this);
+    }
 
-        //QUI C'È IL TASTO PER TORNARE INDIETRO
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
-
-        // Capture the layout's TextView and set the string as its text
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(message);
+    private void initViews(){
+        toolbar_act_login = findViewById(R.id.toolbar_login);
+        setSupportActionBar(toolbar_act_login);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
@@ -83,7 +78,6 @@ public class LoginActivity extends AppCompatActivity implements
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user != null) {
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
   /*
@@ -117,7 +111,8 @@ public class LoginActivity extends AppCompatActivity implements
                         Log.d(TAG, "onComplete: successfully set the user client.");
 
                         User user1 = task.getResult().toObject(User.class);
-                         UserClient.setUser(user1);
+                        UserClient.setUser(user1);
+                        Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
                         if (user1 != null) {
 
@@ -126,6 +121,7 @@ public class LoginActivity extends AppCompatActivity implements
                             }else{
                                 startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
                             }
+                            finishAffinity();
                         }
                     }
                 });

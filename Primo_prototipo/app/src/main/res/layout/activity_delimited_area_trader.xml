@@ -4,35 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DelimitedAreaActivityTrader">
+    android:background="@color/text"
+    tools:context=".DelimitedAreaActivityTrader"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:clickable="true">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/mapDelimiter"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="55dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/set_area"
-        android:layout_width="165dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:text="imposta area"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_map_trader_delimiter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ToolbarTheme_inverted"
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/confirm_changes_limited_area"
+            app:titleTextColor="@color/text" />
 
-    <TextView
-        android:id="@+id/ultima_mod"
-        android:layout_width="95dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/set_area"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/mapDelimiterSettaArea"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar_map_trader_delimiter"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/toolbar_map_trader_delimiter"
+            app:layout_constraintTop_toTopOf="@id/toolbar_map_trader_delimiter" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_area_delimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/text"
+            android:theme="@style/Widget.BottomNavigationView"
+            app:menu="@menu/horyzontal_navbar_delimited_area"
+            app:itemIconTint="@color/back"
+            app:itemIconSize="25dp"
+            app:itemTextColor="@color/back" />
+
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,45 +4,88 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewVehicleActivityTrader">
+    tools:context=".NewVehicleActivityTrader"
+    android:background="@color/back"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_new_vehicle"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/back"
+        android:theme="@style/ToolbarTheme"/>
 
     <EditText
         android:id="@+id/tipo_veicolo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="156dp"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="328dp"
+        android:backgroundTint="@color/text"
         android:ems="10"
-        android:hint="Tipo veicolo"
+        android:fontFamily="@font/comfortaa_regular"
+        android:hint="@string/tipo_veicolo"
         android:inputType="textPersonName"
+        android:textColor="@color/teal_200"
+        android:textColorHint="@color/text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/posti_a_sedere"
-        android:layout_width="wrap_content"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/text"
         android:ems="10"
-        android:hint="Posti a sedere"
+        android:fontFamily="@font/comfortaa_regular"
+        android:hint="@string/posti_a_sedere"
         android:inputType="number"
+        android:textColor="@color/teal_200"
+        android:textColorHint="@color/text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tipo_veicolo"
+        app:layout_constraintVertical_bias="0.039" />
+
+    <Button
+        android:id="@+id/Conferma"
+        android:layout_width="267dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/conferma"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tipo_veicolo"
-        app:layout_constraintVertical_bias="0.215" />
+        app:layout_constraintTop_toBottomOf="@+id/posti_a_sedere"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <Button
-        android:id="@+id/Conferma"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="355dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="200dp"
-        android:text="Conferma"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/seleziona_il_tipo_di_veicolo_e_la_quantit_di_posti_a_sedere_presenti"
+        android:textColor="#7198F1"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tipo_veicolo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_new_vehicle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

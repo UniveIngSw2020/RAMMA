@@ -9,11 +9,14 @@
         <item android:id="@+id/Parco_mezzi"
             android:title="@string/visualizza_parco_mezzi"
             android:icon="@drawable/ic_parcomezzi_map_trader"/>
-    </group>
 
-    <group android:checkableBehavior="single">
-        <item android:id="@+id/logout"
-        android:title="@string/logout"
-        android:icon="@drawable/ic_logout_map_trader"/>
+        <item android:id="@+id/area_limited"
+            android:title="@string/imposta_area_limitata"
+            android:icon="@drawable/ic_area_limitata"/>
+
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_logout_map_trader"
+            android:title="@string/logout"/>
     </group>
 </menu>

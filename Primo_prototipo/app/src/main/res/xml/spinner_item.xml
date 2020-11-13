@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<CheckedTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="25sp"
+    android:textStyle="bold"
+    android:gravity="center_horizontal"
+    android:textColor="@color/back"
+    android:padding="15dp"
+    android:fontFamily="@font/comfortaa_regular" />

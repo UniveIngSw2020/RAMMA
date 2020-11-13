@@ -1,13 +1,10 @@
 package com.example.rent_scio1;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,44 +12,35 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.rent_scio1.utils.PermissionUtils;
+import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.UserLocation;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
-    private NavigationView navigationView;
-    private DrawerLayout drawer_map_trader;
-    private Toolbar toolbar;
-    private TextView textView;
+    private UserLocation mTraderLocation;
 
-
-    /**
-     * Request code for location permission request.
-     *
-     * @see #onRequestPermissionsResult(int, String[], int[])
-     */
-
-    /*private TextView info;*/
     private FirebaseAuth mAuth;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private FirebaseFirestore mStore;
 
-
-
-    /**
-     * Flag indicating whether a requested permission has been denied after returning in
-     * {@link #onRequestPermissionsResult(int, String[], int[])}.
-     */
-    private boolean permissionDenied = false;
-
-
+    private static final String TAG = "MapsActivityTrader";
+    //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
 
     @Override
@@ -60,19 +48,60 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_trader);
 
-        navigationView = findViewById(R.id.navigationView_Map_Trader);
         mAuth = FirebaseAuth.getInstance();
+        mStore = FirebaseFirestore.getInstance();
 
-        /*info = findViewById(R.id.infouser);
-
-        info.setText(mAuth.getUid());*/
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
 
         initViews();
+    }
+
+    private void getUserDetails(GoogleMap googleMap){
+        if(mTraderLocation == null){
+            mTraderLocation = new UserLocation();
+            DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
+            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        Log.d(TAG, "onComplete: successfully get teh user details");
+                        User user = task.getResult().toObject(User.class);
+                        mTraderLocation.setUser(user);
+                        mTraderLocation.setGeoPoint(user.getTraderposition());
+                        /*UserClient.setUser(user);*/
+                        setCameraView(googleMap);
+                    }
+                }
+            });
+        }
+    }
+
+    private void setCameraView(GoogleMap googleMap){
+        double bottomBundary = mTraderLocation.getGeoPoint().getLatitude() - .01;
+        double leftBoundary = mTraderLocation.getGeoPoint().getLongitude() - .01;
+        double topBoundary = mTraderLocation.getGeoPoint().getLatitude() + .01;
+        double rightBoundary = mTraderLocation.getGeoPoint().getLongitude() + .01;
+
+        LatLngBounds mMapBoundary = new LatLngBounds(
+                new LatLng(bottomBundary, leftBoundary),
+                new LatLng(topBoundary, rightBoundary)
+        );
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+
+        googleMap.addMarker(new MarkerOptions()
+                .position( new LatLng(mTraderLocation.getGeoPoint().getLatitude(), mTraderLocation.getGeoPoint().getLongitude()))
+                .title("Tu sei qui!"));
+    }
+
+    private void initViews(){
+        NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
+        TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email);
+        textView.setText(mAuth.getCurrentUser().getEmail());
+        DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
         setSupportActionBar(toolbar);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -81,38 +110,16 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         toggle.syncState();
     }
 
-    private void initViews(){
-        textView =  (TextView)  navigationView.getHeaderView(0).findViewById(R.id.text_email);
-        textView.setText(mAuth.getCurrentUser().getEmail());
-        drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_trader1);
-        toolbar = (Toolbar) findViewById(R.id.toolbar_map_trader);
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        enableMyLocation();  // TODO attivare GPS in automatico
+        getUserDetails(googleMap);
+        //enableMyLocation();  // TODO attivare GPS in automatico
         //mMap.setMyLocationEnabled(true);
-
     }
-    /**
-     * Enables the My Location layer if the fine location permission has been granted.
-     */
-    private void enableMyLocation() {
+
+    /*private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
@@ -123,15 +130,16 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
             PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
-    }
+    }*/
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()){
             case R.id.logout:
                 mAuth.signOut();
+                UserClient.setUser(null);
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                finishAffinity();
                 break;
             case R.id.nuova_corsa:
                 startActivity(new Intent(getApplicationContext(), NuovaCorsaActivityTrader.class));
@@ -139,8 +147,10 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
             case R.id.Parco_mezzi:
                 startActivity(new Intent(getApplicationContext(), VehicleListActivityTrader.class));
                 break;
+            case R.id.area_limited:
+                startActivity(new Intent(getApplicationContext(), DelimitedAreaActivityTrader.class));
+                break;
         }
-
         return true;
     }
 }

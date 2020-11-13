@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="250dp"
     android:orientation="vertical"
     android:background="@color/back"
-    android:paddingLeft="20dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
     android:paddingTop="20dp"
     android:paddingBottom="40dp"
     android:gravity="bottom">
@@ -18,7 +20,7 @@
         android:id="@+id/text_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/comfortaa_light"
         android:text=""

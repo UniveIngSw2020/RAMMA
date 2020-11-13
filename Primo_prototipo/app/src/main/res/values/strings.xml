@@ -51,5 +51,29 @@
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
     <string name="inserisci_la_tua_email_e_la_password">Inserisci la tua email e la password</string>
+    <string name="benvenuto_in_rent_sci">Benvenuto in RENT-SCIÒ</string>
+    <string name="tipo_veicolo">Tipo veicolo</string>
+    <string name="id">ID</string>
+    <string name="veicolo">Veicolo</string>
+    <string name="disponibilit">Disponibilità</string>
+    <string name="posti_a_sedere">Posti a sedere</string>
+    <string name="posti">Posti</string>
+    <string name="qui_puoi_vedere_i_tuoi_mezzi_tocca_il_pulsante_nuovo_per_aggiungere_un_veicolo_al_tuo_negozio_oppure_tocca_elimina_se_vuoi_levarlo_definitivamente">Qui puoi vedere i tuoi mezzi. Tocca il pulsante Nuovo per aggiungere un veicolo al tuo negozio. Oppure tocca Elimina se vuoi levarlo definitivamente.</string>
+    <string name="elimina_veicolo">ELIMINA VEICOLO</string>
+    <string name="aggiungi_veicolo">AGGIUNGI VEICOLO</string>
+    <string name="elimina" />
+    <string name="nuovo" />
+    <string name="seleziona_il_tipo_di_veicolo_e_la_quantit_di_posti_a_sedere_presenti">Seleziona il tipo di veicolo e la quantità di posti a sedere presenti.</string>
+    <string name="conferma">Conferma</string>
+    <string name="per_poter_rimuovere_un_veicolo_clicca_seleziona_un_veicolo_e_poi_seleziona_il_mezzo_da_rimuovere">Per poter iniziare una nuova corsa clicca <u><i>Seleziona un veicolo</i></u>. Seleziona il mezzo con cui far partire il noleggio e infine <u><i>Conferma</i></u>.</string>
+    <string name="ops_la_tua_tabella_vuota_prima_di_avviare_una_nuova_corsa_assicurati_di_avere_almeno_un_veicolo_disponibile">Ops… La tua tabella è vuota. Prima di avviare una nuova corsa assicurati di avere almeno un veicolo disponibile!</string>
+    <string name="conferma_eliminazione_tabella">CONFERMA</string>
+    <string name="registrati">REGISTRATI</string>
+    <string name="imposta_area_limitata">Imposta area limitata</string>
+    <string name="costruisci">Costruisci</string>
+    <string name="elimina_ultimo_mark">Elimina ultimo mark</string>
+    <string name="pulisci_area">Pulisci area</string>
+    <string name="elimina_l_ultimo">Elimina l\'ultimo</string>
+    <string name="conferma_modifiche">Conferma modifiche</string>
 
 </resources>

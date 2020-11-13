@@ -31,6 +31,7 @@ import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,7 +39,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,7 +50,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Objects;
 
 public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -77,9 +81,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         mStore = FirebaseFirestore.getInstance();
         info.setText(FirebaseAuth.getInstance().getUid());
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimit);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
-
 
 
         mLogout.setOnClickListener(view -> {
@@ -97,7 +100,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         phoneNumber = new User(document.toObject(User.class)).getPhone();
 
-                        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO phone:"+ phoneNumber);
+                        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO phone:" + phoneNumber);
                     }
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse("tel:" + phoneNumber));
@@ -111,29 +114,17 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    private void setCameraView(){
-        double bottomBundary = mUserLocation.getGeoPoint().getLatitude() - .01;
-        double leftBoundary = mUserLocation.getGeoPoint().getLongitude() - .01;
-        double topBoundary = mUserLocation.getGeoPoint().getLatitude() + .01;
-        double rightBoundary = mUserLocation.getGeoPoint().getLongitude() + .01;
-
-        mMapBoundary = new LatLngBounds(
-                new LatLng(bottomBundary, leftBoundary),
-                new LatLng(topBoundary, rightBoundary)
-        );
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
-    }
 
 
-    private void startLocationService(){
-        if(!isLocationServiceRunning()){
+
+    private void startLocationService() {
+        if (!isLocationServiceRunning()) {
             serviceIntent = new Intent(this, LocationService.class);
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
                 MapsActivityClient.this.startForegroundService(serviceIntent);
-            }else{
+            } else {
                 startService(serviceIntent);
             }
         }
@@ -141,8 +132,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     private boolean isLocationServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
-            if("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
                 Log.d(TAG, "isLocationServiceRunning: location service is already running.");
                 return true;
             }
@@ -151,9 +142,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         return false;
     }
 
-    private boolean checkMapServices(){
-        if(isServicesOK()){
-            if(isMapsEnabled()){
+    private boolean checkMapServices() {
+        if (isServicesOK()) {
+            if (isMapsEnabled()) {
                 return true;
             }
         }
@@ -174,10 +165,10 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         alert.show();
     }
 
-    public boolean isMapsEnabled(){
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+    public boolean isMapsEnabled() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
             return false;
         }
@@ -194,7 +185,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-            geUserDetails();
+            getUserDetails();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -202,22 +193,21 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    public boolean isServicesOK(){
+    public boolean isServicesOK() {
         Log.d(TAG, "isServicesOK: checking google services version");
 
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivityClient.this);
 
-        if(available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             //everything is fine and the user can make map requests
             Log.d(TAG, "isServicesOK: Google Play Services is working");
             return true;
-        }
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             //an error occured but we can resolve it
             Log.d(TAG, "isServicesOK: an error occured but we can fix it");
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MapsActivityClient.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
-        }else{
+        } else {
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -245,10 +235,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         Log.d(TAG, "onActivityResult: called.");
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if(mLocationPermissionGranted){
-                    geUserDetails();
-                }
-                else{
+                if (mLocationPermissionGranted) {
+                    getUserDetails();
+                } else {
                     getLocationPermission();
                 }
             }
@@ -259,16 +248,14 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onResume() {
         super.onResume();
-        if(checkMapServices()){
-            if(mLocationPermissionGranted){
-                geUserDetails();
-            }
-            else{
+        if (checkMapServices()) {
+            if (mLocationPermissionGranted) {
+                getUserDetails();
+            } else {
                 getLocationPermission();
             }
         }
     }
-
 
 
     @SuppressLint("MissingPermission")
@@ -284,7 +271,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
-                geUserDetails();
+                getUserDetails();
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
@@ -293,14 +280,14 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    private void geUserDetails(){
-        if(mUserLocation == null){
+    private void getUserDetails() {
+        if (mUserLocation == null) {
             mUserLocation = new UserLocation();
             DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
             userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Log.d(TAG, "onComplete: successfully get teh user details");
                         User user = task.getResult().toObject(User.class);
                         mUserLocation.setUser(user);
@@ -309,51 +296,90 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     }
                 }
             });
-        }else{
+        } else {
             getLastKnownLocation();
-        }
-    }
-
-    private void saveUserLocation(){
-        if(mUserLocation != null){
-            DocumentReference locationRef = mStore.collection("users_location").document(FirebaseAuth.getInstance().getUid());
-            locationRef.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "saveUserLocation: \ninserted user locastion into db." +
-                                "\n latitude: " + mUserLocation.getGeoPoint().getLatitude() +
-                                "\n longitude: " + mUserLocation.getGeoPoint().getLongitude());
-                    }
-                }
-            });
         }
     }
 
     private void getLastKnownLocation() {
         Log.d(TAG, "getLastKnownLocation: called.");
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
+        mFusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
             @Override
-            public void onComplete(@NonNull Task<android.location.Location> task) {
-                if (task.isSuccessful()) {
+            public boolean isCancellationRequested() {
+                Log.d(TAG, " isCancellationRequested !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -> POSIZONE NON PRESA");
+                return false;
+            }
+
+            @NonNull
+            @Override
+            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                Log.d(TAG, " onCanceledRequested %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -> POSIZONE NON PRESA");
+                return null;
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful()){
                     Location location = task.getResult();
-                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    Log.d(TAG, "onComplete: latitude: " + geoPoint.getLatitude());
-                    Log.d(TAG, "onComplete: longitude: " + geoPoint.getLongitude());
-                    mUserLocation.setGeoPoint(geoPoint);
-                    mUserLocation.setTimestamp(null);
-                    saveUserLocation();
+                    Log.d(TAG, String.valueOf(location));
+                    Log.d(TAG, "POSIZIONE: " + location.toString());
+                    Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
                     startLocationService();
-                    setCameraView();
+                    mUserLocation = new UserLocation(new GeoPoint(location.getLatitude(), location.getLongitude()), null, UserClient.getUser());
+                    setCameraView();            //TODO MOVE CAMERA AUTOMATIC
+                }else{
+                    Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
                 }
             }
         });
+
     }
+
+    private void setCameraView() {
+        try {
+            double bottomBundary = mUserLocation.getGeoPoint().getLatitude() - .01;
+            double leftBoundary = mUserLocation.getGeoPoint().getLongitude() - .01;
+            double topBoundary = mUserLocation.getGeoPoint().getLatitude() + .01;
+            double rightBoundary = mUserLocation.getGeoPoint().getLongitude() + .01;
+
+            mMapBoundary = new LatLngBounds(
+                    new LatLng(bottomBundary, leftBoundary),
+                    new LatLng(topBoundary, rightBoundary)
+            );
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+        } catch (Exception e) {
+        }
+    }
+
+    /*private void saveUserLocation(final UserLocation userLocation) {
+        try {
+            DocumentReference locationRef = FirebaseFirestore.getInstance()
+                    .collection("users_location")
+                    .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+            Log.d(TAG, userLocation.getUser().toString());
+            locationRef.set(userLocation).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: \ninserted user location into database." +
+                            "\n latitude: " + userLocation.getGeoPoint().getLatitude() +
+                            "\n longitude: " + userLocation.getGeoPoint().getLongitude());
+                }
+            });
+        } catch (NullPointerException e) {
+            Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
+            Log.e(TAG, "saveUserLocation: NullPointerException: " + e.getMessage());
+        }
+    }*/
 
     @Override
     protected void onDestroy() {
