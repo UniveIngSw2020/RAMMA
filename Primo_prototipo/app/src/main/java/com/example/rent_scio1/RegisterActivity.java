@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
@@ -60,7 +61,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva, mShopname;
     private CheckBox mTrader, mPositionTrader;
     private ProgressBar progressBar;
-    private Toolbar toolbar_regist;
 
     //vars
     private FirebaseFirestore mStore;
@@ -92,11 +92,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initViews(){
-        toolbar_regist = findViewById(R.id.toolbar_register);
+        Toolbar toolbar_regist = findViewById(R.id.toolbar_register);
         setSupportActionBar(toolbar_regist);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_activity_register);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.confitmregister_btn:
+                    onClick(findViewById(R.id.confitmregister_btn));
+                    break;
+            }
+            return true;
+        });
     }
 
 
