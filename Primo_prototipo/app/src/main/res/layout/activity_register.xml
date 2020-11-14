@@ -8,6 +8,15 @@
     android:focusableInTouchMode="true"
     android:focusable="true">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/back"
+        android:background="@color/back"
+        android:theme="@style/ToolbarTheme"/>
+
     <ScrollView android:id="@+id/scroll_view_activity_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +24,8 @@
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:focusable="true"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,14 +36,6 @@
             android:clickable="true"
             android:focusableInTouchMode="true"
             android:focusable="true">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_register"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:titleTextColor="@color/back"
-                android:theme="@style/ToolbarTheme"/>
 
             <EditText
                 android:id="@+id/piva"
