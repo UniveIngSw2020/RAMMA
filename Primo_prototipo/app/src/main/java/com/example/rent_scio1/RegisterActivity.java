@@ -324,6 +324,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void checkTraderRegister (){
         mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(mTrader.isChecked()){
+
                 mPiva.setVisibility(View.VISIBLE);
                 mPositionTrader.setVisibility(View.VISIBLE);
                 mShopname.setVisibility(View.VISIBLE);

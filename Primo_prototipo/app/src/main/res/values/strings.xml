@@ -77,5 +77,6 @@
     <string name="conferma_modifiche">Conferma modifiche</string>
     <string name="nome_negozio">Nome Negozio</string>
     <string name="registrati_">Registrati</string>
+    <string name="conferma_password">Conferma password</string>
 
 </resources>
