@@ -205,10 +205,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Log.d(TAG, String.valueOf(location));
                         Log.d(TAG, "POSIZIONE: " + location.toString());
                         user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
-                        Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR POSIZIONE PRESA");
                         storeUser();
                     }else{
-                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZIONE NON PRESA");
                     }
                 }
             });
