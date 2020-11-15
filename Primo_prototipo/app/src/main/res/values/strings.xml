@@ -78,5 +78,11 @@
     <string name="nome_negozio">Nome Negozio</string>
     <string name="registrati_">Registrati</string>
     <string name="conferma_password">Conferma password</string>
+    <string name="seleziona_un_veicolo">- Seleziona un veicolo</string>
+    <string name="seleziona_un_veicolo_">Seleziona un veicolo</string>
+    <string name="clicca_seleziona_un_veicolo">Clicca <i>Seleziona un veicolo</i></string>
+    <string name="una_volta_scelto_il_mezzo_conferma">Una volta scelto il mezzo, conferma!</string>
+    <string name="personalizza_il_tuo_veicolo">Personalizza il tuo veicolo</string>
+    <string name="personalizza_il_tuo_veicolo_">Personalizza il tuo veicolo!</string>
 
 </resources>
