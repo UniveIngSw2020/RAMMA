@@ -19,26 +19,22 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
     private static final String ToQR="QR_code_creation";
 
-    private Bitmap bitmap;
-    private ImageView qrImage;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_q_r_generator_trader);
 
-        qrImage=findViewById(R.id.QR_code);
+        ImageView qrImage = findViewById(R.id.QR_code);
 
         //ID univoco del veicolo
         final String UID_veicolo = getIntent().getStringExtra("QR_code_creation");
 
-        //Utente commerciante usare la classe statica UserClient.getID()
 
         
         Log.d("ciao", UserClient.getUser().toString());
 
 
-        Toast.makeText(this,UserClient.getUser().toString(),Toast.LENGTH_LONG).show();
+        Toast.makeText(this,UserClient.getUser().getUser_id() + " " + UID_veicolo, Toast.LENGTH_LONG).show();
 
 
 
@@ -47,12 +43,13 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
         try {
             // Getting QR-Code as Bitmap
-            bitmap = qrgEncoder.encodeAsBitmap();
+            Bitmap bitmap = qrgEncoder.encodeAsBitmap();
             // Setting Bitmap to ImageView
             qrImage.setImageBitmap(bitmap);
         } catch (WriterException e) {
             Log.v("ciao", e.toString());
         }
+
 
     }
 }
