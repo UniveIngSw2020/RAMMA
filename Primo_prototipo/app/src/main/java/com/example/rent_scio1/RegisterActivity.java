@@ -16,7 +16,10 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +38,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
@@ -60,7 +64,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva, mShopname;
     private CheckBox mTrader, mPositionTrader;
     private ProgressBar progressBar;
-    private Toolbar toolbar_regist;
 
     //vars
     private FirebaseFirestore mStore;
@@ -92,11 +95,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initViews(){
-        toolbar_regist = findViewById(R.id.toolbar_register);
+        Toolbar toolbar_regist = findViewById(R.id.toolbar_register);
         setSupportActionBar(toolbar_regist);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_activity_register);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.confitmregister_btn:
+                    onClick(findViewById(R.id.confitmregister_btn));
+                    break;
+            }
+            return true;
+        });
     }
 
 
@@ -192,10 +205,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Log.d(TAG, String.valueOf(location));
                         Log.d(TAG, "POSIZIONE: " + location.toString());
                         user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
-                        Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR POSIZIONE PRESA");
                         storeUser();
                     }else{
-                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZIONE NON PRESA");
                     }
                 }
             });
@@ -261,7 +274,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
 
-
+        finishAffinity();
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
         }else{
@@ -309,16 +322,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }*/
 
     private void checkTraderRegister (){
-        mTrader.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(mTrader.isChecked()){
-                    mPiva.setVisibility(View.VISIBLE);
-                    mPositionTrader.setVisibility(View.VISIBLE);
-                }else{
-                    mPiva.setVisibility(View.INVISIBLE);
-                    mPositionTrader.setVisibility(View.INVISIBLE);
-                }
+        mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(mTrader.isChecked()){
+
+                mPiva.setVisibility(View.VISIBLE);
+                mPositionTrader.setVisibility(View.VISIBLE);
+                mShopname.setVisibility(View.VISIBLE);
+            }else{
+                mShopname.setVisibility(View.INVISIBLE);
+                mPiva.setVisibility(View.INVISIBLE);
+                mPositionTrader.setVisibility(View.INVISIBLE);
             }
         });
 

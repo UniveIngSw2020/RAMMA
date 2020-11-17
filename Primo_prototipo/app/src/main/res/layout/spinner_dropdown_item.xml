@@ -11,4 +11,4 @@
     android:textSize="20sp"
     android:textStyle="bold"
     android:fontFamily="@font/comfortaa_regular"
-    android:background="@color/text"/>
+    android:background="@color/text" />
