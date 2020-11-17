@@ -67,6 +67,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private UserLocation mUserLocation;
     private FirebaseFirestore mStore;
     private boolean mLocationPermissionGranted = false;
+    private boolean mCameraPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
     private LatLngBounds mMapBoundary;
@@ -87,6 +88,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
+        getCameraPermission();
     }
 
     private void initViews(){
@@ -112,7 +114,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
                 finishAffinity();
                 break;
-            case R.id.nuova_corsa:
+            case R.id.nuova_corsa_client:
                 startActivity(new Intent(getApplicationContext(), QRScannerClient.class));
                 break;
         }
@@ -214,6 +216,18 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    private void getCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            mCameraPermissionGranted = true;
+            } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
