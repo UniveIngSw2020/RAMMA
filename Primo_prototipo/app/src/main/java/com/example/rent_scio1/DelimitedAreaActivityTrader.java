@@ -8,6 +8,8 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.rent_scio1.utils.PositionIterable;
@@ -46,13 +48,17 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     private final PositionIterable markers =new PositionIterable();
     private final Stack<Marker> markersStack =new Stack<>();
+    private Toolbar map_trader_delim;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delimited_area_trader);
 
+
         initViews();
+
         mStore = FirebaseFirestore.getInstance();
 
         //inizializzazione mappa 1
@@ -60,6 +66,24 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 .findFragmentById(R.id.mapDelimiterSettaArea);
         mapFragment.getMapAsync(this);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.confirm_changes_limited_area, menu);
+        map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.confirm_changes_limited:
+                /*LOTTO INSERISCI QUA IL CODICE MERDOSO PER IL CONFERMA.*/
+                break;
+        }
+        return true;
     }
 
     //inizializzazione mappa 2
@@ -98,6 +122,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             polygon=mMap.addPolygon(polygonOptions);
             polygon.setStrokeColor(Color.rgb(0,0,0));
             polygon.setFillColor(0x7F00FF00);
+
         }
         else{
             Toast.makeText(getApplicationContext(),"Non puoi settare come area un punto o una retta",Toast.LENGTH_LONG).show();
@@ -106,7 +131,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
 
     private void initViews(){
-        Toolbar map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
+        map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
         setSupportActionBar(map_trader_delim);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -118,6 +143,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             switch (item.getItemId()){
                 case R.id.costruisci:
                     costruisci();
+                    map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
                     break;
                 case R.id.clear_last:
                     if(!markersStack.empty()){
