@@ -276,7 +276,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
 
-
+        finishAffinity();
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
         }else{
