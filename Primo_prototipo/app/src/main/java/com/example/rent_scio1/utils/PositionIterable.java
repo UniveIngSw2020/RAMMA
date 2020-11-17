@@ -1,14 +1,15 @@
 package com.example.rent_scio1.utils;
 
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
+
 import java.util.Iterator;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
+
 
 public class PositionIterable implements Iterable<LatLng> {
 
@@ -27,6 +28,7 @@ public class PositionIterable implements Iterable<LatLng> {
     }
 
     public void add(Marker m){
+
         markers.add(m);
     }
 
@@ -34,5 +36,89 @@ public class PositionIterable implements Iterable<LatLng> {
         return markers.size();
     }
 
+    public boolean remove(Marker marker){
+        return markers.remove(marker);
+    }
+
+    public void removeAll(){
+        markers.removeAll(markers);
+    }
+
+
+    //trova il centro della figura (media)
+    private LatLng center(){
+        double lat=0;
+        double lng=0;
+        for (LatLng latLng : this) {
+            lat+=latLng.latitude;
+            lng+=latLng.longitude;
+        }
+        lat=lat/size();
+        lng=lng/size();
+        return new LatLng(lat,lng);
+    }
+
+    //formuletta distanza punto punto
+    private double getDistance(LatLng a,LatLng b){
+        double x=a.longitude-b.longitude;
+        double y=a.latitude-b.latitude;
+
+        return Math.sqrt(x*x+y*y);
+    }
+
+    private double getAngle(LatLng a,LatLng b){
+        double x=b.longitude-a.longitude;
+        double y=b.latitude-a.latitude;
+
+        //arcotangente
+        double angle=Math.atan2(y,x);
+
+        //rendo l'angolo positivo per comodità
+        if(angle <= 0)
+            angle= 2*Math.PI +angle;
+
+
+        return angle;
+    }
+
+    public void sort(){
+        final LatLng center=center();
+
+        for (Marker marker:markers) {
+
+            LatLng prev=marker.getPosition();
+            marker.setPosition(new LatLng(prev.latitude-center.latitude,prev.longitude-center.longitude));
+        }
+
+        markers.sort((o1, o2) -> {
+
+
+            if(o1.getPosition().equals(o2.getPosition())){
+                return 0;
+            }
+
+            double angle1=getAngle(new LatLng(0,0),o1.getPosition());
+            double angle2=getAngle(new LatLng(0,0),o2.getPosition());
+
+            if(angle1<angle2){
+                return -1;
+            }
+
+            double distance1=getDistance(new LatLng(0,0),o1.getPosition());
+            double distance2=getDistance(new LatLng(0,0),o2.getPosition());
+
+            if(angle1==angle2 && distance1 < distance2){
+                return -1;
+            }
+
+            return 1;
+        });
+
+        for (Marker marker:markers) {
+
+            LatLng prev=marker.getPosition();
+            marker.setPosition(new LatLng(prev.latitude+center.latitude,prev.longitude+center.longitude));
+        }
+    }
 
 }

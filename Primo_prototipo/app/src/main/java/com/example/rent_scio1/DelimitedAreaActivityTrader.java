@@ -5,18 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.rent_scio1.utils.PositionIterable;
 import com.example.rent_scio1.utils.User;
-import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,17 +26,15 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.Stack;
 
-public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener{
+public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
 
     private UserLocation mTraderLocation;
     private GoogleMap mMap;
@@ -50,7 +43,9 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     private static final String TAG = "DelimitedAreaActivityTrader";
 
     private Polygon polygon=null;
+
     private final PositionIterable markers =new PositionIterable();
+    private final Stack<Marker> markersStack =new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +75,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         mMap.setOnMapClickListener(latLng -> {
             Marker marker=mMap.addMarker(new MarkerOptions().position(latLng));
             marker.setDraggable(true);
-            Log.d(TAG,marker.getPosition().toString());
+
+            markersStack.push(marker);
             markers.add(marker);
-            Log.d(TAG,((Integer)markers.size()).toString());
         });
 
+        mMap.setOnMarkerDragListener(this);
     }
 
     private void costruisci(){
@@ -97,15 +93,19 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
             }
 
+            markers.sort();
+
             PolygonOptions polygonOptions=new PolygonOptions().addAll(markers).clickable(true);
             polygon=mMap.addPolygon(polygonOptions);
             polygon.setStrokeColor(Color.rgb(0,0,0));
-            polygon.setFillColor(Color.rgb(100,100,100));
+            polygon.setFillColor(0x7F00FF00);
+
         }
         else{
-            Toast.makeText(getApplicationContext(),"Non puoi settare come area una retta",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Non puoi settare come area un punto o una retta",Toast.LENGTH_LONG).show();
         }
     }
+
 
     private void initViews(){
         Toolbar map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
@@ -116,14 +116,37 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_area_delimited);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            Log.d(TAG,"SIAMO ENTRATI QUA SI");
+
             switch (item.getItemId()){
                 case R.id.costruisci:
                     costruisci();
                     break;
                 case R.id.clear_last:
+                    if(!markersStack.empty()){
+
+                        Marker last=markersStack.pop();
+
+                        last.remove();
+                        markers.remove(last);
+
+
+
+
+                        if(markers.size()>=3){
+                            costruisci();
+                        }
+                        else{
+                            if(polygon!=null){
+                                polygon.remove();
+                                polygon=null;
+                            }
+                        }
+
+                    }
                     break;
                 case R.id.clear_all:
+                    markers.removeAll();
+                    mMap.clear();
                     break;
             }
             return true;
@@ -168,6 +191,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     @Override
     public void onMarkerDragStart(Marker marker) {
+        markers.remove(marker);
 
     }
 
@@ -178,7 +202,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        Log.d(TAG,marker.getPosition().toString());
+        markers.add(marker);
+        costruisci();
     }
-
 }

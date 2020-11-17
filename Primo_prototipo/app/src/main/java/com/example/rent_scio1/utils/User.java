@@ -142,4 +142,6 @@ public class User {
                 ", traderposition=" + traderposition +
                 '}';
     }
+
+
 }
