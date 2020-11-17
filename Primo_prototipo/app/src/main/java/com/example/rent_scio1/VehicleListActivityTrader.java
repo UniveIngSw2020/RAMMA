@@ -208,43 +208,40 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
                         db.collection("vehicles")
                                 .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                                if( (new Vehicle(document.toObject(Vehicle.class))).getID()==vehicle.getID() ){
+                                            if( (new Vehicle(document.toObject(Vehicle.class))).getVehicleUID().equals(vehicle.getVehicleUID())  ){
 
-                                                    if( vehicle.isRented() ){
-                                                        Toast.makeText(getApplicationContext(),"Non puoi eliminare un veicolo che è attualmente in corsa!",Toast.LENGTH_LONG).show();
-                                                        return;
-                                                    }
-                                                    //elimina veicolo da DB
-                                                    eliminazione(document.getId());
-
-                                                    //reinizializza tabella
-                                                    vehicleArrayList.remove(vehicle);
-                                                    recreateTable(vehicleArrayList);
-
-                                                    //reinizializza spinner
-                                                    creaEliminazione(wasSelected);
-
-                                                    //setta visibilità
-                                                    findViewById(R.id.seleziona_veicolo_eliminare).setVisibility(View.INVISIBLE);
-                                                    findViewById(R.id.conferma_eliminazione_veicolo).setVisibility(View.INVISIBLE);
-                                                    wasSelected.set(false);
-
-                                                    if( vehicleArrayList.size()==0 )
-                                                        warningEmpty.setVisibility(View.VISIBLE);
-
+                                                if( vehicle.isRented() ){
+                                                    Toast.makeText(getApplicationContext(),"Non puoi eliminare un veicolo che è attualmente in corsa!",Toast.LENGTH_LONG).show();
+                                                    return;
                                                 }
+                                                //elimina veicolo da DB
+                                                eliminazione(document.getId());
 
-                                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                                //reinizializza tabella
+                                                vehicleArrayList.remove(vehicle);
+                                                recreateTable(vehicleArrayList);
+
+                                                //reinizializza spinner
+                                                creaEliminazione(wasSelected);
+
+                                                //setta visibilità
+                                                findViewById(R.id.seleziona_veicolo_eliminare).setVisibility(View.INVISIBLE);
+                                                findViewById(R.id.conferma_eliminazione_veicolo).setVisibility(View.INVISIBLE);
+                                                wasSelected.set(false);
+
+                                                if( vehicleArrayList.size()==0 )
+                                                    warningEmpty.setVisibility(View.VISIBLE);
+
                                             }
-                                        } else {
-                                            Log.w(TAG, "Error getting documents.", task.getException());
+
+                                            Log.d(TAG, document.getId() + " => " + document.getData());
                                         }
+                                    } else {
+                                        Log.w(TAG, "Error getting documents.", task.getException());
                                     }
                                 });
                     }

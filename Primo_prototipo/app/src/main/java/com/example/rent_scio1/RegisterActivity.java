@@ -1,6 +1,7 @@
 package com.example.rent_scio1;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -205,10 +207,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Log.d(TAG, String.valueOf(location));
                         Log.d(TAG, "POSIZIONE: " + location.toString());
                         user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
-                        Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR POSIZIONE PRESA");
                         storeUser();
                     }else{
-                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZIONE NON PRESA");
                     }
                 }
             });
@@ -274,7 +276,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
 
-
+        finishAffinity();
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
         }else{
@@ -324,6 +326,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void checkTraderRegister (){
         mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(mTrader.isChecked()){
+
                 mPiva.setVisibility(View.VISIBLE);
                 mPositionTrader.setVisibility(View.VISIBLE);
                 mShopname.setVisibility(View.VISIBLE);
@@ -423,5 +426,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

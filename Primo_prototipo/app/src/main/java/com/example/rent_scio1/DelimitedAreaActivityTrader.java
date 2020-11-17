@@ -91,9 +91,10 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
         if(markers.size()>=3){
 
-            if(polygon!=null){
+            if( polygon!=null ){
                 polygon.remove();
                 polygon=null;
+
             }
 
             PolygonOptions polygonOptions=new PolygonOptions().addAll(markers).clickable(true);
