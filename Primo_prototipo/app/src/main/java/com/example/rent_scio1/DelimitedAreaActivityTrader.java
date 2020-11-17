@@ -98,8 +98,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             polygon=mMap.addPolygon(polygonOptions);
             polygon.setStrokeColor(Color.rgb(0,0,0));
             polygon.setFillColor(0x7F00FF00);
-
-
         }
         else{
             Toast.makeText(getApplicationContext(),"Non puoi settare come area un punto o una retta",Toast.LENGTH_LONG).show();
