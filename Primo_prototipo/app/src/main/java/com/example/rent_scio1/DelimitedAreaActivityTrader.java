@@ -56,7 +56,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delimited_area_trader);
 
-
         initViews();
 
         mStore = FirebaseFirestore.getInstance();
@@ -79,9 +78,16 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch(item.getItemId()){
+
             case R.id.confirm_changes_limited:
-                /*LOTTO INSERISCI QUA IL CODICE MERDOSO PER IL CONFERMA.*/
+                Toast.makeText(getApplicationContext(), "ciao", Toast.LENGTH_LONG).show();
+                /*LOTTO INSERISCI QUA IL CODICE MERDOSO PER IL CONFERMA.
+                *
+                *
+                * */
                 break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
         return true;
     }
