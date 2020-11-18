@@ -71,6 +71,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.confirm_changes_limited_area, menu);
         map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
+        map_trader_delim.getMenu().findItem(R.id.how_to).setVisible(true);
         return true;
     }
 
@@ -81,11 +82,16 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
             case R.id.confirm_changes_limited:
                 Toast.makeText(getApplicationContext(), "ciao", Toast.LENGTH_LONG).show();
-                /*LOTTO INSERISCI QUA IL CODICE MERDOSO PER IL CONFERMA.
+                /*LOTTO INSERISCI QUA IL CODICE PER IL CONFERMA.
                 *
                 *
                 * */
                 break;
+
+            case R.id.how_to:
+                Toast.makeText(getApplicationContext(), "punto di domanda", Toast.LENGTH_LONG).show();
+                break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

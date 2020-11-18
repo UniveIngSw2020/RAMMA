@@ -1,10 +1,12 @@
 package com.example.rent_scio1;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -49,6 +51,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setupFirebaseAuth();
         initViews();
         findViewById(R.id.confirmlogin_btn).setOnClickListener(this);
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
 
     private void initViews(){

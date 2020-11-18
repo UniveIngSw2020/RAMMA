@@ -8,6 +8,7 @@
     android:background="@color/back"
     tools:context=".LoginActivity"
     android:clickable="true"
+    android:onClick="hideKeyboard"
     android:focusableInTouchMode="true"
     android:focusable="true">
 

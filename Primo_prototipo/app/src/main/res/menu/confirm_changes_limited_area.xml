@@ -8,4 +8,11 @@
             app:showAsAction="always"
             android:icon="@drawable/ic_round_done_24"/>
     </group>
+
+    <group android:id="@+id/tutorial">
+        <item android:id="@+id/how_to"
+            android:title=""
+            app:showAsAction="always"
+            android:icon="@drawable/ic_question_mark"/>
+    </group>
 </menu>
