@@ -110,7 +110,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 break;
 
             case R.id.how_to:
-                Toast.makeText(getApplicationContext(), "punto di domanda", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "tutorial", Toast.LENGTH_LONG).show();
                 break;
 
             default:
