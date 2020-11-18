@@ -48,6 +48,7 @@
             android:background="@color/text"
             android:theme="@style/Widget.BottomNavigationView"
             app:menu="@menu/horyzontal_navbar_delimited_area"
+            app:layout_constraintTop_toTopOf="@id/mapDelimiterSettaArea"
             app:itemIconTint="@color/back"
             app:itemIconSize="25dp"
             app:itemTextColor="@color/back" />
