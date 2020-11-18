@@ -28,7 +28,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 
+import com.example.rent_scio1.services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -60,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
 
-    private Map <String, Object> user = new HashMap<>();
+    private Map<String, Object> user = new HashMap<>();
 
     //widgets
     private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva, mShopname;
@@ -71,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private FirebaseFirestore mStore;
     private String userID;
     private FusedLocationProviderClient mFusedLocationClient;
-
+    private boolean mLocationPermissionGranted = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         checkTraderRegister();
     }
 
-    private void initViews(){
+    private void initViews() {
         Toolbar toolbar_regist = findViewById(R.id.toolbar_register);
         setSupportActionBar(toolbar_regist);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
@@ -105,7 +108,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_activity_register);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.confitmregister_btn:
                     onClick(findViewById(R.id.confitmregister_btn));
                     break;
@@ -115,41 +118,47 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-
-    private boolean chekForm(){
+    private boolean chekForm() {
         boolean flag = true;
-        if(TextUtils.isEmpty(mPassword.getText().toString().trim())){
+        if (TextUtils.isEmpty(mPassword.getText().toString().trim())) {
             mPassword.setError("Password Richesta!");
             flag = false;
-        }if(TextUtils.isEmpty(mName.getText().toString().trim())){
+        }
+        if (TextUtils.isEmpty(mName.getText().toString().trim())) {
             mName.setError("Nome Richeisto!");
             flag = false;
-        }if(TextUtils.isEmpty(mSourname.getText().toString().trim())){
+        }
+        if (TextUtils.isEmpty(mSourname.getText().toString().trim())) {
             mSourname.setError("Cognome Richiesto!");
             flag = false;
-        }if(TextUtils.isEmpty(mDate.getText().toString().trim())){
+        }
+        if (TextUtils.isEmpty(mDate.getText().toString().trim())) {
             mDate.setError("Data di Nascita  Richiesto!");
             flag = false;
-        }if(TextUtils.isEmpty(mEmail.getText().toString().trim())){
+        }
+        if (TextUtils.isEmpty(mEmail.getText().toString().trim())) {
             mEmail.setError("Email Richeista!");
             flag = false;
-        }if(TextUtils.isEmpty(mPhone.getText().toString().trim())){
+        }
+        if (TextUtils.isEmpty(mPhone.getText().toString().trim())) {
             mPhone.setError("Numero di Cellulare Richiesto!");
             flag = false;
-        }if(mTrader.isChecked()){
-            if(TextUtils.isEmpty(mPiva.getText().toString().trim())){
+        }
+        if (mTrader.isChecked()) {
+            if (TextUtils.isEmpty(mPiva.getText().toString().trim())) {
                 mPiva.setError("Partita IVA Richesta!");
                 flag = false;
             }
-            if(!mPositionTrader.isChecked()){
+            if (!mPositionTrader.isChecked()) {
                 mPositionTrader.setError("Posizione Richesta!");
                 flag = false;
-            }if(TextUtils.isEmpty(mShopname.getText().toString().trim())){
+            }
+            if (TextUtils.isEmpty(mShopname.getText().toString().trim())) {
                 mPhone.setError("Nome del Negozio Richiesto!");
                 flag = false;
             }
         }
-        if(!mPassword.getText().toString().trim().equals(mConfirmPasswod.getText().toString().trim())){
+        if (!mPassword.getText().toString().trim().equals(mConfirmPasswod.getText().toString().trim())) {
             mConfirmPasswod.setError("Entrambe le Passowrd devono essere Uguali!");
             flag = false;
         }
@@ -162,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         progressBar.setVisibility(View.VISIBLE);
 
-        Log.d(TAG, "CREDENZIALIIIIIIIIIIIIIIIIII:        email: " + email + " password: " +password);
+        Log.d(TAG, "CREDENZIALIIIIIIIIIIIIIIIIII:        email: " + email + " password: " + password);
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -179,13 +188,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
     }
 
-    private void getPosition () {
-        if(mPositionTrader.isChecked()) {
+    private void getPosition() {
+        if (mPositionTrader.isChecked()) {
             Log.d(TAG, "getLastKnownLocation: called.");
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "getLastKnownLocation: IIIIIIIIIIIIIIIFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.");
+                return;
+            }*/
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                Log.d(TAG, "getLastKnownLocation: IIIIIIIIIIIIIIIFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.");
                 return;
             }
-
             mFusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
                 @Override
                 public boolean isCancellationRequested() {
@@ -202,14 +222,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }).addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Location location = task.getResult();
                         Log.d(TAG, String.valueOf(location));
                         Log.d(TAG, "POSIZIONE: " + location.toString());
                         user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
                         Log.d(TAG, " REGISTERRRRRRRR POSIZIONE PRESA");
                         storeUser();
-                    }else{
+                    } else {
                         Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZIONE NON PRESA");
                     }
                 }
@@ -310,7 +330,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    /*private void getLocationPermission() {
+    private void getLocationPermission() {
 
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -321,7 +341,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-    }*/
+    }
 
     private void checkTraderRegister (){
         mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -346,8 +366,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
-
-    /*@Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: called.");
@@ -369,7 +388,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 getLocationPermission();
             }
         }
-    }*/
+    }
 
 
 
