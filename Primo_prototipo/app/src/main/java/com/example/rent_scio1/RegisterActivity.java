@@ -276,6 +276,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         user.put("piva", mPiva.getText().toString().trim());
         user.put("trader", mTrader.isChecked());
         user.put("shopname", mShopname.getText().toString().trim());
+        user.put("delimited_area", null );
         getPosition();
     }
 

@@ -32,6 +32,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private UserLocation mTraderLocation;
@@ -70,7 +73,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                         User user = task.getResult().toObject(User.class);
                         mTraderLocation.setUser(user);
                         mTraderLocation.setGeoPoint(user.getTraderposition());
-                        /*UserClient.setUser(user);*/
+                        UserClient.setUser(user);
                         setCameraView(googleMap);
                     }
                 }
@@ -115,8 +118,18 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         getUserDetails(googleMap);
+
         //enableMyLocation();  // TODO attivare GPS in automatico
         //mMap.setMyLocationEnabled(true);
+    }
+
+    private void areaLimitata(){
+        User u=UserClient.getUser();
+        /*
+        if(u!=null){
+            List<LatLng> latLngs = new ArrayList<>();
+            List<>u.getDelimited_area();
+        }*/
     }
 
     /*private void enableMyLocation() {

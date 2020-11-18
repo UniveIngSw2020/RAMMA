@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.rent_scio1.utils.PositionIterable;
 import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,13 +27,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -48,6 +54,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     private final PositionIterable markers =new PositionIterable();
     private final Stack<Marker> markersStack =new Stack<>();
+    private boolean isThereAnArea=false;
     private Toolbar map_trader_delim;
 
 
@@ -81,11 +88,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         switch(item.getItemId()){
 
             case R.id.confirm_changes_limited:
-                Toast.makeText(getApplicationContext(), "ciao", Toast.LENGTH_LONG).show();
-                /*LOTTO INSERISCI QUA IL CODICE PER IL CONFERMA.
-                *
-                *
-                * */
+                storeDelimitedArea();
+
                 break;
 
             case R.id.how_to:
@@ -96,6 +100,40 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private void storeDelimitedArea(){
+
+        User u=UserClient.getUser();
+        List<GeoPoint> geoPoints=markers.geoPointList();
+
+        u.setDelimited_area(geoPoints);
+
+        DocumentReference locationRef = mStore
+                .collection("users")
+                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+
+        locationRef.set(u).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Log.d(TAG, "OK, delimited area pushata");
+            }
+        });
+        /*
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.child("users").child(u.getUser_id()).child("delimited_area").setValue(geoPoints)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + u.getUser_id());
+                    }
+                });*/
+
+        /*DocumentReference documentReference=mStore.collection("users").document(u.getUser_id());
+
+        documentReference.set(u.getUser_id())
+                .addOnSuccessListener(aVoid -> Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + u.getUser_id()))
+                .addOnFailureListener(e -> System.out.println("onFaiulure: "+ e.toString()));*/
     }
 
     //inizializzazione mappa 2
@@ -139,8 +177,9 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         else{
             Toast.makeText(getApplicationContext(),"Non puoi settare come area un punto o una retta",Toast.LENGTH_LONG).show();
         }
-    }
 
+
+    }
 
     private void initViews(){
         map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
@@ -155,6 +194,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             switch (item.getItemId()){
                 case R.id.costruisci:
                     costruisci();
+                    isThereAnArea=true;
                     break;
                 case R.id.clear_last:
                     if(!markersStack.empty()){
@@ -164,12 +204,14 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                         markers.remove(last);
 
                         if(markers.size()>=3){
-                            costruisci();
+                            if(isThereAnArea)
+                                costruisci();
                         }
                         else{
                             if(polygon!=null){
                                 polygon.remove();
                                 polygon=null;
+                                isThereAnArea=false;
                                 map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                             }
                         }
@@ -179,6 +221,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 case R.id.clear_all:
                     markers.removeAll();
                     mMap.clear();
+                    polygon=null;
+                    isThereAnArea=false;
                     map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                     break;
             }
@@ -237,6 +281,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     @Override
     public void onMarkerDragEnd(Marker marker) {
         markers.add(marker);
-        costruisci();
+        if(isThereAnArea)
+            costruisci();
     }
 }

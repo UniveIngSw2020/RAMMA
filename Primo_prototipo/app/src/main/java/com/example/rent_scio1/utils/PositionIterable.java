@@ -5,10 +5,12 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 public class PositionIterable implements Iterable<LatLng> {
@@ -25,6 +27,15 @@ public class PositionIterable implements Iterable<LatLng> {
         }
 
         return latLngs.iterator();
+    }
+
+    public List<GeoPoint> geoPointList(){
+        List<GeoPoint> geoPoints=new ArrayList<>();
+        for (Marker marker : markers) {
+            geoPoints.add(new GeoPoint(marker.getPosition().latitude,marker.getPosition().longitude));
+        }
+
+        return geoPoints;
     }
 
     public void add(Marker m){
