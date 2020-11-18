@@ -9,8 +9,7 @@
     tools:context=".LoginActivity"
     android:clickable="true"
     android:focusableInTouchMode="true"
-    android:focusable="true"
-    android:onClick="hideKeyboard">
+    android:focusable="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_login"

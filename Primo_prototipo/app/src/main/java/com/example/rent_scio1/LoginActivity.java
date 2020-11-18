@@ -247,9 +247,4 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             signIn();
         }
     }
-
-    public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 }
