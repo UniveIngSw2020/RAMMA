@@ -55,6 +55,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:20.0.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
 
+    //Polygon Utility
+    implementation 'com.google.maps.android:android-maps-utils:2.1.0'
+
     //libreria per QR
     implementation 'com.google.mlkit:barcode-scanning:16.0.3'
     //generator

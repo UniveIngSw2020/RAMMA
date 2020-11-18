@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,7 +38,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.maps.android.PolyUtil;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -52,9 +56,14 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     private Polygon polygon=null;
 
-    private final PositionIterable markers =new PositionIterable();
+    private PositionIterable markers =new PositionIterable();
+
     private final Stack<Marker> markersStack =new Stack<>();
     private boolean isThereAnArea=false;
+
+    //posizione del trader
+    private Marker trader;
+
     private Toolbar map_trader_delim;
 
 
@@ -88,8 +97,16 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         switch(item.getItemId()){
 
             case R.id.confirm_changes_limited:
-                storeDelimitedArea();
 
+
+                if(PolyUtil.containsLocation(trader.getPosition(),polygon.getPoints(),true)){
+                    storeDelimitedArea();
+                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                    finishAffinity();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"L'area limitata deve contenere il tuo negozio",Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.how_to:
@@ -154,6 +171,25 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         });
 
         mMap.setOnMarkerDragListener(this);
+
+        //MARKER NEGOZIO
+       addNegozio();
+
+        //Carica area limitata precedente
+        //carica il mio array di markers e li aggiunge alla mappa
+        List<GeoPoint> geoPoints=UserClient.getUser().getDelimited_area();
+        if(geoPoints!=null){
+            markers=new PositionIterable(geoPoints,mMap);
+            costruisci();
+            isThereAnArea=true;
+        }
+
+    }
+
+    private void addNegozio(){
+        GeoPoint traderpos=UserClient.getUser().getTraderposition();
+        trader=mMap.addMarker(new MarkerOptions().position(new LatLng(traderpos.getLatitude(),traderpos.getLongitude())));
+        trader.setTitle("NEGOZIO");
     }
 
     private void costruisci(){
@@ -163,7 +199,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             if( polygon!=null ){
                 polygon.remove();
                 polygon=null;
-
             }
 
             markers.sort();
@@ -223,6 +258,9 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                     mMap.clear();
                     polygon=null;
                     isThereAnArea=false;
+
+                    addNegozio();
+
                     map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                     break;
             }

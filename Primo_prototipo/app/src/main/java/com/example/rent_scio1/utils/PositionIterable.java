@@ -3,8 +3,10 @@ package com.example.rent_scio1.utils;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -15,7 +17,26 @@ import java.util.List;
 
 public class PositionIterable implements Iterable<LatLng> {
 
-    private ArrayList<Marker> markers=new ArrayList<>();
+    private ArrayList<Marker> markers;
+
+
+    public PositionIterable(List<GeoPoint> geoPoints, GoogleMap mMap){
+
+        markers=new ArrayList<>();
+
+        for (GeoPoint geoPoint:geoPoints) {
+
+            Marker marker=mMap.addMarker(new MarkerOptions().position(new LatLng(geoPoint.getLatitude(),geoPoint.getLongitude())));
+            marker.setDraggable(true);
+
+            markers.add(marker);
+        }
+
+    }
+
+    public PositionIterable(){
+        markers=new ArrayList<>();
+    }
 
     @NonNull
     @Override

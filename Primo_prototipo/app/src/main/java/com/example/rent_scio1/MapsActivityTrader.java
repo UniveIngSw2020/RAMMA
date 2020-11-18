@@ -2,6 +2,7 @@ package com.example.rent_scio1;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,6 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -31,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,18 +122,27 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         getUserDetails(googleMap);
-
+        areaLimitata();
         //enableMyLocation();  // TODO attivare GPS in automatico
         //mMap.setMyLocationEnabled(true);
     }
 
     private void areaLimitata(){
         User u=UserClient.getUser();
-        /*
+
         if(u!=null){
+
             List<LatLng> latLngs = new ArrayList<>();
-            List<>u.getDelimited_area();
-        }*/
+
+            List<GeoPoint> geoPoints = u.getDelimited_area();
+            for (GeoPoint a:geoPoints) {
+                latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+            }
+
+            PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
+            Polygon polygon=mMap.addPolygon(polygonOptions);
+            polygon.setStrokeColor(Color.BLACK);
+        }
     }
 
     /*private void enableMyLocation() {
