@@ -128,7 +128,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             polygon=mMap.addPolygon(polygonOptions);
             polygon.setStrokeColor(Color.rgb(0,0,0));
             polygon.setFillColor(0x7F00FF00);
-
+            map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
         }
         else{
             Toast.makeText(getApplicationContext(),"Non puoi settare come area un punto o una retta",Toast.LENGTH_LONG).show();
@@ -149,18 +149,13 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             switch (item.getItemId()){
                 case R.id.costruisci:
                     costruisci();
-                    map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
                     break;
                 case R.id.clear_last:
                     if(!markersStack.empty()){
 
                         Marker last=markersStack.pop();
-
                         last.remove();
                         markers.remove(last);
-
-
-
 
                         if(markers.size()>=3){
                             costruisci();
@@ -169,6 +164,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                             if(polygon!=null){
                                 polygon.remove();
                                 polygon=null;
+                                map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                             }
                         }
 
@@ -177,6 +173,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 case R.id.clear_all:
                     markers.removeAll();
                     mMap.clear();
+                    map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                     break;
             }
             return true;
