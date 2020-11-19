@@ -1,41 +1,46 @@
 package com.example.rent_scio1;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Button;
 
-import com.google.android.gms.tasks.OnFailureListener;
-/*import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;*/
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-//kit ML google per lettore barcode
+import com.example.rent_scio1.services.LocationService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.mlkit.vision.barcode.Barcode;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
-import java.util.List;
 
-import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/*import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;*/
+//kit ML google per lettore barcode
 
 
 public class QRScannerClient extends AppCompatActivity {
 
     Boolean hasAQr= false;
+    private Map<String, Object> run = new HashMap<>();
+    private static final String TAG = "QRScannerClient";
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Intent serviceIntent;
 
    /*
     lettore precedente
@@ -97,12 +102,38 @@ public class QRScannerClient extends AppCompatActivity {
         }
     }
 
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
+    }
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         } catch (ActivityNotFoundException e) {
             // display error state to the user
+        }
+    }
+
+    private void startLocationService(String rawValue) {
+        if (!isLocationServiceRunning()) {
+            serviceIntent = new Intent(this, LocationService.class);
+            serviceIntent.putExtra(TAG, rawValue);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                QRScannerClient.this.startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
         }
     }
 
@@ -148,11 +179,34 @@ public class QRScannerClient extends AppCompatActivity {
                             //in rawValue è presente il valore letto dal qr code
                             String rawValue = barcode.getRawValue();
 
+                            /*run.put("fk_trader", rawValue.split(" ")[0]);
+                            run.put("fk_vehicle", rawValue.split(" ")[1]);
+                            run.put("fk_client", UserClient.getUser().getUser_id());*/
 
+                            db.collection("run")
+                                    .add(run)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                            startLocationService(rawValue);
+
+                                            // TODO: TORNARE ALLA MAPSACTIVITYCLIENT
+                                            Intent intent=new Intent(getApplicationContext(), MapsActivityClient.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error adding document", e);
+                                        }
+                                    });
 
                             Log.println( Log.WARN,"RAW","funziona" + rawValue);
 
-                            int valueType = barcode.getValueType();
+                            /*int valueType = barcode.getValueType();
                             // See API reference for complete list of supported types
                             switch (valueType) {
                                 case Barcode.TYPE_WIFI:
@@ -164,7 +218,7 @@ public class QRScannerClient extends AppCompatActivity {
                                     String title = barcode.getUrl().getTitle();
                                     String url = barcode.getUrl().getUrl();
                                     break;
-                            }
+                            }*/
                         }
                         // [END get_barcodes]
                         // [END_EXCLUDE]

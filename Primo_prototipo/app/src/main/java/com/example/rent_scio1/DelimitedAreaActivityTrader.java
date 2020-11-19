@@ -1,23 +1,17 @@
 package com.example.rent_scio1;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
 import com.example.rent_scio1.utils.PositionIterable;
 import com.example.rent_scio1.utils.User;
-import com.example.rent_scio1.utils.UserClient;
-import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,19 +25,16 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener{
 
-    private UserLocation mTraderLocation;
+    private User mTrader;
     private GoogleMap mMap;
     private FirebaseFirestore mStore;
 
@@ -131,8 +122,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     }
 
     private void getUserDetails(GoogleMap googleMap){
-        if(mTraderLocation == null){
-            mTraderLocation = new UserLocation();
+        if(mTrader == null){
+            mTrader = new User();
             DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
             userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
@@ -141,8 +132,9 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                     if(task.isSuccessful()){
                         Log.d(TAG, "onComplete: successfully get teh user details");
                         User user = task.getResult().toObject(User.class);
-                        mTraderLocation.setUser(user);
-                        mTraderLocation.setGeoPoint(user.getTraderposition());
+                        mTrader = new User (user);
+                        /*mTraderLocation.setGeoPoint(user.getTraderposition());
+                        mTrader.set*/
                         /*UserClient.setUser(user);*/
                         setCameraView(googleMap);
                     }
@@ -152,10 +144,10 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     }
 
     private void setCameraView(GoogleMap googleMap){
-        double bottomBundary = mTraderLocation.getGeoPoint().getLatitude() - .01;
-        double leftBoundary = mTraderLocation.getGeoPoint().getLongitude() - .01;
-        double topBoundary = mTraderLocation.getGeoPoint().getLatitude() + .01;
-        double rightBoundary = mTraderLocation.getGeoPoint().getLongitude() + .01;
+        double bottomBundary = mTrader.getTraderposition().getLatitude() - .01;
+        double leftBoundary = mTrader.getTraderposition().getLongitude() - .01;
+        double topBoundary = mTrader.getTraderposition().getLatitude() + .01;
+        double rightBoundary = mTrader.getTraderposition().getLongitude() + .01;
 
         LatLngBounds mMapBoundary = new LatLngBounds(
                 new LatLng(bottomBundary, leftBoundary),

@@ -18,16 +18,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.UserClient;
-import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,8 +40,12 @@ public class LocationService extends Service {
     private LocationCallback mLocationCallback;
     private final static long UPDATE_INTERVAL = 4 * 1000;  /* 4 secs */
     private final static long FASTEST_INTERVAL = 2000;     /* 2 sec */
-    private UserLocation mUserLocation;
     private LatLngBounds mMapBoundary;
+    
+
+
+    //private Intent service = getApplicationContext(this);
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -54,28 +55,6 @@ public class LocationService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mLocationCallback = new LocationCallback(){
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
-                Location location = locationResult.getLastLocation();
-                if (location != null) {
-                    Log.d(TAG,"IIIIIIIIIIDDDDDDDDDDD" + FirebaseAuth.getInstance().getUid());
-                    if(FirebaseAuth.getInstance().getUid() == null){
-                       onDestroy();
-                    }else {
-                        User user = UserClient.getUser();
-                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                        UserLocation userLocation = new UserLocation(geoPoint, null, user);
-                        Log.d(TAG, user.toString());
-                        saveUserLocation(userLocation);
-                    }
-                }else{
-                    Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
-                }
-            }
-        };
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -90,14 +69,61 @@ public class LocationService extends Service {
 
             startForeground(1, notification);
         }
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: called.");
+        final String rawValue = intent.getStringExtra("QRScannerClient");
+
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    Log.d(TAG,"IIIIIIIIIIDDDDDDDDDDD" + FirebaseAuth.getInstance().getUid());
+                    if(FirebaseAuth.getInstance().getUid() == null){
+                        onDestroy();
+                    }else {
+                        String user = UserClient.getUser().getUser_id();
+                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        Log.d(TAG, "CREATA LA RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+                        UserClient.setRun(new Run(geoPoint, null, user, rawValue.split(" ")[0], rawValue.split(" ")[1]));
+                        // split[0] -> id_commerciante
+                        // split[1] -> id_veicolo
+                        saveUserLocation(UserClient.getRun());
+                    }
+                }else{
+                    Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                }
+            }
+        };
+
+
         getLocation();
+/*
+        DocumentReference locationRef = FirebaseFirestore.getInstance()
+                .collection("run")
+                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
+        run.setTrader(rawValue.split(" ")[0]);
+        run.setVehicle(rawValue.split(" ")[1]);
+        UserClient.getUser().setFk_run(run);
+        locationRef.set(run).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Log.d(TAG, "onComplete: \ninserted tarder_uid and vehicle_uid into database." +
+                        "\n tarder_uid: " + run.getTrader() +
+                        "\n vehicle_uid: " + run.getUser());
+            }
+        });*/
         return START_NOT_STICKY;
     }
+
+
+
 
     private void getLocation () {
         // Create the location request to start receiving updates
@@ -117,17 +143,17 @@ public class LocationService extends Service {
     }
 
 
-    private void saveUserLocation(final UserLocation userLocation){
+    private void saveUserLocation(final Run run){
         try{
             DocumentReference locationRef = FirebaseFirestore.getInstance()
-                    .collection("users_location")
+                    .collection("run")
                     .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()));
-            Log.d(TAG,userLocation.getUser().toString());
-            locationRef.set(userLocation).addOnCompleteListener(task -> {
+            Log.d(TAG, run.getUser().toString());
+            locationRef.set(run).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Log.d(TAG, "onComplete: \ninserted user location into database." +
-                            "\n latitude: " + userLocation.getGeoPoint().getLatitude() +
-                            "\n longitude: " + userLocation.getGeoPoint().getLongitude());
+                            "\n latitude: " + run.getGeoPoint().getLatitude() +
+                            "\n longitude: " + run.getGeoPoint().getLongitude());
                 }
             });
         }catch(NullPointerException e){
@@ -146,12 +172,12 @@ public class LocationService extends Service {
         Log.d(TAG,"SERVICE HAS BEEN DESTROYED!!!");
     }
 
-    private LatLngBounds setCameraView(){
+    /*private LatLngBounds setCameraView(){
         try {
-            double bottomBundary = mUserLocation.getGeoPoint().getLatitude() - .01;
-            double leftBoundary = mUserLocation.getGeoPoint().getLongitude() - .01;
-            double topBoundary = mUserLocation.getGeoPoint().getLatitude() + .01;
-            double rightBoundary = mUserLocation.getGeoPoint().getLongitude() + .01;
+            double bottomBundary = mRun.getGeoPoint().getLatitude() - .01;
+            double leftBoundary = mRun.getGeoPoint().getLongitude() - .01;
+            double topBoundary = mRun.getGeoPoint().getLatitude() + .01;
+            double rightBoundary = mRun.getGeoPoint().getLongitude() + .01;
 
             mMapBoundary = new LatLngBounds(
                     new LatLng(bottomBundary, leftBoundary),
@@ -164,6 +190,6 @@ public class LocationService extends Service {
         }finally {
             return mMapBoundary;
         }
-    }
+    }*/
 
 }

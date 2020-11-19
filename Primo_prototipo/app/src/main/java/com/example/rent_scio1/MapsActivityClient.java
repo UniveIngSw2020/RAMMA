@@ -25,11 +25,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
-import com.example.rent_scio1.utils.UserLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -51,7 +49,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -64,7 +61,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
-    private UserLocation mUserLocation;
     private FirebaseFirestore mStore;
     private boolean mLocationPermissionGranted = false;
     private boolean mCameraPermissionGranted = false;
@@ -124,55 +120,48 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private void getPositionTrader(){
         Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query getTrader = db.collection("users").whereEqualTo("trader", true);
-        getTrader.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d(TAG, "DAIIIIIIIIIIIIIII: " + task.getResult());
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    listTrader.add(new User(document.toObject(User.class))) ;
-                    Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO22222222222222 POSIZIONEEEEEEEEEEEEEEE");
+        if(UserClient.getRun() != null){
+            Query getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
+            getTrader.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "DAIIIIIIIIIIIIIII: " + task.getResult());
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        listTrader.add(new User(document.toObject(User.class))) ;
+                        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO22222222222222 POSIZIONEEEEEEEEEEEEEEE");
+                    }
+                    setMarkerTrader();
+                } else {
+                    Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
                 }
-                setMarkerTrader();
-            } else {
-                Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
-            }
-        });
+            });
+        }else{
+            Query getTrader = db.collection("users").whereEqualTo("trader", true);
+            getTrader.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "DAIIIIIIIIIIIIIII: " + task.getResult());
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        listTrader.add(new User(document.toObject(User.class))) ;
+                        Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO22222222222222 POSIZIONEEEEEEEEEEEEEEE");
+                    }
+                    setMarkerTrader();
+                } else {
+                    Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+                }
+            });
+        }
     }
 
+
     private void setMarkerTrader(){
-        for(User trader : listTrader){
+        for (User trader : listTrader) {
             Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
             mMap.addMarker(new MarkerOptions()
-                    .position( new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
+                    .position(new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
                     .title(trader.getShopname())
                     .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
         }
     }
 
-    private void startLocationService() {
-        if (!isLocationServiceRunning()) {
-            serviceIntent = new Intent(this, LocationService.class);
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-
-                MapsActivityClient.this.startForegroundService(serviceIntent);
-            } else {
-                startService(serviceIntent);
-            }
-        }
-    }
-
-    private boolean isLocationServiceRunning() {
-        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
-                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
-                return true;
-            }
-        }
-        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
-        return false;
-    }
 
     private boolean checkMapServices() {
         if (isServicesOK()) {
@@ -321,8 +310,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     }
 
     private void getUserDetails() {
-        if (mUserLocation == null) {
-            mUserLocation = new UserLocation();
+        if (UserClient.getRun() == null) {
             DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
             userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -330,7 +318,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     if (task.isSuccessful()) {
                         Log.d(TAG, "onComplete: successfully get teh user details");
                         User user = task.getResult().toObject(User.class);
-                        mUserLocation.setUser(user);
+                        //mRun.setUser(user);
                         UserClient.setUser(user);
                         getLastKnownLocation();
                     }
@@ -374,8 +362,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     Log.d(TAG, String.valueOf(location));
                     Log.d(TAG, "POSIZIONE: " + location.toString());
                     Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
-                    startLocationService();
-                    mUserLocation = new UserLocation(new GeoPoint(location.getLatitude(), location.getLongitude()), null, UserClient.getUser());
+                    //startLocationService();
+                    //mRun = new Run(new GeoPoint(location.getLatitude(), location.getLongitude()), null, UserClient.getUser());
                     setCameraView();            //TODO MOVE CAMERA AUTOMATIC
                 }else{
                     Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
@@ -387,10 +375,10 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     private void setCameraView() {
         try {
-            double bottomBundary = mUserLocation.getGeoPoint().getLatitude() - .01;
-            double leftBoundary = mUserLocation.getGeoPoint().getLongitude() - .01;
-            double topBoundary = mUserLocation.getGeoPoint().getLatitude() + .01;
-            double rightBoundary = mUserLocation.getGeoPoint().getLongitude() + .01;
+            double bottomBundary = UserClient.getRun().getGeoPoint().getLatitude() - .01;
+            double leftBoundary = UserClient.getRun().getGeoPoint().getLongitude() - .01;
+            double topBoundary = UserClient.getRun().getGeoPoint().getLatitude() + .01;
+            double rightBoundary = UserClient.getRun().getGeoPoint().getLongitude() + .01;
 
             mMapBoundary = new LatLngBounds(
                     new LatLng(bottomBundary, leftBoundary),
@@ -420,6 +408,18 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             Log.e(TAG, "saveUserLocation: NullPointerException: " + e.getMessage());
         }
     }*/
+
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
+    }
 
     @Override
     protected void onDestroy() {
