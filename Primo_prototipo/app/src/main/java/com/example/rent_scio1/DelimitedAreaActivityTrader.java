@@ -1,6 +1,7 @@
 package com.example.rent_scio1;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.rent_scio1.utils.PositionIterable;
 import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -121,7 +123,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     private void storeDelimitedArea(){
 
-        User u=UserClient.getUser();
+        User u= UserClient.getUser();
         List<GeoPoint> geoPoints=markers.geoPointList();
 
         u.setDelimited_area(geoPoints);

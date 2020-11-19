@@ -74,8 +74,8 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                     if(task.isSuccessful()){
                         Log.d(TAG, "onComplete: successfully get teh user details");
                         User user = task.getResult().toObject(User.class);
-                        mTraderLocation.setUser(user);
-                        mTraderLocation.setGeoPoint(user.getTraderposition());
+                        mTrader=new User(user);
+                        /*mTrader.setGeoPoint(user.getTraderposition());*/
                         UserClient.setUser(user);
                         setCameraView(googleMap);
                     }
