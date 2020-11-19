@@ -1,33 +1,51 @@
 package com.example.rent_scio1;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 
+import com.example.rent_scio1.services.LocationService;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,136 +56,129 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "EmailPassword";
+    private static final String TAG = "RegisterActivity";
+    public static final int ERROR_DIALOG_REQUEST = 9001;
+    public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
 
-    private Map <String, Object> user = new HashMap<>();
+    private Map<String, Object> user = new HashMap<>();
 
+    //widgets
+    private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva, mShopname;
+    private CheckBox mTrader, mPositionTrader;
+    private ProgressBar progressBar;
 
-    EditText mName, mSourname, mEmail, mPassword, mPhone, mDate, mPiva;
-    Button mRegisterBtn;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    FirebaseFirestore mStore;
-    String userID;
-    CheckBox mTrader, mPositionTrader;
+    //vars
+    private FirebaseFirestore mStore;
+    private String userID;
     private FusedLocationProviderClient mFusedLocationClient;
-
+    private boolean mLocationPermissionGranted = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        findViewById(R.id.confitmregister_btn).setOnClickListener(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         mName = findViewById(R.id.name);
         mSourname = findViewById(R.id.sourname);
         mEmail = findViewById(R.id.email_register);
         mPassword = findViewById(R.id.password_register);
+        mConfirmPasswod = findViewById(R.id.passwordregister_confirm);
         mPhone = findViewById(R.id.phone_register);
-        mRegisterBtn = findViewById(R.id.confitmregister_btn);
-
-        mAuth = FirebaseAuth.getInstance();
-        mStore = FirebaseFirestore.getInstance();
         progressBar = findViewById(R.id.progressBarregister);
         mDate = findViewById(R.id.dateBorn);
         mPiva = findViewById(R.id.piva);
-        mTrader = findViewById(R.id.checkTrader);
+        mTrader = findViewById(R.id.check_Trader);
+        mShopname = findViewById(R.id.shopName);
         mPositionTrader = findViewById(R.id.checkPositionTrader);
+        mStore = FirebaseFirestore.getInstance();
+        initViews();
+        checkTraderRegister();
+    }
 
-        mRegisterBtn.setOnClickListener((View view) -> {
-            if(chekForm())
-                signIn(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
-        });
-        mTrader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mTrader.isChecked()){
-                    mPiva.setVisibility(View.VISIBLE);
-                    mPositionTrader.setVisibility(View.VISIBLE);
-                }else{
-                    mPiva.setVisibility(View.INVISIBLE);
-                    mPositionTrader.setVisibility(View.INVISIBLE);
-                }
+    private void initViews() {
+        Toolbar toolbar_regist = findViewById(R.id.toolbar_register);
+        setSupportActionBar(toolbar_regist);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_activity_register);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.confitmregister_btn:
+                    onClick(findViewById(R.id.confitmregister_btn));
+                    break;
             }
+            return true;
         });
-
-
-        //QUI C'È IL TASTO PER TORNARE INDIETRO
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
-
-        // Capture the layout's TextView and set the string as its text
-        TextView textView = findViewById(R.id.textView2);
-        textView.setText(message);
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        if(mAuth.getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-            finish();
-        }
     }
 
-    private boolean chekForm(){
+
+    private boolean chekForm() {
         boolean flag = true;
-        if(TextUtils.isEmpty(mPassword.getText().toString().trim())){
-            mPassword.setError("Password is Required!");
+        if (TextUtils.isEmpty(mPassword.getText().toString().trim())) {
+            mPassword.setError("Password Richesta!");
             flag = false;
         }
-        if(TextUtils.isEmpty(mName.getText().toString().trim())){
-            mName.setError("Name is Required!");
+        if (TextUtils.isEmpty(mName.getText().toString().trim())) {
+            mName.setError("Nome Richeisto!");
             flag = false;
         }
-        if(TextUtils.isEmpty(mSourname.getText().toString().trim())){
-            mSourname.setError("Sourname is Required!");
+        if (TextUtils.isEmpty(mSourname.getText().toString().trim())) {
+            mSourname.setError("Cognome Richiesto!");
             flag = false;
         }
-        if(TextUtils.isEmpty(mDate.getText().toString().trim())){
-            mDate.setError("date of Birthday is Required!");
-            flag = false;
-        }if(TextUtils.isEmpty(mEmail.getText().toString().trim())){
-            mEmail.setError("Email is Required!");
-            flag = false;
-        }if(TextUtils.isEmpty(mPhone.getText().toString().trim())){
-            mPhone.setError("Phone is Required!");
+        if (TextUtils.isEmpty(mDate.getText().toString().trim())) {
+            mDate.setError("Data di Nascita  Richiesto!");
             flag = false;
         }
-        if(mTrader.isChecked()){
-            if(TextUtils.isEmpty(mPiva.getText().toString().trim())){
-                mPiva.setError("PIVA is Required!");
+        if (TextUtils.isEmpty(mEmail.getText().toString().trim())) {
+            mEmail.setError("Email Richeista!");
+            flag = false;
+        }
+        if (TextUtils.isEmpty(mPhone.getText().toString().trim())) {
+            mPhone.setError("Numero di Cellulare Richiesto!");
+            flag = false;
+        }
+        if (mTrader.isChecked()) {
+            if (TextUtils.isEmpty(mPiva.getText().toString().trim())) {
+                mPiva.setError("Partita IVA Richesta!");
                 flag = false;
             }
-            if(!mPositionTrader.isChecked()){
-                mPositionTrader.setError("Position is Required!");
+            if (!mPositionTrader.isChecked()) {
+                mPositionTrader.setError("Posizione Richesta!");
                 flag = false;
             }
+            if (TextUtils.isEmpty(mShopname.getText().toString().trim())) {
+                mPhone.setError("Nome del Negozio Richiesto!");
+                flag = false;
+            }
+        }
+        if (!mPassword.getText().toString().trim().equals(mConfirmPasswod.getText().toString().trim())) {
+            mConfirmPasswod.setError("Entrambe le Passowrd devono essere Uguali!");
+            flag = false;
         }
         return flag;
     }
 
 
     private void signIn(String email, String password) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d(TAG, "signIn:" + email);
 
         progressBar.setVisibility(View.VISIBLE);
 
-        // [START create_user_with_email]
-        mAuth.createUserWithEmailAndPassword(email, password)
+        Log.d(TAG, "CREDENZIALIIIIIIIIIIIIIIIIII:        email: " + email + " password: " + password);
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NotNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
-                            userID = mAuth.getCurrentUser().getUid();
-
+                            userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             generateStoreUser();
-
-
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this, "Authentication failed: ." + task.getException(), Toast.LENGTH_SHORT).show();
@@ -177,34 +188,86 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void getPosition () {
-        if(mPositionTrader.isChecked()) {
+    private void getPosition() {
+        if (mPositionTrader.isChecked()) {
             Log.d(TAG, "getLastKnownLocation: called.");
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "getLastKnownLocation: IIIIIIIIIIIIIIIFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.");
+                return;
+            }*/
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                Log.d(TAG, "getLastKnownLocation: IIIIIIIIIIIIIIIFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.");
                 return;
             }
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
+            mFusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
                 @Override
-                public void onComplete(@NonNull Task<android.location.Location> task) {
+                public boolean isCancellationRequested() {
+                    Log.d(TAG, " isCancellationRequested !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -> POSIZONE NON PRESA");
+                    return false;
+                }
+
+                @NonNull
+                @Override
+                public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                    Log.d(TAG, " onCanceledRequested %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -> POSIZONE NON PRESA");
+                    return null;
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
                     if (task.isSuccessful()) {
                         Location location = task.getResult();
+                        Log.d(TAG, String.valueOf(location));
+                        Log.d(TAG, "POSIZIONE: " + location.toString());
                         user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
-                        Log.d(TAG, " PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPOSIZIONE PRESA");
+                        Log.d(TAG, " REGISTERRRRRRRR POSIZIONE PRESA");
                         storeUser();
-                    }else{
-                        Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                    } else {
+                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZIONE NON PRESA");
                     }
                 }
             });
+            /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    task.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, " FAILUREEEEEEEEEEEE -> POSIZONE NON PRESA");
+                        }
+                    });
+                    task.addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            Log.d(TAG, String.valueOf(location));
+                            Log.d(TAG, "POSIZIONE: " + location.toString());
+                            user.put("traderposition", new GeoPoint(location.getLatitude(), location.getLongitude()));
+                            Log.d(TAG, " REGISTERRRRRRRR POSZIONE PRESA");
+                            storeUser();
+                        }
+                    });
+                    if (task.isSuccessful()) {
+
+                    }else{
+                        Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
+                    }
+                }
+            });*/
         }else{
             user.put("traderposition",null);
             storeUser();
         }
     }
 
-
     private void generateStoreUser (){
-        user.put("user_id", mAuth.getUid());
+        user.put("user_id", FirebaseAuth.getInstance().getUid());
         user.put("name", mName.getText().toString().trim());
         user.put("sourname", mSourname.getText().toString().trim());
         user.put("email", mEmail.getText().toString().trim());
@@ -212,6 +275,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("phone", mPhone.getText().toString().trim());
         user.put("piva", mPiva.getText().toString().trim());
         user.put("trader", mTrader.isChecked());
+        user.put("shopname", mShopname.getText().toString().trim());
         getPosition();
     }
 
@@ -229,6 +293,10 @@ public class RegisterActivity extends AppCompatActivity {
                 System.out.println("onFaiulure: "+ e.toString());
             }
         });
+
+        Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
+
+        finishAffinity();
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
         }else{
@@ -236,15 +304,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void sendEmailVerification() {
-        // Disable button
-
-        // Send verification email
-        // [START send_email_verification]
-        final FirebaseUser user = mAuth.getCurrentUser();
+    /*private void sendEmailVerification() {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         user.sendEmailVerification()
                 .addOnCompleteListener(this, task -> {
-
                     if (task.isSuccessful()) {
                         Toast.makeText(RegisterActivity.this,
                                 "Verification email sent to " + user.getEmail(),
@@ -255,9 +318,137 @@ public class RegisterActivity extends AppCompatActivity {
                                 "Failed to send verification email.",
                                 Toast.LENGTH_SHORT).show();
                     }
-                    // [END_EXCLUDE]
                 });
-        // [END send_email_verification]
+    }*/
+
+    @Override
+    public void onClick(View view) {
+        Log.d(TAG,"VIEWWWWWWWWWWW " + view.getId());
+        if (view.getId() == R.id.confitmregister_btn) {
+            if (chekForm())
+                signIn(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
+        }
     }
 
+    private void getLocationPermission() {
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    private void checkTraderRegister (){
+        mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(mTrader.isChecked()){
+
+                mPiva.setVisibility(View.VISIBLE);
+                mPositionTrader.setVisibility(View.VISIBLE);
+                mShopname.setVisibility(View.VISIBLE);
+            }else{
+                mShopname.setVisibility(View.INVISIBLE);
+                mPiva.setVisibility(View.INVISIBLE);
+                mPositionTrader.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        mPositionTrader.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(mPositionTrader.isChecked()){
+                    checkMapServices();
+                }
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: called.");
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ENABLE_GPS: {
+                if(!mLocationPermissionGranted){
+                    getLocationPermission();
+                }
+            }
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(checkMapServices()){
+            if(!mLocationPermissionGranted){
+                getLocationPermission();
+            }
+        }
+    }
+
+
+
+    private boolean checkMapServices(){
+        if(isServicesOK()){
+            if(isMapsEnabled()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isServicesOK(){
+        Log.d(TAG, "isServicesOK: checking google services version");
+
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(RegisterActivity.this);
+
+        if(available == ConnectionResult.SUCCESS){
+            //everything is fine and the user can make map requests
+            Log.d(TAG, "isServicesOK: Google Play Services is working");
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            //an error occured but we can resolve it
+            Log.d(TAG, "isServicesOK: an error occured but we can fix it");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(RegisterActivity.this, available, ERROR_DIALOG_REQUEST);
+            dialog.show();
+        }else{
+            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    public boolean isMapsEnabled(){
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+            return false;
+        }
+        return true;
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
+
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 }

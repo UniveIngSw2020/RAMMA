@@ -4,21 +4,22 @@ package com.example.rent_scio1.utils;
 import com.google.firebase.firestore.GeoPoint;
 
 public class User {
+
     private String user_id;
     private String name;
     private String sourname;
     private String email;
-
     private String born;
     private String phone;
     private String piva;
     private Boolean trader;
+    private String shopname;
     private GeoPoint traderposition;
 
     public User(){}
 
 
-    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, GeoPoint traderposition) {
+    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, String shopname, GeoPoint traderposition) {
 
         this.user_id = user_id;
         this.name = name;
@@ -28,6 +29,7 @@ public class User {
         this.phone = phone;
         this.piva = piva;
         this.trader = trader;
+        this.shopname = shopname;
         this.traderposition = traderposition;
     }
 
@@ -39,6 +41,7 @@ public class User {
         this.born = o.born;
         this.phone = o.phone;
         this.trader = o.trader;
+        this.shopname = o.shopname;
         this.piva = o.piva;
         this.traderposition = o.traderposition;
 
@@ -112,11 +115,17 @@ public class User {
         this.traderposition = traderposition;
     }
 
-
     public Boolean getTrader() {
         return trader;
     }
 
+    public String getShopname() {
+        return shopname;
+    }
+
+    public void setShopname(String shopname) {
+        this.shopname = shopname;
+    }
 
     @Override
     public String toString() {
@@ -129,6 +138,7 @@ public class User {
                 ", phone='" + phone + '\'' +
                 ", piva='" + piva + '\'' +
                 ", trader=" + trader +
+                ", shopname='" + shopname + '\'' +
                 ", traderposition=" + traderposition +
                 '}';
     }
