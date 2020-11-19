@@ -175,7 +175,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         //MARKER NEGOZIO
        addNegozio();
 
-        //Carica area limitata precedente
+        //Carica area limitata precedente(se presente)
         //carica il mio array di markers e li aggiunge alla mappa
         List<GeoPoint> geoPoints=UserClient.getUser().getDelimited_area();
         if(geoPoints!=null){

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PositionIterable implements Iterable<LatLng> {
 
-    private ArrayList<Marker> markers;
+    private final ArrayList<Marker> markers;
 
 
     public PositionIterable(List<GeoPoint> geoPoints, GoogleMap mMap){
