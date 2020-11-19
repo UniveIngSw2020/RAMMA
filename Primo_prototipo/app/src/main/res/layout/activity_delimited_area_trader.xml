@@ -35,7 +35,8 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/bottom_navigation_area_delimited"
+            app:layout_constraintBottom_toBottomOf="@id/bottom_navigation_area_delimited"
             app:layout_constraintStart_toStartOf="@id/toolbar_map_trader_delimiter"
             app:layout_constraintTop_toTopOf="@id/toolbar_map_trader_delimiter" />
 
@@ -47,6 +48,7 @@
             android:background="@color/text"
             android:theme="@style/Widget.BottomNavigationView"
             app:menu="@menu/horyzontal_navbar_delimited_area"
+            app:layout_constraintTop_toTopOf="@id/mapDelimiterSettaArea"
             app:itemIconTint="@color/back"
             app:itemIconSize="25dp"
             app:itemTextColor="@color/back" />

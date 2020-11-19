@@ -3,6 +3,8 @@ package com.example.rent_scio1.utils;
 
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.List;
+
 public class User {
 
     private String user_id;
@@ -15,11 +17,12 @@ public class User {
     private Boolean trader;
     private String shopname;
     private GeoPoint traderposition;
+    private List<GeoPoint> delimited_area=null;
 
     public User(){}
 
 
-    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, String shopname, GeoPoint traderposition) {
+    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, String shopname, GeoPoint traderposition, List<GeoPoint> delimited_area) {
 
         this.user_id = user_id;
         this.name = name;
@@ -31,6 +34,7 @@ public class User {
         this.trader = trader;
         this.shopname = shopname;
         this.traderposition = traderposition;
+        this.delimited_area=delimited_area;
     }
 
     public User(User o){
@@ -44,7 +48,7 @@ public class User {
         this.shopname = o.shopname;
         this.piva = o.piva;
         this.traderposition = o.traderposition;
-
+        this.delimited_area=o.delimited_area;
     }
 
     public String getUser_id() {
@@ -139,7 +143,17 @@ public class User {
                 ", piva='" + piva + '\'' +
                 ", trader=" + trader +
                 ", shopname='" + shopname + '\'' +
-                ", traderposition=" + traderposition +
+                ", traderposition=" + traderposition + '\'' +
+                ", delimited_area=" + delimited_area.toString() +
                 '}';
+    }
+
+    public List<GeoPoint> getDelimited_area() {
+        return delimited_area;
+    }
+
+    public void setDelimited_area(List<GeoPoint> delimited_area) {
+
+        this.delimited_area = delimited_area;
     }
 }

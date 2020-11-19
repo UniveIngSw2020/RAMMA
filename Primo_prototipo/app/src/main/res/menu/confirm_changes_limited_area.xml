@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group>
+    <group android:id="@+id/item_to_hide">
         <item
             android:id="@+id/confirm_changes_limited"
-            android:title="@string/conferma_modifiche"
-            app:showAsAction="always" />
+            android:title=""
+            app:showAsAction="always"
+            android:icon="@drawable/ic_round_done_24"/>
+    </group>
+
+    <group android:id="@+id/tutorial">
+        <item android:id="@+id/how_to"
+            android:title=""
+            app:showAsAction="always"
+            android:icon="@drawable/ic_info"/>
     </group>
 </menu>

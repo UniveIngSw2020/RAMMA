@@ -53,6 +53,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.confirmlogin_btn).setOnClickListener(this);
     }
 
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+    }
+
     private void initViews(){
         toolbar_act_login = findViewById(R.id.toolbar_login);
         setSupportActionBar(toolbar_act_login);
