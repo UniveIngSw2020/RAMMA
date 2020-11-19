@@ -129,7 +129,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     private void areaLimitata(){
         User u=UserClient.getUser();
 
-        if(u!=null){
+        if(u!=null && u.getDelimited_area()!=null){
 
             List<LatLng> latLngs = new ArrayList<>();
 
@@ -174,6 +174,9 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
                 break;
             case R.id.area_limited:
                 startActivity(new Intent(getApplicationContext(), DelimitedAreaActivityTrader.class));
+                break;
+            case R.id.tabella_corse:
+                startActivity(new Intent(getApplicationContext(), TabellaCorseTrader.class));
                 break;
         }
         return true;
