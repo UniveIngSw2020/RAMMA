@@ -109,6 +109,11 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 UserClient.setUser(null);
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
                 finishAffinity();
+
+//                if (isLocationServiceRunning()) {
+//                    stopService(serviceIntent);
+//                }
+
                 break;
             case R.id.nuova_corsa_client:
                 startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
@@ -424,9 +429,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isLocationServiceRunning()) {
-           stopService(serviceIntent);
-        }
+//        if (isLocationServiceRunning()) {
+//           stopService(serviceIntent);
+//        }
     }
 
                 // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com

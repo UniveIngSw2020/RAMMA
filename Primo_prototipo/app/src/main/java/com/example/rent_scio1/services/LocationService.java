@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
@@ -39,6 +40,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Observable;
 
 public class LocationService extends Service {
 
@@ -50,7 +52,6 @@ public class LocationService extends Service {
     private LatLngBounds mMapBoundary;
     private String idVehicle = new String();
     private String idComm ;
-
 
     //private Intent service = getApplicationContext(this);
 
@@ -78,6 +79,8 @@ public class LocationService extends Service {
             startForeground(1, notification);
         }
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
     }
 
     @Override
@@ -89,7 +92,7 @@ public class LocationService extends Service {
 
         lockVehiclebyID(idVehicle);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         mLocationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -98,7 +101,8 @@ public class LocationService extends Service {
                 if (location != null) {
                     Log.d(TAG,"IIIIIIIIIIDDDDDDDDDDD" + FirebaseAuth.getInstance().getUid());
                     if(FirebaseAuth.getInstance().getUid() == null){
-                        onDestroy();
+                        stopRequest();
+
                     }else {
                         String user = UserClient.getUser().getUser_id();
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -111,9 +115,8 @@ public class LocationService extends Service {
                     Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
                 }
             }
+
         };
-
-
 
         getLocation();
 /*
@@ -183,17 +186,20 @@ public class LocationService extends Service {
         }
     }
 
+
+    public void stopRequest(){
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
     @Override
     public void onDestroy() {
-        super.onDestroy();
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-
-        if(!idVehicle.isEmpty()) unlockVehiclebyID(idVehicle);
 
         stopForeground(true);//Add this. Since stopping a service in started in foreground is different from normal services.
         stopSelf();
         Log.d(TAG,"SERVICE HAS BEEN DESTROYED!!!");
     }
+
+
 
     /*private LatLngBounds setCameraView(){
         try {
