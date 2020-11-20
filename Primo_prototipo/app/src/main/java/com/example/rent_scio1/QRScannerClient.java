@@ -34,6 +34,7 @@ import com.google.zxing.integration.android.IntentResult;*/
 //kit ML google per lettore barcode
 
 
+@Deprecated
 public class QRScannerClient extends AppCompatActivity {
 
     Boolean hasAQr= false;
@@ -117,9 +118,10 @@ public class QRScannerClient extends AppCompatActivity {
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
+            Log.e(TAG, "CIAO");
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         } catch (ActivityNotFoundException e) {
-            // display error state to the user
+            Log.e(TAG, ""+e);
         }
     }
 
@@ -130,7 +132,7 @@ public class QRScannerClient extends AppCompatActivity {
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
-                QRScannerClient.this.startForegroundService(serviceIntent);
+                //QRScannerClient.this.startForegroundService(serviceIntent);
             } else {
                 startService(serviceIntent);
             }
@@ -142,15 +144,15 @@ public class QRScannerClient extends AppCompatActivity {
         BarcodeScannerOptions options =
                 new BarcodeScannerOptions.Builder()
                         .setBarcodeFormats(
-                                Barcode.FORMAT_QR_CODE,
-                                Barcode.FORMAT_AZTEC)
+                                Barcode.FORMAT_QR_CODE
+                               )
                         .build();
         // [END set_detector_options]
 
         // [START get_detector]
-        BarcodeScanner scanner = BarcodeScanning.getClient();
+        // BarcodeScanner scanner = BarcodeScanning.getClient();
         // Or, to specify the formats to recognize:
-        // BarcodeScanner scanner = BarcodeScanning.getClient(options);
+        BarcodeScanner scanner = BarcodeScanning.getClient(options);
         // [END get_detector]
         // [START run_detector]
         // Task completed successfully
@@ -228,7 +230,7 @@ public class QRScannerClient extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Task failed with an exception
-
+                        Log.w(TAG, "Error adding document", e);
                     }
                 });
         // [END run_detector]

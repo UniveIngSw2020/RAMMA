@@ -59,7 +59,9 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:2.1.0'
 
     //libreria per QR
-    implementation 'com.google.mlkit:barcode-scanning:16.0.3'
+    //implementation 'com.google.mlkit:barcode-scanning:16.0.3'
+    implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.1.2'
+
     //generator
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
 
@@ -67,4 +69,5 @@ dependencies {
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
     implementation 'com.google.zxing:core:3.3.3'
+
 }

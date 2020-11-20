@@ -111,7 +111,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 finishAffinity();
                 break;
             case R.id.nuova_corsa_client:
-                startActivity(new Intent(getApplicationContext(), QRScannerClient.class));
+                startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
                 break;
         }
         return true;

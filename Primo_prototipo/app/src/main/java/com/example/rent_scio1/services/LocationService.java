@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -26,11 +27,17 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class LocationService extends Service {
@@ -41,7 +48,8 @@ public class LocationService extends Service {
     private final static long UPDATE_INTERVAL = 4 * 1000;  /* 4 secs */
     private final static long FASTEST_INTERVAL = 2000;     /* 2 sec */
     private LatLngBounds mMapBoundary;
-    
+    private String idVehicle = new String();
+    private String idComm ;
 
 
     //private Intent service = getApplicationContext(this);
@@ -76,7 +84,10 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: called.");
         final String rawValue = intent.getStringExtra("QRScannerClient");
+        idComm = rawValue.split(" ")[0];
+        idVehicle = rawValue.split(" ")[1];
 
+        lockVehiclebyID(idVehicle);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mLocationCallback = new LocationCallback(){
@@ -92,9 +103,8 @@ public class LocationService extends Service {
                         String user = UserClient.getUser().getUser_id();
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         Log.d(TAG, "CREATA LA RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-                        UserClient.setRun(new Run(geoPoint, null, user, rawValue.split(" ")[0], rawValue.split(" ")[1]));
-                        // split[0] -> id_commerciante
-                        // split[1] -> id_veicolo
+                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle));
+
                         saveUserLocation(UserClient.getRun());
                     }
                 }else{
@@ -102,6 +112,7 @@ public class LocationService extends Service {
                 }
             }
         };
+
 
 
         getLocation();
@@ -123,7 +134,16 @@ public class LocationService extends Service {
     }
 
 
+    private void lockVehiclebyID(String id){
+        Log.d(TAG, "cerco di lockare il veicolo");
+        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
+        mDatabase.update("rented", true).addOnSuccessListener(aVoid -> Log.d(TAG, "VEICOLO OCCUPATO"));
+    }
 
+    private void unlockVehiclebyID(String id){
+        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
+        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> Log.d(TAG, "VEICOLO LIBERATO"));
+    }
 
     private void getLocation () {
         // Create the location request to start receiving updates
@@ -167,6 +187,9 @@ public class LocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+
+        if(!idVehicle.isEmpty()) unlockVehiclebyID(idVehicle);
+
         stopForeground(true);//Add this. Since stopping a service in started in foreground is different from normal services.
         stopSelf();
         Log.d(TAG,"SERVICE HAS BEEN DESTROYED!!!");
