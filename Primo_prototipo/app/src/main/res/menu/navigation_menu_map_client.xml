@@ -10,4 +10,13 @@
             android:icon="@drawable/ic_logout_client"/>
     </group>
 
+    <group>
+        <item android:id="@+id/Assistenza"
+            android:title="@string/assistenza"
+            android:icon="@drawable/ic_assistenza" />
+
+        <item android:id="@+id/go_back_shop"
+            android:title="@string/ritorno_al_negozio"
+            android:icon="@drawable/ic_go_back_shop" />
+    </group>
 </menu>

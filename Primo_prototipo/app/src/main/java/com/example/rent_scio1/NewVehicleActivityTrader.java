@@ -116,7 +116,6 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
     private void initViews(){
         Toolbar toolbar_new_vehicle_trader = findViewById(R.id.toolbar_new_vehicle);
         setSupportActionBar(toolbar_new_vehicle_trader);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

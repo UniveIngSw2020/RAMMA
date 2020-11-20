@@ -87,5 +87,7 @@
     <string name="ramma">RAMMA</string>
     <string name="corse_attive">Corse attive</string>
     <string name="tempo_rimasto">Tempo rimasto</string>
+    <string name="assistenza">Assistenza</string>
+    <string name="ritorno_al_negozio">Ritorno al negozio</string>
 
 </resources>

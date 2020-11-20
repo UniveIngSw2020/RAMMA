@@ -143,10 +143,7 @@ public class QRScannerClient extends AppCompatActivity {
         // [START set_detector_options]
         BarcodeScannerOptions options =
                 new BarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(
-                                Barcode.FORMAT_QR_CODE
-                               )
-                        .build();
+                        .setBarcodeFormats(Barcode.FORMAT_QR_CODE).build();
         // [END set_detector_options]
 
         // [START get_detector]
@@ -231,6 +228,7 @@ public class QRScannerClient extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         // Task failed with an exception
                         Log.w(TAG, "Error adding document", e);
+
                     }
                 });
         // [END run_detector]

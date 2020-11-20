@@ -221,7 +221,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     private void initViews(){
         map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
         setSupportActionBar(map_trader_delim);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
