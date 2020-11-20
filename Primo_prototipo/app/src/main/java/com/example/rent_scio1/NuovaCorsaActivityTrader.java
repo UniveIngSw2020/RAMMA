@@ -158,7 +158,6 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
     private void initViews(){
         Toolbar toolbar_new_corsa_java = findViewById(R.id.toolbar_new_corsa);
         setSupportActionBar(toolbar_new_corsa_java);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

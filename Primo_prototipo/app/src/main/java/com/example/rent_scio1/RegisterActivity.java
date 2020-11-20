@@ -102,7 +102,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void initViews() {
         Toolbar toolbar_regist = findViewById(R.id.toolbar_register);
         setSupportActionBar(toolbar_regist);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

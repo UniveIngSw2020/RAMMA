@@ -269,7 +269,6 @@ public class VehicleListActivityTrader extends AppCompatActivity {
     private void initViews(){
         Toolbar toolbar_vehicle_list_java = findViewById(R.id.toolbar_vehicle_list);
         setSupportActionBar(toolbar_vehicle_list_java);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

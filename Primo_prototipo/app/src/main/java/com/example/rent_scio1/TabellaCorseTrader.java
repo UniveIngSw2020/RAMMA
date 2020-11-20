@@ -19,7 +19,6 @@ public class TabellaCorseTrader extends AppCompatActivity {
     private void initViews(){
         Toolbar toolbar_trades_active = findViewById(R.id.toolbar_trader_list);
         setSupportActionBar(toolbar_trades_active);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private LatLngBounds mMapBoundary;
     private Intent serviceIntent;
     private ArrayList<User> listTrader = new ArrayList<>();
+    private NavigationView navigationView;
 
 
     @Override
@@ -82,23 +84,36 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
         initViews();
 
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
         getCameraPermission();
     }
 
     private void initViews(){
-        NavigationView navigationView = findViewById(R.id.navigationView_Map_Client);
+        navigationView = findViewById(R.id.navigationView_Map_Client);
         TextView textView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.text_email_client);
         textView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         DrawerLayout drawer_map_trader = (DrawerLayout) findViewById(R.id.drawer_map_client1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_client);
         setSupportActionBar(toolbar);
         navigationView.setNavigationItemSelectedListener(this);
+        if(UserClient.getRun() != null){
+            navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
+            navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
+            navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+            Log.e(TAG, UserClient.getRun().toString());
+        }
+        else{
+            navigationView.getMenu().findItem(R.id.Assistenza).setVisible(false);
+            navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(false);
+            Log.e(TAG, "sono entrato nel ramo else");
+        }
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer_map_trader.addDrawerListener(toggle);
         toggle.syncState();
+
     }
 
     @Override
@@ -117,6 +132,15 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 break;
             case R.id.nuova_corsa_client:
                 startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
+                navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
+                navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+                break;
+            case R.id.Assistenza:
+
+                break;
+            case R.id.go_back_shop:
+
                 break;
         }
         return true;
