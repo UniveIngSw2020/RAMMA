@@ -189,6 +189,7 @@ public class LocationService extends Service {
 
     public void stopRequest(){
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        unlockVehiclebyID(idVehicle);
     }
 
     @Override
