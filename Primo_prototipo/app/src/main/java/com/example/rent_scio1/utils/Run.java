@@ -20,7 +20,18 @@ public class Run {
         this.vehicle = vehicle;
     }
 
-    public Run () { }
+    public Run(Run o) {
+        this.geoPoint = o.geoPoint;
+        this.timestamp = o.timestamp;
+        this.user = o.user;
+        this.trader = o.trader;
+        this.vehicle = o.vehicle;
+    }
+
+    public Run(){
+
+    }
+
 
     public GeoPoint getGeoPoint() {
         return geoPoint;

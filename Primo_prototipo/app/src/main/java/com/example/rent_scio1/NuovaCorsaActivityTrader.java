@@ -104,6 +104,9 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
                 conferma.setOnClickListener(v -> {
 
                     if(vehicle.getVehicleType()!=null) {
+
+
+
                         Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
                         intent.putExtra(ToQR, vehicle.getVehicleUID());
 

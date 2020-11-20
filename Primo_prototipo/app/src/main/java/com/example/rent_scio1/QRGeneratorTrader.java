@@ -51,5 +51,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
         }
 
 
+        //quando il cliente ha stabile la connessione devo ritornare alla mappa principale
+
     }
 }

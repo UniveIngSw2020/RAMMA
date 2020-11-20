@@ -26,7 +26,7 @@
         app:titleTextColor="@color/back" />
 
     <TableLayout
-        android:id="@+id/tabella_veicoli"
+        android:id="@+id/tabella_corse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
