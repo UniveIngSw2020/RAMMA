@@ -7,13 +7,12 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -23,9 +22,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentScio1">
-        <!--<activity android:name=".QRScannerClient" />-->
-        <activity android:name=".QRGeneratorTrader" />
 
+        <!--<activity android:name=".QRScannerClient" />-->
+
+        <activity android:name=".TabellaCorseTrader"
+            android:parentActivityName=".MapsActivityTrader"/>
+
+        <activity android:name=".QRGeneratorTrader" />
         <activity
             android:name=".NewVehicleActivityTrader"
             android:parentActivityName=".VehicleListActivityTrader" />

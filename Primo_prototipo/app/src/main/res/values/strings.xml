@@ -85,5 +85,7 @@
     <string name="personalizza_il_tuo_veicolo">Personalizza il tuo veicolo</string>
     <string name="personalizza_il_tuo_veicolo_">Personalizza il tuo veicolo!</string>
     <string name="ramma">RAMMA</string>
+    <string name="corse_attive">Corse attive</string>
+    <string name="tempo_rimasto">Tempo rimasto</string>
 
 </resources>
