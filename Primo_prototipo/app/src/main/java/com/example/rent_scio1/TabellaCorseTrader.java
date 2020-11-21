@@ -22,7 +22,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class TabellaCorseTrader extends AppCompatActivity {
@@ -58,12 +57,11 @@ public class TabellaCorseTrader extends AppCompatActivity {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
 
-                    Run r=new Run(document.toObject(Run.class));
-                    queryCustomer(r);
+                    Run run=new Run(document.toObject(Run.class));
 
-                    runs.add(r);
+                    queryCustomer(run);
 
-                    Log.d(TAG, document.getId() + " => " + document.getData());
+                    runs.add(run);
                 }
 
                 //chine gay
@@ -85,11 +83,9 @@ public class TabellaCorseTrader extends AppCompatActivity {
                 for (QueryDocumentSnapshot document : task.getResult()) {
 
                     User u=new User(document.toObject(User.class));
-                    run.setUser(u.getName()+" "+u.getSourname());
-                    Log.d(TAG,"ENTRATO IN CUSTOMER "+run.getUser());
 
+                    queryVehicle(run,u.getName()+" "+u.getSourname());
                 }
-                queryVehicle(run);
 
             } else {
                 Log.w(TAG, "Error getting documents.", task.getException());
@@ -98,7 +94,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
     }
 
-    private void queryVehicle(Run run){
+    private void queryVehicle(Run run, String user){
 
         Query getCliente = db.collection("vehicles").whereEqualTo("vehicleUID", run.getVehicle() );
 
@@ -108,8 +104,8 @@ public class TabellaCorseTrader extends AppCompatActivity {
                 for (QueryDocumentSnapshot document : task.getResult()) {
 
                     Vehicle v=new Vehicle(document.toObject(Vehicle.class));
-                    run.setVehicle(v.getVehicleType());
 
+                    createRow(user, v.getVehicleType());
                 }
 
             } else {
@@ -119,53 +115,48 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
     }
 
-    private void createTable(ArrayList<Run> runs){
+
+    private void createRow(String user, String vehicle){
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.tabella_corse);
 
-        //dati tabella
-        for ( Run r : runs ) {
+        TableRow row;
+        row = new TableRow(this);
+        row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        row.setBackgroundColor(Color.rgb(3, 50, 73));
+        row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-            TableRow row;
-            row = new TableRow(this);
-            row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            row.setBackgroundColor(Color.rgb(3, 50, 73));
-            row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        TextView tv;
+        tv = new TextView(this);
+        tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        tv.setText(user);
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv.setTypeface(typeface);
+        tv.setTextColor(Color.rgb(113, 152, 241));
 
-            TextView tv;
-            tv = new TextView(this);
-            tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            tv.setText(r.getUser());
-            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tv.setTypeface(typeface);
-            tv.setTextColor(Color.rgb(113, 152, 241));
+        TextView tv1 = new TextView(this);
+        tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        tv1.setText(vehicle);
+        tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv1.setTypeface(typeface);
+        tv1.setTextColor(Color.rgb(113, 152, 241));
 
-            TextView tv1 = new TextView(this);
-            tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            tv1.setText(r.getVehicle());
-            tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tv1.setTypeface(typeface);
-            tv1.setTextColor(Color.rgb(113, 152, 241));
-
-            TextView tv2 = new TextView(this);
-            tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            tv2.setText("temetemi");
-            tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tv2.setTypeface(typeface);
-            tv2.setTextColor(Color.rgb(113, 152, 241));
+        TextView tv2 = new TextView(this);
+        tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        tv2.setText("temetemi");
+        tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv2.setTypeface(typeface);
+        tv2.setTextColor(Color.rgb(113, 152, 241));
 
 
 
-            row.addView(tv);
-            row.addView(tv1);
-            row.addView(tv2);
+        row.addView(tv);
+        row.addView(tv1);
+        row.addView(tv2);
 
 
-            table.addView(row);
-
-
-        }
+        table.addView(row);
 
     }
 }

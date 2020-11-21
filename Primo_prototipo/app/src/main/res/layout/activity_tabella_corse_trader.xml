@@ -54,7 +54,7 @@
                 android:gravity="center"
                 android:text="@string/cliente"
                 android:textColor="@color/text"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:gravity="center"
                 android:text="@string/veicolo"
                 android:textColor="@color/text"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -76,7 +76,7 @@
                 android:gravity="center"
                 android:text="@string/tempo_rimasto"
                 android:textColor="@color/text"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </TableRow>
     </TableLayout>
