@@ -89,5 +89,6 @@
     <string name="tempo_rimasto">Tempo rimasto</string>
     <string name="assistenza">Assistenza</string>
     <string name="ritorno_al_negozio">Ritorno al negozio</string>
+    <string name="non_ci_sono_corse_attive_al_momento">Non ci sono corse attive al momento.</string>
 
 </resources>

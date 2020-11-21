@@ -28,6 +28,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
     private final String TAG="TabellaCorseTrader";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private TextView warning_empty_table;
 
     ArrayList<Run> runs=new ArrayList<>();
 
@@ -53,6 +54,9 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
         Query getRunsTrader = db.collection("run").whereEqualTo("trader", FirebaseAuth.getInstance().getUid());
 
+        warning_empty_table = findViewById(R.id.warning_empty_table_trade);
+
+
         getRunsTrader.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -65,10 +69,12 @@ public class TabellaCorseTrader extends AppCompatActivity {
                 }
 
                 //chine gay
-                /*if( runs.size()==0 )
-                    warningEmpty.setVisibility(View.VISIBLE);*/
-            } else {
-                Log.w(TAG, "Error getting documents.", task.getException());
+                if( runs.size() == 0 ){
+                    Log.w(TAG, "Error getting documents.", task.getException());
+                }
+                else {
+                    Log.w(TAG, "Error getting documents.", task.getException());
+                }
             }
         });
     }
