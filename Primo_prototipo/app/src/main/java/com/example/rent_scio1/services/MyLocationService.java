@@ -92,7 +92,7 @@ public class MyLocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(!runAlreadyInsert) {
-            final String rawValue = intent.getStringExtra("MapsActivityClient");
+            final String rawValue = intent.getStringExtra("QRScannerClient");       //TODO PER FAR FUNZIONARE IL SALTA SCANNER -> "MapsActivityClient"
             String user = UserClient.getUser().getUser_id();
             String idComm = rawValue.split(" ")[0];
             String idVehicle = rawValue.split(" ")[1];

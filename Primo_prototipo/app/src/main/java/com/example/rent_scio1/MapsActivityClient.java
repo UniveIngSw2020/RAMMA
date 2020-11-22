@@ -86,7 +86,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         //serviceIntent = new Intent(this, LocationService.class);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mStore = FirebaseFirestore.getInstance();
-
+        
         initViews();
 
 
@@ -138,7 +138,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private void evitaBarcodeScanner(){
         Intent intent=new Intent(getApplicationContext(), MapsActivityClient.class);
 
-        String rawValue = "McjQ8VvrI2YRGboKYDuv26vMav52 2tGBtfOxbHcHNrKhQUtX";
+        String rawValue = "McjQ8VvrI2YRGboKYDuv26vMav52 2tGBtfOxbHcHNrKhQUtX 80000";
         if (!isLocationServiceRunning()) {
             serviceIntent = new Intent(this, MyLocationService.class);
             serviceIntent.putExtra(TAG, rawValue);
@@ -161,7 +161,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 FirebaseAuth.getInstance().signOut();
                 if(UserClient.getRun() != null)
                     Log.e(TAG, "PROVO AD ELIMINARE LA CORSA");
-                    deleteRun(UserClient.getUser().getUser_id());    //TODO ID CORSA E' DIVERSO DA ID CLIENTE
+                assert UserClient.getRun() != null;
+                deleteRun(UserClient.getRun().getRunUID());
                 UserClient.setRun(null);
                 UserClient.setUser(null);
                 
@@ -171,10 +172,10 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 break;
             case R.id.nuova_corsa_client:
 
-                //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO
-                evitaBarcodeScanner();
+                //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
+                //evitaBarcodeScanner();
 
-                //startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
+                startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
                 if(UserClient.getRun() != null){
                     navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
                     navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
@@ -182,7 +183,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 }
                 else{
                     navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(true);
-                }*/
+                }
                 break;
             case R.id.Assistenza:
                 help();
@@ -544,9 +545,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isLocationServiceRunning()) {
-           stopService(serviceIntent);
-        }
+//        if (isLocationServiceRunning()) {
+//           stopService(serviceIntent);
+//        }
     }
 
                 // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com

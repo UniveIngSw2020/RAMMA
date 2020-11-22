@@ -133,7 +133,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private void startLocationService(String rawValue) {
         if (!isLocationServiceRunning()) {
-            serviceIntent = new Intent(this, MyLocationService.class);
+            serviceIntent = new Intent(this, MyLocationService.class); //TODO PASSARGLI L'INTENT AL MapsActivityClient PER FERMARE IL SERVICE
             serviceIntent.putExtra(TAG, rawValue);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
