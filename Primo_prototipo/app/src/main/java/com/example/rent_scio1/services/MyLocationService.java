@@ -87,13 +87,14 @@ public class MyLocationService extends Service {
             String user = UserClient.getUser().getUser_id();
             String idComm = rawValue.split(" ")[0];
             String idVehicle = rawValue.split(" ")[1];
+            long duration = Long.parseLong(rawValue.split(" ")[2]);
             runAlreadyInsert = true;
             //Crea un nuovo documento vuoto
             DocumentReference ref = db.collection("vehicles").document();
 
             //Prendo l'id del documento che conterrà la nuova corsa
             String runUID = ref.getId();
-            UserClient.setRun(new Run(null, null, user, idComm, idVehicle, runUID, Calendar.getInstance().getTime().getTime(),80000));
+            UserClient.setRun(new Run(null, null, user, idComm, idVehicle, runUID, Calendar.getInstance().getTime().getTime(),duration));
 
             //Salvo la corsa con tutte le informazioni accetto la posizione
             addRunIntoDB(UserClient.getRun());

@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
@@ -122,28 +123,27 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
     private void updateTime(TextView timeText, Run run){
 
-        Timer timer=new Timer();
-        timer.schedule(new TimerTask() {
+        long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+
+        CountDownTimer timer= new CountDownTimer(time, 1000) {
             @Override
-            public void run() {
-                long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+            public void onTick(long millisUntilFinished) {
+                Integer minutes=(int) (millisUntilFinished / 1000) / 60;
+                Integer seconds=(int) (millisUntilFinished / 1000) % 60;
 
-                if(time<=0){
-                    timeText.setText("ESAURITO");
-                    timeText.setTextColor(Color.RED);
-                }
-                else{
+                timeText.setText(minutes.toString()+":"+seconds.toString());
 
-                    long timeSecond=time * DateUtils.SECOND_IN_MILLIS;
-                    long timeMinutes=0;
-                    if(timeSecond>59){
-                        timeMinutes=timeSecond/60;
-                        timeSecond=timeSecond-timeMinutes;
-                    }
-                    timeText.setText(String.format("%d : %d",timeMinutes,timeSecond));
+                if(minutes<5){
+                    timeText.setTextColor(Color.YELLOW);
                 }
             }
-        },1000);
+
+            @Override
+            public void onFinish() {
+                timeText.setText("TERMINATO");
+                timeText.setTextColor(Color.RED);
+            }
+        }.start();
 
     }
 

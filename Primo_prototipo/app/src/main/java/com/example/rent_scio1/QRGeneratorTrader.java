@@ -17,7 +17,8 @@ import androidmads.library.qrgenearator.QRGEncoder;
 
 public class QRGeneratorTrader extends AppCompatActivity {
 
-    private static final String ToQR="QR_code_creation";
+    private static final String ToQRVehicle="QR_code_creation_vehicle";
+    private static final String ToQRDuration="QR_code_creation_duration";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,19 +28,19 @@ public class QRGeneratorTrader extends AppCompatActivity {
         ImageView qrImage = findViewById(R.id.QR_code);
 
         //ID univoco del veicolo
-        final String UID_veicolo = getIntent().getStringExtra("QR_code_creation");
-
+        final String UID_veicolo = getIntent().getStringExtra(ToQRVehicle);
+        final String duration=getIntent().getStringExtra(ToQRDuration);
 
         
         Log.d("ciao", UserClient.getUser().toString());
 
 
-        Toast.makeText(this,UserClient.getUser().getUser_id() + " " + UID_veicolo, Toast.LENGTH_LONG).show();
+        Toast.makeText(this,UserClient.getUser().getUser_id() + " " + UID_veicolo+" "+duration, Toast.LENGTH_LONG).show();
 
 
 
         //Genero QR e ne faccio il display
-        QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().getUser_id() + " " + UID_veicolo, null, QRGContents.Type.TEXT,500);
+        QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().getUser_id() + " " + UID_veicolo + " "+duration, null, QRGContents.Type.TEXT,500);
 
         try {
             // Getting QR-Code as Bitmap

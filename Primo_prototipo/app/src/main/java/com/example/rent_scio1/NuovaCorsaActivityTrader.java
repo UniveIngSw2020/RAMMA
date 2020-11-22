@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +31,12 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
     private static final String TAG="NuovaCorsaActivityTrader";
 
-    private static final String ToQR="QR_code_creation";
+    private static final String ToQRVehicle="QR_code_creation_vehicle";
+    private static final String ToQRDuration="QR_code_creation_duration";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    NumberPicker h;
+    NumberPicker m;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,17 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
         query(veicoliDisponibili,selezionaVeicoli);
 
         initViews();
+
+        h=findViewById(R.id.ore);
+        h.setMaxValue(10);
+        h.setMinValue(0);
+
+        m=findViewById(R.id.minuti);
+        m.setMaxValue(59);
+        m.setMinValue(5);
     }
+
+
 
     private void query(ArrayList<Vehicle> veicoliDisponibili, Spinner spinner){
 
@@ -107,8 +123,13 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
 
 
+                        int durataMin=m.getValue() + h.getValue()*60;
+                        Long durataMillisec= (long) (durataMin*60)*1000;
+                        String durataString=durataMillisec.toString();
+
                         Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                        intent.putExtra(ToQR, vehicle.getVehicleUID());
+                        intent.putExtra(ToQRVehicle, vehicle.getVehicleUID());
+                        intent.putExtra(ToQRDuration,durataString);
 
                         startActivity(intent);
                     }
@@ -139,13 +160,7 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
                 public View getDropDownView(int position, View convertView, ViewGroup parent) {
                     View view = super.getDropDownView(position, convertView, parent);
                     TextView tv = (TextView) view;
-                    if(position == 0){
-                        // Set the hint text color gray
-                        tv.setTextColor(Color.rgb(3,50,73));
-                    }
-                    else {
-                        tv.setTextColor(Color.rgb(3,50,73));
-                    }
+                    tv.setTextColor(Color.rgb(3,50,73));
                     tv.setTextSize(25);
                     return view;
                 }

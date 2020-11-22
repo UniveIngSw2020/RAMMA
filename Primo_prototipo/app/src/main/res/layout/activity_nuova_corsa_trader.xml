@@ -10,6 +10,18 @@
     android:focusableInTouchMode="true"
     android:focusable="true">
 
+    <NumberPicker
+        android:id="@+id/minuti"
+        android:layout_width="48dp"
+        android:layout_height="134dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="128dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView_arrow_down2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_arrow_down1"
+        app:layout_constraintVertical_bias="0.485" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_new_corsa"
         android:layout_width="match_parent"
@@ -44,10 +56,10 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.792" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/text_view4"
@@ -63,36 +75,15 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/veicoli_disponibili"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.423"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_new_corsa"
-        app:layout_constraintVertical_bias="0.1" />
-
-    <TextView
-        android:id="@+id/text_view5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
-        android:fontFamily="@font/comfortaa_regular"
-        android:text="@string/una_volta_scelto_il_mezzo_conferma"
-        android:textAlignment="center"
-        android:textColor="@color/text"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/veicoli_disponibili"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view4"
-        app:layout_constraintVertical_bias="0.296" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imageView_arrow_down1"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_view5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view4"
@@ -107,19 +98,21 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view4"
-        app:layout_constraintVertical_bias="0.737"
+        app:layout_constraintVertical_bias="0.837"
         app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
 
-    <ImageView
-        android:id="@+id/imageView_arrow_down"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/conferma_veicolo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+    <NumberPicker
+        android:id="@+id/ore"
+        android:layout_width="48dp"
+        android:layout_height="134dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="128dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView_arrow_down2"
+        app:layout_constraintEnd_toStartOf="@+id/numberPicker"
+        app:layout_constraintHorizontal_bias="0.684"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view4"
-        app:layout_constraintVertical_bias="0.948"
-        app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView_arrow_down1"
+        app:layout_constraintVertical_bias="0.485" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

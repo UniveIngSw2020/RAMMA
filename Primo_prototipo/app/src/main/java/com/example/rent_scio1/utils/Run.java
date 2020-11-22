@@ -94,9 +94,9 @@ public class Run {
     public  String getRunUID(){
         return runUID;
     }
-    public void setRunUID(String runUID){
+    public void setRunUID(String runUID) {
         this.runUID = runUID;
-
+    }
     public long getStartTime() {
         return startTime;
     }
