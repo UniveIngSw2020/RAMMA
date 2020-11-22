@@ -10,11 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -26,19 +22,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.rent_scio1.utils.Vehicle;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VehicleListActivityTrader extends AppCompatActivity {
 
@@ -327,7 +317,10 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
                             eliminazione(v.getVehicleUID());
-                            recreate();
+
+                            Intent intent=new Intent(getApplicationContext(),VehicleListActivityTrader.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         }
                     });
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
