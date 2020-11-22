@@ -18,17 +18,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.example.rent_scio1.utils.Run;
-import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
 
 public class MyLocationService extends Service {
 
@@ -117,6 +116,29 @@ public class MyLocationService extends Service {
 
     }
 
+    private void deleteRun(String PK_run){
+        db.collection("run").document(PK_run)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e);
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        UserClient.setRun(null);
+                    }
+                });
+}
+
     private void lockVehiclebyID(String id){
         Log.d(TAG, "cerco di lockare il veicolo");
         DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
@@ -125,7 +147,9 @@ public class MyLocationService extends Service {
 
     private void unlockVehiclebyID(String id){
         DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
-        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> Log.d(TAG, "VEICOLO LIBERATO"));
+        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
+            Log.d(TAG, "VEICOLO LIBERATO");
+        });
     }
 
     private void addRunIntoDB(final Run run){
@@ -186,7 +210,10 @@ public class MyLocationService extends Service {
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
+        unlockVehiclebyID(UserClient.getRun().getVehicle());
+        deleteRun(UserClient.getRun().getRunUID());
         stopForeground(true);
+        stopSelf();
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {

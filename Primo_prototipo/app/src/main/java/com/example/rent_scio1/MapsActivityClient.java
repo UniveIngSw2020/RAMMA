@@ -26,7 +26,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
 import com.example.rent_scio1.utils.User;
@@ -83,12 +82,11 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
 
-        //serviceIntent = new Intent(this, LocationService.class);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mStore = FirebaseFirestore.getInstance();
-        
-        initViews();
+        serviceIntent = new Intent(this, MyLocationService.class);
 
+        initViews();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
@@ -136,11 +134,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         return false;
     }
     private void evitaBarcodeScanner(){
-        Intent intent=new Intent(getApplicationContext(), MapsActivityClient.class);
-
         String rawValue = "McjQ8VvrI2YRGboKYDuv26vMav52 2tGBtfOxbHcHNrKhQUtX 80000";
         if (!isLocationServiceRunning()) {
-            serviceIntent = new Intent(this, MyLocationService.class);
             serviceIntent.putExtra(TAG, rawValue);
             Log.w(TAG, rawValue);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -159,11 +154,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         switch (item.getItemId()){
             case R.id.logout_client:
                 FirebaseAuth.getInstance().signOut();
-                if(UserClient.getRun() != null)
-                    Log.e(TAG, "PROVO AD ELIMINARE LA CORSA");
-                assert UserClient.getRun() != null;
-                deleteRun(UserClient.getRun().getRunUID());
-                UserClient.setRun(null);
                 UserClient.setUser(null);
                 
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
@@ -204,7 +194,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     private void help() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());  // TODO Prendere l'ID del commerciante giusto -> POSSIBILE SONO DOPO AVER ATTIVATO AL CORSA
+        Query getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
         getTrader.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 String phoneNumber = "";
@@ -397,23 +387,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         getPositionTrader();
     }
 
-    private void deleteRun(String PK_run){
-        mStore.collection("run").document(PK_run)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e);
-                    }
-                });
-    }
-
 
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -545,28 +518,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (isLocationServiceRunning()) {
-//           stopService(serviceIntent);
-//        }
+        if (isLocationServiceRunning()) { //TODO: richimaare queste due righe al momento della terminazionedella corsa
+            stopService(serviceIntent);
+        }
     }
-
-                // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com
-                /*FirebaseFirestore db = FirebaseFirestore.getInstance();
-                Query getTrader = db.collection("users").whereEqualTo("user_id", "7NimVBuSZVhBd6GT0fcsNDOewFo1");  // TODO Prendere l'ID del commerciante giusto -> POSSIBILE SONO DOPO AVER ATTIVATO AL CORSA
-                getTrader.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        String phoneNumber = new String();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            phoneNumber = new User(document.toObject(User.class)).getPhone();
-
-                            Log.d(TAG, "CIAAAAAAAAAAAAAAAAAAAAAAAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO phone:" + phoneNumber);
-                        }
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + phoneNumber));
-                        startActivity(intent);
-                    } else {
-                        Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
-                    }
-                });*/
 
 }
