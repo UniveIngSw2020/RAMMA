@@ -12,10 +12,10 @@ public class Run {
     private String trader;
     private String vehicle;
 
-    private Date startTime;
+    private long startTime;
     private long duration;
 
-    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle,Date startTime, long duration) {
+    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle,long startTime, long duration) {
         this.geoPoint = geoPoint;
         this.timestamp = timestamp;
         this.user = user;
@@ -87,12 +87,12 @@ public class Run {
         this.vehicle = vehicle;
     }
 
-    public Date getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTimestamp) {
-        this.startTime = startTimestamp;
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 
     @Override

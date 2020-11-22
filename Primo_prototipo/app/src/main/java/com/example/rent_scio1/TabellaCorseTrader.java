@@ -126,7 +126,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                long time=run.getStartTimestamp().getTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+                long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
                 if(time<=0){
                     timeText.setText("ESAURITO");

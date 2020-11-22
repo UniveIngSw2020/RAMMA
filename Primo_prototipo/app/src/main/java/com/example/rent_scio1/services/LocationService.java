@@ -108,7 +108,7 @@ public class LocationService extends Service {
                         String user = UserClient.getUser().getUser_id();
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         Log.d(TAG, "CREATA LA RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, Calendar.getInstance().getTime(),80000));
+                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, Calendar.getInstance().getTime().getTime(),80000));
 
                         saveUserLocation(UserClient.getRun());
                     }
