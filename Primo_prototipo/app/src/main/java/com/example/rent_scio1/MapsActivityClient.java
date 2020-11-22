@@ -135,9 +135,14 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 break;
             case R.id.nuova_corsa_client:
                 startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
-                navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
-                navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+                if(UserClient.getRun() != null){
+                    navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
+                    navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
+                    navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+                }
+                else{
+                    navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(true);
+                }
                 break;
             case R.id.Assistenza:
 

@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -111,7 +112,11 @@ public class LocationService extends Service {
                         String user = UserClient.getUser().getUser_id();
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         Log.d(TAG, "CREATA LA RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, "QUI ANDREBBE L'ID MA SE FUNZIONA QUELLO CHE PENSO VA BUTTATO VIA TUTTO"));
+
+                        //UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, "QUI ANDREBBE L'ID MA SE FUNZIONA QUELLO CHE PENSO VA BUTTATO VIA TUTTO"));
+
+                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, Calendar.getInstance().getTime().getTime(),80000));
+
 
                         saveUserLocation(UserClient.getRun());
                     }

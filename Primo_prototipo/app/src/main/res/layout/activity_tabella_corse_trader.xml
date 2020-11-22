@@ -54,7 +54,7 @@
                 android:gravity="center"
                 android:text="@string/cliente"
                 android:textColor="@color/text"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:gravity="center"
                 android:text="@string/veicolo"
                 android:textColor="@color/text"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -76,9 +76,26 @@
                 android:gravity="center"
                 android:text="@string/tempo_rimasto"
                 android:textColor="@color/text"
-                android:textSize="22sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </TableRow>
     </TableLayout>
+
+    <TextView
+        android:id="@+id/warning_empty_table_trade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/non_ci_sono_corse_attive_al_momento"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:fontFamily="@font/comfortaa_regular"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabella_corse"
+        app:layout_constraintVertical_bias="0.129" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
