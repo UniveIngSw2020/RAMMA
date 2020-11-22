@@ -12,7 +12,6 @@ public class Vehicle {
     private String fk_trader;
     private String vehicleUID;
     private int seats;
-    private int ID;
     private boolean rented;
 
 
@@ -20,7 +19,6 @@ public class Vehicle {
         this.vehicleType = v.vehicleType;
         this.fk_trader = v.fk_trader;
         this.seats = v.seats;
-        this.ID = v.ID;
         this.rented = v.rented;
         this.vehicleUID = v.vehicleUID;
     }
@@ -28,7 +26,6 @@ public class Vehicle {
     public Vehicle(){
         vehicleType = null;
         seats = 0;
-        ID = 0;
         fk_trader = null;
         rented = false;
         vehicleUID = null;
@@ -48,14 +45,6 @@ public class Vehicle {
 
     public void setSeats(int seats) {
         this.seats = seats;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
     }
 
     public boolean isRented() {

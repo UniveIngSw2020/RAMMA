@@ -29,8 +29,6 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
     private static final String Intent_newVehicle_maxID="Intent_newVehicle_maxID";
     private static final String Intent_newVehicle_nVehicle="Intent_newVehicle_nVehicle";
 
-    private static int maxID=0;
-    private static int nVehicle=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,62 +40,48 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         EditText seats = findViewById(R.id.posti_a_sedere);
 
 
-        //prendo l'ID più grande
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            maxID = extras.getInt(Intent_newVehicle_maxID);
-            nVehicle = extras.getInt(Intent_newVehicle_nVehicle);
-            maxID++;
-        }
 
         //aggiungo bottone conferma e il comportamento al click
         Button conferma = findViewById(R.id.Conferma);
         conferma.setOnClickListener(v -> {
 
-            //non si può inserire più di 10 veicoli
-            if(nVehicle<=Vehicle.maxVehicles) {
-                Map<String, Object> newVehicle = new HashMap<>();
+            Map<String, Object> newVehicle = new HashMap<>();
 
-                DocumentReference ref = db.collection("vehicles").document();
-                String id = ref.getId();
-                newVehicle.put("vehicleUID", id);
+            DocumentReference ref = db.collection("vehicles").document();
+            String id = ref.getId();
+            newVehicle.put("vehicleUID", id);
 
-                newVehicle.put("fk_trader", FirebaseAuth.getInstance().getUid());
-                newVehicle.put("vehicleType", vehicle_type.getText().toString());
+            newVehicle.put("fk_trader", FirebaseAuth.getInstance().getUid());
+            newVehicle.put("vehicleType", vehicle_type.getText().toString());
 
-                Integer seatsInteger=tryParse( seats.getText().toString() );
-                if(seatsInteger==null){
-                    Toast.makeText(getApplicationContext(),"Non è mica un concerto dei metallica! Troppe persone a bordo",Toast.LENGTH_LONG).show();
-                    return;
-                }
-                newVehicle.put("seats", seatsInteger);
+            Integer seatsInteger=tryParse( seats.getText().toString() );
+            if(seatsInteger==null){
+                Toast.makeText(getApplicationContext(),"Non è mica un concerto dei metallica! Troppe persone a bordo",Toast.LENGTH_LONG).show();
+                return;
+            }
+            newVehicle.put("seats", seatsInteger);
 
-                newVehicle.put("ID", maxID);
-                newVehicle.put("rented", false);
+            newVehicle.put("rented", false);
 
 
-                //aggiungo il veicolo al db
-                ref.set(newVehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + ref.getId());
-                        }else{
-                            Log.w(TAG, "Error adding document");
-                        }
+            //aggiungo il veicolo al db
+            ref.set(newVehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + ref.getId());
+                    }else{
+                        Log.w(TAG, "Error adding document");
                     }
-                });
-                //db.collection("vehicles").add(newVehicle).addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId())).addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
+                }
+            });
+            //db.collection("vehicles").add(newVehicle).addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId())).addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
 
-                //ritorno alla tabella dei veicoli
-                Intent intent=new Intent(getApplicationContext(),VehicleListActivityTrader.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+            //ritorno alla tabella dei veicoli
+            Intent intent=new Intent(getApplicationContext(),VehicleListActivityTrader.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
 
-            }
-            else {
-                Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di 10 veicoli",Toast.LENGTH_LONG).show();
-            }
 
         });
 

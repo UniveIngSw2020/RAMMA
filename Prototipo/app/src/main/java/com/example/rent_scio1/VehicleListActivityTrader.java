@@ -1,5 +1,7 @@
 package com.example.rent_scio1;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -42,7 +44,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
     private static final String Intent_newVehicle_maxID="Intent_newVehicle_maxID";
     private static final String Intent_newVehicle_nVehicle="Intent_newVehicle_nVehicle";
-    private static int maxID=0;
+
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -67,14 +69,18 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                     vehicleArrayList.add(new Vehicle(document.toObject(Vehicle.class)));
                     Log.d(TAG, document.getId() + " => " + document.getData());
                 }
-                vehicleArrayList.sort( (o1, o2) -> o1.getID()-o2.getID() );
-                maxID=createTable(vehicleArrayList);
+                vehicleArrayList.sort( (o1, o2) -> o1.getSeats()-o2.getSeats() );
+
+                createTable(vehicleArrayList);
+
                 if( vehicleArrayList.size()==0 )
                     warningEmpty.setVisibility(View.VISIBLE);
+
             } else {
                 Log.w(TAG, "Error getting documents.", task.getException());
             }
         });
+
        /* db.collection("vehicles")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -108,48 +114,14 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             }
             else{
                 Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
-                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_maxID,maxID);
-                toNewVehicleActivityTrader.putExtra(Intent_newVehicle_nVehicle,vehicleArrayList.size());
                 startActivity(toNewVehicleActivityTrader);
             }
-        });
-
-        AtomicBoolean wasSelected= new AtomicBoolean(false);
-        Button elimina=findViewById(R.id.elimina);
-        elimina.setOnClickListener(v -> {
-
-            if(vehicleArrayList.size()==0){
-
-                Toast.makeText(getApplicationContext(),"Nulla da eliminare qui",Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            Button conferma=findViewById(R.id.conferma_eliminazione_veicolo);
-            Spinner spinner=findViewById(R.id.seleziona_veicolo_eliminare);
-
-            if(wasSelected.get()){
-
-                //nascondi tasto conferma e spinner
-                conferma.setVisibility(View.INVISIBLE);
-                spinner.setVisibility(View.INVISIBLE);
-                wasSelected.set(false);
-            }
-            else{
-
-                //mostra tasto conferma e spinner
-                conferma.setVisibility(View.VISIBLE);
-                spinner.setVisibility(View.VISIBLE);
-
-                //avvia procedura di eliminazione
-                creaEliminazione(wasSelected);
-                wasSelected.set(true);
-            }
-
         });
 
         initViews();
     }
 
+    /*
     private void creaEliminazione(AtomicBoolean wasSelected){
 
         //creo copia ArrayList per trasformarlo in ArrayAdapter
@@ -257,7 +229,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             }
         });
 
-    }
+    }*/
 
     private void eliminazione(String ID){
         db.collection("vehicles").document(ID)
@@ -274,14 +246,12 @@ public class VehicleListActivityTrader extends AppCompatActivity {
     }
 
     //ritona l'ID massimo
-    private int createTable(ArrayList<Vehicle> vehicles){
+    private void createTable(ArrayList<Vehicle> vehicles){
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.tabella_veicoli);
 
-        /*ID, Posti a sedere, Tipo veicolo, Disponibilità*/
-
-        int max=0;
+        /*Posti a sedere, Tipo veicolo, Disponibilità, Elimina*/
 
         //dati tabella
         for (Vehicle v : vehicles ) {
@@ -292,15 +262,6 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             row.setBackgroundColor(Color.rgb(3, 50, 73));
             row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-            TextView tv;
-            /*tv = findViewById(R.id.textview_dyna);*/
-            tv = new TextView(VehicleListActivityTrader.this);
-            tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-            int ID = v.getID();
-            tv.setText(Integer.toString(ID));
-            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            tv.setTypeface(typeface);
-            tv.setTextColor(Color.rgb(113, 152, 241));
 
             TextView tv1 = new TextView(VehicleListActivityTrader.this);
             tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
@@ -330,25 +291,42 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                 tv3.setTextColor(Color.rgb(94, 214, 121));
             }
 
-            row.addView(tv);
+            Button elimina=new Button(VehicleListActivityTrader.this);
+            elimina.setOnClickListener(view -> {
+                if(v.isRented()){
+                    Toast.makeText(getApplicationContext(),"Non puoi eliminare un veicolo occupato",Toast.LENGTH_LONG).show();
+                }
+                else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(VehicleListActivityTrader.this);
+                    builder.setTitle("Conferma eliminazione");
+                    builder.setMessage("Sei sicuro di voler eliminare definitivamente questo veicolo?");
+
+                    //builder.setIcon(R.drawable.ic_launcher);
+                    builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            eliminazione(v.getVehicleUID());
+                            recreate();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
+
             row.addView(tv1);
             row.addView(tv2);
             row.addView(tv3);
+            row.addView(elimina);
 
             table.addView(row);
 
-            if (ID > max) {
-                max = ID;
-            }
         }
 
-        return max;
-    }
-
-    private void recreateTable(ArrayList<Vehicle> vehicles){
-        TableLayout table = findViewById(R.id.tabella_veicoli);
-        table.removeViews(1,vehicles.size()+1);
-
-        maxID=createTable(vehicles);
     }
 }
