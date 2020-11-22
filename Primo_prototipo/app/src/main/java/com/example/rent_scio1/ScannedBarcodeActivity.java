@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.rent_scio1.services.LocationService;
+import com.example.rent_scio1.services.MyLocationService;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -169,7 +170,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private void startLocationService(String rawValue) {
         if (!isLocationServiceRunning()) {
-            serviceIntent = new Intent(this, LocationService.class);
+            serviceIntent = new Intent(this, MyLocationService.class);
             serviceIntent.putExtra(TAG, rawValue);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

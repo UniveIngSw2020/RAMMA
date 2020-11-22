@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -79,6 +80,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
 
+        //serviceIntent = new Intent(this, LocationService.class);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mStore = FirebaseFirestore.getInstance();
 
@@ -125,9 +127,10 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
                 finishAffinity();
 
-//                if (isLocationServiceRunning()) {
-//                    stopService(serviceIntent);
-//                }
+                if (isLocationServiceRunning()) {
+                    stopService(serviceIntent);
+
+                }
 
                 break;
             case R.id.nuova_corsa_client:
@@ -439,6 +442,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     }*/
 
     private boolean isLocationServiceRunning() {
+
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {

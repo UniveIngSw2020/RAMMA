@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.UserClient;
@@ -42,6 +43,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Observable;
 
+@Deprecated
 public class LocationService extends Service {
 
     private static final String TAG = "LocationService";
@@ -64,6 +66,19 @@ public class LocationService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
+    }
+
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d(TAG, "onStartCommand: called.");
+        final String rawValue = intent.getStringExtra("QRScannerClient");
+        idComm = rawValue.split(" ")[0];
+        idVehicle = rawValue.split(" ")[1];
+
+
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -79,20 +94,9 @@ public class LocationService extends Service {
             startForeground(1, notification);
         }
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand: called.");
-        final String rawValue = intent.getStringExtra("QRScannerClient");
-        idComm = rawValue.split(" ")[0];
-        idVehicle = rawValue.split(" ")[1];
-
         lockVehiclebyID(idVehicle);
 
-
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mLocationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -107,7 +111,7 @@ public class LocationService extends Service {
                         String user = UserClient.getUser().getUser_id();
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         Log.d(TAG, "CREATA LA RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle));
+                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, "QUI ANDREBBE L'ID MA SE FUNZIONA QUELLO CHE PENSO VA BUTTATO VIA TUTTO"));
 
                         saveUserLocation(UserClient.getRun());
                     }
@@ -115,6 +119,7 @@ public class LocationService extends Service {
                     Log.d(TAG, " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
                 }
             }
+
 
         };
 
@@ -189,12 +194,17 @@ public class LocationService extends Service {
 
     public void stopRequest(){
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-        unlockVehiclebyID(idVehicle);
+
+
+        //unlockVehiclebyID(idVehicle);
+        Log.w(TAG, ""+stopService(new Intent(this,   LocationService.class)));
     }
+
+
 
     @Override
     public void onDestroy() {
-
+        super.onDestroy();
         stopForeground(true);//Add this. Since stopping a service in started in foreground is different from normal services.
         stopSelf();
         Log.d(TAG,"SERVICE HAS BEEN DESTROYED!!!");

@@ -11,13 +11,15 @@ public class Run {
     private String user;
     private String trader;
     private String vehicle;
+    private String runUID;
 
-    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle) {
+    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle, String runUID) {
         this.geoPoint = geoPoint;
         this.timestamp = timestamp;
         this.user = user;
         this.trader = trader;
         this.vehicle = vehicle;
+        this.runUID = runUID;
     }
 
     public Run(Run o) {
@@ -26,6 +28,7 @@ public class Run {
         this.user = o.user;
         this.trader = o.trader;
         this.vehicle = o.vehicle;
+        this.runUID = o.runUID;
     }
 
     public Run(){
@@ -73,11 +76,17 @@ public class Run {
         this.vehicle = vehicle;
     }
 
-
+    public  String getRunUID(){
+        return runUID;
+    }
+    public void setRunUID(String runUID){
+        this.runUID = runUID;
+    }
 
     @Override
     public String toString() {
         return "Run{" +
+                "runUID=" + runUID +
                 "geoPoint=" + geoPoint +
                 ", timestamp=" + timestamp +
                 ", user='" + user + '\'' +
