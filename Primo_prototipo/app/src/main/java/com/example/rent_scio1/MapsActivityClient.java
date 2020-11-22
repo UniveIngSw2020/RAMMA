@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.services.LocationService;
+import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -59,7 +60,7 @@ import java.util.ArrayList;
 public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private static final String TAG = "MapsActivityClient: ";
+    private static final String TAG = "MapsActivityClient";
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
@@ -118,23 +119,56 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     }
 
+
+    ////////////////////////////////////////////////// FUNZIONI PER EVITARE IL BARCODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.example.rent_scio1.services.MyLocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
+    }
+    private void evitaBarcodeScanner(){
+        Intent intent=new Intent(getApplicationContext(), MapsActivityClient.class);
+
+        String rawValue = "McjQ8VvrI2YRGboKYDuv26vMav52 2tGBtfOxbHcHNrKhQUtX";
+        if (!isLocationServiceRunning()) {
+            serviceIntent = new Intent(this, MyLocationService.class);
+            serviceIntent.putExtra(TAG, rawValue);
+            Log.w(TAG, rawValue);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                MapsActivityClient.this.startForegroundService(serviceIntent);
+            } else {
+                Log.w(TAG, "parti cazzo");
+                startService(serviceIntent);
+            }
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.logout_client:
                 FirebaseAuth.getInstance().signOut();
                 UserClient.setUser(null);
+                UserClient.setRun(null);
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
                 finishAffinity();
 
-                if (isLocationServiceRunning()) {
-                    stopService(serviceIntent);
-
-                }
-
                 break;
             case R.id.nuova_corsa_client:
-                startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
+
+                //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO
+                evitaBarcodeScanner();
+
+                //startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
                 if(UserClient.getRun() != null){
                     navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
                     navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
@@ -446,7 +480,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         }
     }*/
 
-    private boolean isLocationServiceRunning() {
+    /*private boolean isLocationServiceRunning() {
 
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -457,14 +491,14 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         }
         Log.d(TAG, "isLocationServiceRunning: location service is not running.");
         return false;
-    }
+    }*/
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (isLocationServiceRunning()) {
-//           stopService(serviceIntent);
-//        }
+        if (isLocationServiceRunning()) {
+           stopService(serviceIntent);
+        }
     }
 
                 // 7NimVBuSZVhBd6GT0fcsNDOewFo1 id trader comm@gmail.com

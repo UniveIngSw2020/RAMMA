@@ -33,13 +33,12 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     private static final String TAG = "QRScannerClient";
     private Intent serviceIntent;
     SurfaceView surfaceView;
-    TextView txtBarcodeValue;
+
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    Button btnAction;
-    String intentData = "";
-    boolean isEmail = false;
+
+
 
 
     @Override
@@ -54,23 +53,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
         surfaceView = findViewById(R.id.surfaceView);
 
-
-
-        /*btnAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (intentData.length() > 0) {
-                    if (isEmail)
-                        startActivity(new Intent(ScannedBarcodeActivity.this, EmailActivity.class).putExtra("email_address", intentData));
-                    else {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(intentData)));
-                    }
-                }
-
-
-            }
-        });*/
     }
 
     private void initialiseDetectorsAndSources() {
@@ -126,30 +108,10 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
                     String rawValue = barcodes.valueAt(0).rawValue; //TODO FORSE VA
+                    Log.w(TAG, rawValue);
                     Intent intent=new Intent(getApplicationContext(), MapsActivityClient.class);
                     startLocationService(rawValue);
                     startActivity(intent);
-
-                    /*txtBarcodeValue.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-
-                            if (barcodes.valueAt(0).email != null) {
-                                txtBarcodeValue.removeCallbacks(null);
-                                intentData = barcodes.valueAt(0).email.address;
-                                txtBarcodeValue.setText(intentData);
-                                isEmail = true;
-                                btnAction.setText("ADD CONTENT TO THE MAIL");
-                            } else {
-                                isEmail = false;
-                                btnAction.setText("LAUNCH URL");
-                                intentData = barcodes.valueAt(0).displayValue;
-                                txtBarcodeValue.setText(intentData);
-
-                            }
-                        }
-                    });*/
 
                 }
             }
@@ -159,7 +121,8 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     private boolean isLocationServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
+            //TODO VEDERE SE SI PUO' METTERE IL PATH IN AUTOMATICO
+            if ("com.example.rent_scio1.services.MyLocationService".equals(service.service.getClassName())) {
                 Log.d(TAG, "isLocationServiceRunning: location service is already running.");
                 return true;
             }

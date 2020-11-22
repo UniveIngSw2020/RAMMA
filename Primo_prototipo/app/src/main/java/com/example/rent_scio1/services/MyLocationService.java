@@ -53,15 +53,25 @@ public class MyLocationService extends Service {
             Log.e(TAG, "POSIZIONE CAMBIATA");
             mLastLocation.set(location);
             updateUserLocation(location);
+//            stopService();
         }
 
         private void updateUserLocation(Location location){
-            GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+            if(UserClient.getRun() != null) {
+                Log.w(TAG, "update user location ");
+                GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
 
-            UserClient.getRun().setGeoPoint(geoPoint);
-            DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
-            mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si"));
+                UserClient.getRun().setGeoPoint(geoPoint);
+                DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
+                mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si"));
+            }
         }
+//        private void stopService(){
+//            if(UserClient.getUser() == null || UserClient.getRun() == null){
+//                stopForeground(true);
+//                stopSelf();
+//            }
+//        }
 
     }
 
@@ -70,7 +80,6 @@ public class MyLocationService extends Service {
     };
     public MyLocationService() {
     }
-
 
 
 
@@ -83,7 +92,7 @@ public class MyLocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(!runAlreadyInsert) {
-            final String rawValue = intent.getStringExtra("QRScannerClient");
+            final String rawValue = intent.getStringExtra("MapsActivityClient");
             String user = UserClient.getUser().getUser_id();
             String idComm = rawValue.split(" ")[0];
             String idVehicle = rawValue.split(" ")[1];
@@ -167,27 +176,16 @@ public class MyLocationService extends Service {
                     .setContentText("").build();
 
             startForeground(1, notification);
+
         }
 
-        /*try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    LOCATION_INTERVAL,
-                    LOCATION_DISTANCE,
-                    mLocationListeners[1]
-            );
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-        }*/
     }
+
 
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
-        super.onDestroy();
-        stopForeground(false);
+        stopForeground(true);
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {
@@ -200,7 +198,10 @@ public class MyLocationService extends Service {
                 }
             }
         }
+        super.onDestroy();
     }
+
+
 
     private void initializeLocationManager() {
         Log.e(TAG, "initializeLocationManager - LOCATION_INTERVAL: "+ LOCATION_INTERVAL + " LOCATION_DISTANCE: " + LOCATION_DISTANCE);
