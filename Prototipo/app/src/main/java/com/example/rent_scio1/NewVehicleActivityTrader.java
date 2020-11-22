@@ -41,6 +41,7 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
 
 
 
+
         //aggiungo bottone conferma e il comportamento al click
         Button conferma = findViewById(R.id.Conferma);
         conferma.setOnClickListener(v -> {

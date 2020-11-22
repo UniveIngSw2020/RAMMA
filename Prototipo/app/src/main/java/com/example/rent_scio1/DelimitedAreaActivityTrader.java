@@ -100,8 +100,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
             case R.id.confirm_changes_limited:
 
-
-                if(PolyUtil.containsLocation(trader.getPosition(),polygon.getPoints(),true)){
+                if(polygon==null || PolyUtil.containsLocation(trader.getPosition(),polygon.getPoints(),true)){
                     storeDelimitedArea();
                     startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                     finishAffinity();
@@ -126,7 +125,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         User u= UserClient.getUser();
         List<GeoPoint> geoPoints=markers.geoPointList();
 
-        u.setDelimited_area(geoPoints);
+        if(geoPoints.size()==0){
+            u.setDelimited_area(null);
+        }
+        else{
+            u.setDelimited_area(geoPoints);
+        }
 
         DocumentReference locationRef = mStore
                 .collection("users")
@@ -184,6 +188,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             markers=new PositionIterable(geoPoints,mMap);
             costruisci();
             isThereAnArea=true;
+            markersStack.addAll(markers.getMarkers());
         }
 
     }
@@ -252,9 +257,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                             }
                         }
 
+                        if(markersStack.empty())
+                            map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
                     }
                     break;
                 case R.id.clear_all:
+
                     markers.removeAll();
                     mMap.clear();
                     polygon=null;
@@ -262,7 +270,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
                     addNegozio();
 
-                    map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
+                    map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
                     break;
             }
             return true;

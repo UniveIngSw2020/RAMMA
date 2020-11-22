@@ -38,6 +38,10 @@ public class PositionIterable implements Iterable<LatLng> {
         markers=new ArrayList<>();
     }
 
+    public ArrayList<Marker> getMarkers() {
+        return markers;
+    }
+
     @NonNull
     @Override
     public Iterator<LatLng> iterator() {

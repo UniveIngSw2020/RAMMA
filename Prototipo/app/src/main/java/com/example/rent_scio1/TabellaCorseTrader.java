@@ -6,6 +6,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -43,8 +44,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
         setContentView(R.layout.activity_tabella_corse_trader);
 
         warning_empty_table = findViewById(R.id.corse_attive);
-        warning_empty_table.setVisibility(View.VISIBLE);
-        //setti visible
+        warning_empty_table.setVisibility(View.INVISIBLE);
 
         queryRuns();
         initViews();
@@ -63,14 +63,19 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
         getRunsTrader.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                boolean isEmpty=true;
                 for (QueryDocumentSnapshot document : task.getResult()) {
 
                     Run run=new Run(document.toObject(Run.class));
 
                     queryCustomer(run);
-
+                    isEmpty=false;
                 }
 
+                if(isEmpty){
+                    warning_empty_table = findViewById(R.id.corse_attive);
+                    warning_empty_table.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -205,7 +210,10 @@ public class TabellaCorseTrader extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                     deleteRun(run.getRunUID());
-                    recreate();
+
+                    Intent intent=new Intent(getApplicationContext(),TabellaCorseTrader.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             });
             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

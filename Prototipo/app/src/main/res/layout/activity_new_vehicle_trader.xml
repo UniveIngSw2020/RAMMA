@@ -23,6 +23,7 @@
         android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="236dp"
+        android:maxLength="15"
         android:backgroundTint="@color/text"
         android:ems="10"
         android:fontFamily="@font/comfortaa_regular"
