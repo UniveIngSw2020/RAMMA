@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableLayout;
@@ -22,6 +23,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class TabellaCorseTrader extends AppCompatActivity {
@@ -30,7 +35,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private TextView warning_empty_table;
 
-    ArrayList<Run> runs=new ArrayList<>();
+    private final ArrayList<Run> runs=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +73,6 @@ public class TabellaCorseTrader extends AppCompatActivity {
                     runs.add(run);
                 }
 
-                //chine gay
-                if( runs.size() == 0 ){
-                    Log.w(TAG, "Error getting documents.", task.getException());
-                }
-                else {
-                    Log.w(TAG, "Error getting documents.", task.getException());
-                }
             }
         });
     }
@@ -111,7 +109,8 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
                     Vehicle v=new Vehicle(document.toObject(Vehicle.class));
 
-                    createRow(user, v.getVehicleType());
+                    updateTime(createRow(user, v.getVehicleType(),run.getTimestamp()),run);
+
                 }
 
             } else {
@@ -121,8 +120,34 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
     }
 
+    private void updateTime(TextView timeText, Run run){
 
-    private void createRow(String user, String vehicle){
+        Timer timer=new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                long time=run.getStartTimestamp().getTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+
+                if(time<=0){
+                    timeText.setText("ESAURITO");
+                    timeText.setTextColor(Color.RED);
+                }
+                else{
+
+                    long timeSecond=time * DateUtils.SECOND_IN_MILLIS;
+                    long timeMinutes=0;
+                    if(timeSecond>59){
+                        timeMinutes=timeSecond/60;
+                        timeSecond=timeSecond-timeMinutes;
+                    }
+                    timeText.setText(String.format("%d : %d",timeMinutes,timeSecond));
+                }
+            }
+        },1000);
+
+    }
+
+    private TextView createRow(String user, String vehicle, Date time){
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.tabella_corse);
@@ -148,9 +173,10 @@ public class TabellaCorseTrader extends AppCompatActivity {
         tv1.setTypeface(typeface);
         tv1.setTextColor(Color.rgb(113, 152, 241));
 
+
         TextView tv2 = new TextView(this);
         tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-        tv2.setText("temetemi");
+
         tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv2.setTypeface(typeface);
         tv2.setTextColor(Color.rgb(113, 152, 241));
@@ -164,5 +190,6 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
         table.addView(row);
 
+        return tv2;
     }
 }
