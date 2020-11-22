@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -92,7 +93,7 @@ public class MyLocationService extends Service {
 
             //Prendo l'id del documento che conterrà la nuova corsa
             String runUID = ref.getId();
-            UserClient.setRun(new Run(null, null, user, idComm, idVehicle, runUID));
+            UserClient.setRun(new Run(null, null, user, idComm, idVehicle, runUID, Calendar.getInstance().getTime().getTime(),80000));
 
             //Salvo la corsa con tutte le informazioni accetto la posizione
             addRunIntoDB(UserClient.getRun());
