@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -25,102 +25,91 @@
         app:layout_constraintVertical_bias="0.0"
         app:titleTextColor="@color/back" />
 
-    <ScrollView
-        android:id="@+id/scrollview_table_trade"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
+    <TableLayout
+        android:id="@+id/tabella_corse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_weight="1"
-        android:fillViewport="true"
-        android:scrollbarStyle="outsideInset"
-        android:scrollbars="horizontal|vertical"
+        android:background="@drawable/border_tablelayout"
+        android:gravity="center"
+        android:paddingTop="0dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="@id/toolbar_trader_list"
+        app:layout_constraintHorizontal_weight="@integer/viewfinder_border_width"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_trader_list"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.101">
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalView_table_trade"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:scrollbars="horizontal|vertical"
-            app:layout_constraintBottom_toTopOf="@+id/scrollview_table_trade"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+        <TableRow>
 
-            <TableLayout
-                android:id="@+id/tabella_corse"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_tablelayout"
-                android:paddingTop="30dp"
-                android:stretchColumns="1"
+                android:layout_weight="1"
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:text="@string/cliente"
+                android:textColor="@color/text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="10dp"
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center"
+                android:text="@string/veicolo"
+                android:textColor="@color/text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="10dp"
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center"
+                android:text="@string/rimasti"
+                android:textColor="@color/text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="10dp"
+                android:fontFamily="@font/comfortaa_regular"
+                android:text="@string/elimina_corsa_trader_table"
+                android:textColor="@color/text"
+                android:textSize="18sp"
                 android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.937"
-                app:layout_constraintStart_toStartOf="@+id/toolbar_trader_list"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar_trader_list"
-                app:layout_constraintVertical_bias="0.02">
+                android:textStyle="bold" />
+        </TableRow>
+    </TableLayout>
 
-                <TableRow>
+    <TextView
+        android:id="@+id/corse_attive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:textAlignment="center"
+        android:fontFamily="@font/comfortaa_regular"
+        android:textColor="@color/text"
+        android:text="@string/non_ci_sono_corse_attive_al_momento"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabella_corse"
+        app:layout_constraintVertical_bias="0.182" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/border_tablelayout"
-                        android:fontFamily="@font/comfortaa_regular"
-                        android:gravity="center"
-                        android:text="@string/cliente"
-                        android:textColor="@color/text"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/border_tablelayout"
-                        android:fontFamily="@font/comfortaa_regular"
-                        android:gravity="center"
-                        android:text="@string/veicolo"
-                        android:textColor="@color/text"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/border_tablelayout"
-                        android:fontFamily="@font/comfortaa_regular"
-                        android:gravity="center"
-                        android:text="@string/tempo_rimasto"
-                        android:textColor="@color/text"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/border_tablelayout"
-                        android:fontFamily="@font/comfortaa_regular"
-                        android:gravity="center"
-                        android:text="@string/elimina"
-                        android:textColor="@color/text"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
-
-                </TableRow>
-            </TableLayout>
-        </HorizontalScrollView>
-    </ScrollView>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

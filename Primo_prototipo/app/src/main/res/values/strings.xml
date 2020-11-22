@@ -90,5 +90,7 @@
     <string name="assistenza">Assistenza</string>
     <string name="ritorno_al_negozio">Ritorno al negozio</string>
     <string name="non_ci_sono_corse_attive_al_momento">Non ci sono corse attive al momento.</string>
+    <string name="rimasti">Rimasti</string>
+    <string name="elimina_corsa_trader_table">Elimina</string>
 
 </resources>
