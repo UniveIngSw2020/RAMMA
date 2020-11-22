@@ -1,19 +1,24 @@
 package com.example.rent_scio1;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
@@ -35,6 +40,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
     private final String TAG="TabellaCorseTrader";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private TextView warning_empty_table;
+    private Toolbar toolbar_trades_active;
 
     private final ArrayList<Run> runs=new ArrayList<>();
 
@@ -49,19 +55,33 @@ public class TabellaCorseTrader extends AppCompatActivity {
     }
 
     private void initViews(){
-        Toolbar toolbar_trades_active = findViewById(R.id.toolbar_trader_list);
+        toolbar_trades_active = findViewById(R.id.toolbar_trader_list);
         setSupportActionBar(toolbar_trades_active);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.trade_table_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.end_trade:
+                Toast.makeText(this, "elimina", Toast.LENGTH_LONG).show();
+        }
+
+        return true;
     }
 
     private void queryRuns(){
 
 
         Query getRunsTrader = db.collection("run").whereEqualTo("trader", FirebaseAuth.getInstance().getUid());
-
-        warning_empty_table = findViewById(R.id.warning_empty_table_trade);
-
 
         getRunsTrader.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
