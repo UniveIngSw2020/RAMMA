@@ -21,8 +21,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Objects;
-
 import static android.text.TextUtils.isEmpty;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
@@ -118,6 +116,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         User user1 = task.getResult().toObject(User.class);
                         UserClient.setUser(user1);
+                        UserClient.setRun(null);
                         Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
                         if (user1 != null) {

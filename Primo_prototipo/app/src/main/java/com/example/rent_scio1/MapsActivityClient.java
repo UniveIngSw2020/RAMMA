@@ -11,9 +11,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +45,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -120,6 +122,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     }
 
 
+
     ////////////////////////////////////////////////// FUNZIONI PER EVITARE IL BARCODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     private boolean isLocationServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -151,14 +154,17 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.logout_client:
                 FirebaseAuth.getInstance().signOut();
-                UserClient.setUser(null);
+                if(UserClient.getRun() != null)
+                    Log.e(TAG, "PROVO AD ELIMINARE LA CORSA");
+                    deleteRun(UserClient.getUser().getUser_id());    //TODO ID CORSA E' DIVERSO DA ID CLIENTE
                 UserClient.setRun(null);
+                UserClient.setUser(null);
+                
                 startActivity(new Intent(getApplicationContext(), StartActivity.class));
                 finishAffinity();
 
@@ -176,16 +182,41 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 }
                 else{
                     navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(true);
-                }
+                }*/
                 break;
             case R.id.Assistenza:
-
+                help();
                 break;
             case R.id.go_back_shop:
-
+                returnShop();
                 break;
+            /*case R.id.terminate_run:
+                terminate_run();
+                break;*/
         }
         return true;
+    }
+
+    private void returnShop() {
+        //TODO: Molto diffcile ora come ora
+    }
+
+    private void help() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());  // TODO Prendere l'ID del commerciante giusto -> POSSIBILE SONO DOPO AVER ATTIVATO AL CORSA
+        getTrader.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String phoneNumber = "";
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    phoneNumber = new User(document.toObject(User.class)).getPhone();
+                }
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + phoneNumber));
+                startActivity(intent);
+            } else {
+                Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
+            }
+        });
     }
 
     private void getPositionTrader(){
@@ -363,6 +394,23 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         mMap = googleMap;
         enableMyLocation();
         getPositionTrader();
+    }
+
+    private void deleteRun(String PK_run){
+        mStore.collection("run").document(PK_run)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e);
+                    }
+                });
     }
 
 

@@ -95,7 +95,6 @@ public class Run {
         return runUID;
     }
 
-
     public void setRunUID(String runUID) {
         this.runUID = runUID;
     }
