@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.services.MyLocationService;
@@ -48,6 +49,8 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
         initViews();
     }
+
+
 
     private void initViews() {
 
