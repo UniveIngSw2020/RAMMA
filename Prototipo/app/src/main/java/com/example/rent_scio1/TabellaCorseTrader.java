@@ -23,6 +23,7 @@ import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -210,7 +211,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                     deleteRun(run.getRunUID());
-
+                    unlockVehiclebyID(run.getVehicle());
                     Intent intent=new Intent(getApplicationContext(),TabellaCorseTrader.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -246,5 +247,12 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
                         Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!"))
                 .addOnFailureListener(e -> Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e));
+    }
+
+    private void unlockVehiclebyID(String id){
+        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
+        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
+            Log.d(TAG, "VEICOLO LIBERATO");
+        });
     }
 }
