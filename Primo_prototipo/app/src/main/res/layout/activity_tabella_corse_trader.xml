@@ -17,7 +17,6 @@
         android:layout_height="?actionBarSize"
         android:theme="@style/ToolbarTheme"
         android:visibility="visible"
-        app:menu="@menu/trade_table_toolbar_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -106,6 +105,19 @@
                         android:textColor="@color/text"
                         android:textSize="30sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_tablelayout"
+                        android:fontFamily="@font/comfortaa_regular"
+                        android:gravity="center"
+                        android:text="@string/elimina"
+                        android:textColor="@color/text"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
                 </TableRow>
             </TableLayout>
         </HorizontalScrollView>

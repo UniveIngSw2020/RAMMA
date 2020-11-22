@@ -1,24 +1,21 @@
 package com.example.rent_scio1;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
@@ -28,11 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class TabellaCorseTrader extends AppCompatActivity {
@@ -40,46 +35,26 @@ public class TabellaCorseTrader extends AppCompatActivity {
     private final String TAG="TabellaCorseTrader";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private TextView warning_empty_table;
-    private Toolbar toolbar_trades_active;
-
-    private final ArrayList<Run> runs=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabella_corse_trader);
 
-        queryRuns();
+        //setti visible
 
+        queryRuns();
         initViews();
     }
 
     private void initViews(){
-        toolbar_trades_active = findViewById(R.id.toolbar_trader_list);
+        Toolbar toolbar_trades_active = findViewById(R.id.toolbar_trader_list);
         setSupportActionBar(toolbar_trades_active);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.trade_table_toolbar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch(item.getItemId()){
-            case R.id.end_trade:
-                Toast.makeText(this, "elimina", Toast.LENGTH_LONG).show();
-        }
-
-        return true;
-    }
-
     private void queryRuns(){
-
 
         Query getRunsTrader = db.collection("run").whereEqualTo("trader", FirebaseAuth.getInstance().getUid());
 
@@ -91,7 +66,6 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
                     queryCustomer(run);
 
-                    runs.add(run);
                 }
 
             }
@@ -109,7 +83,13 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
                     User u=new User(document.toObject(User.class));
 
-                    queryVehicle(run,u.getName()+" "+u.getSourname());
+                    String customer=u.getName()+" "+u.getSourname();
+
+                    if(customer.length()>8){
+                        customer=u.getName()+"\n"+u.getSourname();
+                    }
+
+                    queryVehicle(run,customer);
                 }
 
             } else {
@@ -130,7 +110,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
                     Vehicle v=new Vehicle(document.toObject(Vehicle.class));
 
-                    updateTime(createRow(user, v.getVehicleType(),run.getTimestamp()),run);
+                    updateTime(createRow(user, v.getVehicleType(),run.getTimestamp(),run),run);
 
                 }
 
@@ -167,7 +147,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
 
     }
 
-    private TextView createRow(String user, String vehicle, Date time){
+    private TextView createRow(String user, String vehicle, Date time, Run run){
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.tabella_corse);
@@ -202,14 +182,49 @@ public class TabellaCorseTrader extends AppCompatActivity {
         tv2.setTextColor(Color.rgb(113, 152, 241));
 
 
+        Button delete=new Button(this);
+        delete.setText("ELIMINA");
+        delete.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(TabellaCorseTrader.this);
+            builder.setTitle("Conferma eliminazione");
+            builder.setMessage("Sei sicuro di voler eliminare definitivamente questa corsa?");
+
+            //builder.setIcon(R.drawable.ic_launcher);
+            builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    deleteRun(run.getRunUID());
+                    recreate();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        });
 
         row.addView(tv);
         row.addView(tv1);
         row.addView(tv2);
+        row.addView(delete);
 
 
         table.addView(row);
 
+        //setti invisible
+
         return tv2;
+    }
+
+    private void deleteRun(String PK_run){
+        db.collection("run").document(PK_run)
+                .delete()
+                .addOnSuccessListener(aVoid ->
+
+                        Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!"))
+                .addOnFailureListener(e -> Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e));
     }
 }

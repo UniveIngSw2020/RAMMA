@@ -109,13 +109,18 @@ public class Run {
 
     @Override
     public String toString() {
-        return "Run{" +
-                "runUID=" + runUID +
-                "geoPoint=" + geoPoint +
-                ", timestamp=" + timestamp +
-                ", user='" + user + '\'' +
-                ", trader='" + trader + '\'' +
-                ", vehicle='" + vehicle + '\'' +
-                '}';
+        if( user==null ){
+            return "Seleziona una corsa: ";
+        }
+        else{
+            return "Run{" +
+                    "runUID=" + runUID +
+                    "geoPoint=" + geoPoint +
+                    ", timestamp=" + timestamp +
+                    ", user='" + user + '\'' +
+                    ", trader='" + trader + '\'' +
+                    ", vehicle='" + vehicle + '\'' +
+                    '}';
+        }
     }
 }
