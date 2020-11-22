@@ -35,12 +35,12 @@ public class QRGeneratorTrader extends AppCompatActivity {
         Log.d("ciao", UserClient.getUser().toString());
 
 
-        Toast.makeText(this,UserClient.getUser().getUser_id() + " " + UID_veicolo+" "+duration, Toast.LENGTH_LONG).show();
+        Toast.makeText(this,UserClient.getUser().getUser_id() + " " + UID_veicolo + " " + duration, Toast.LENGTH_LONG).show();
 
 
 
         //Genero QR e ne faccio il display
-        QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().getUser_id() + " " + UID_veicolo + " "+duration, null, QRGContents.Type.TEXT,500);
+        QRGEncoder qrgEncoder = new QRGEncoder(UserClient.getUser().getUser_id() + " " + UID_veicolo + " " + duration, null, QRGContents.Type.TEXT,500);
 
         try {
             // Getting QR-Code as Bitmap
