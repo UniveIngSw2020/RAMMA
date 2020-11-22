@@ -16,11 +16,15 @@
         android:layout_height="134dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="128dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView_arrow_down2"
+        android:layout_marginBottom="68dp"
+        android:backgroundTint="@color/text"
+        android:theme="@style/AppTheme.Picker"
+        app:layout_constraintBottom_toTopOf="@+id/veicoli_disponibili"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_arrow_down1"
-        app:layout_constraintVertical_bias="0.485" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/ore"
+        app:layout_constraintTop_toBottomOf="@+id/textview_number"
+        app:layout_constraintVertical_bias="0.945" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_new_corsa"
@@ -34,7 +38,7 @@
         android:id="@+id/conferma_veicolo"
         android:layout_width="215dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="80dp"
         android:background="@drawable/rounded_button"
         android:fontFamily="@font/comfortaa_regular"
         android:text="@string/conferma"
@@ -50,7 +54,7 @@
         android:id="@+id/veicoli_disponibili"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="230dp"
+        android:layout_marginBottom="190dp"
         android:background="@drawable/shape_spinner_new_trade"
         android:focusableInTouchMode="true"
         android:textAlignment="center"
@@ -62,13 +66,13 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/text_view4"
+        android:id="@+id/textview_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/comfortaa_regular"
-        android:text="@string/clicca_seleziona_un_veicolo"
+        android:text="@string/imposta_la_durata_del_noleggio_e_poi_clicca_seleziona_un_veicolo"
         android:textAlignment="center"
         android:textColor="@color/text"
         android:textSize="25sp"
@@ -78,28 +82,45 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_new_corsa"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.075" />
 
-    <ImageView
-        android:id="@+id/imageView_arrow_down1"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <TextView
+        android:id="@+id/ore_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/ore"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/ore"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.28"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view4"
-        app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_number"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
-        android:id="@+id/imageView_arrow_down2"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/veicoli_disponibili"
+    <TextView
+        android:id="@+id/minuti_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="@string/minuti"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/minuti"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.749"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view4"
-        app:layout_constraintVertical_bias="0.837"
-        app:srcCompat="@drawable/ic_round_keyboard_arrow_down_24" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_number"
+        app:layout_constraintVertical_bias="1.0" />
 
     <NumberPicker
         android:id="@+id/ore"
@@ -107,12 +128,14 @@
         android:layout_height="134dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="128dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView_arrow_down2"
-        app:layout_constraintEnd_toStartOf="@+id/numberPicker"
+        android:layout_marginBottom="68dp"
+        android:backgroundTint="@color/text"
+        android:theme="@style/AppTheme.Picker"
+        app:layout_constraintBottom_toTopOf="@+id/veicoli_disponibili"
+        app:layout_constraintEnd_toStartOf="@+id/minuti"
         app:layout_constraintHorizontal_bias="0.684"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_arrow_down1"
-        app:layout_constraintVertical_bias="0.485" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_number"
+        app:layout_constraintVertical_bias="0.945" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

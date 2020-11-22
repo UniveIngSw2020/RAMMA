@@ -94,5 +94,8 @@
     <string name="elimina_corsa_trader_table">Elimina</string>
     <string name="elimina___">Elimina</string>
     <string name="tipo_veicolo_max_15_caratteri">Tipo veicolo (max. 15 caratteri)</string>
+    <string name="imposta_la_durata_del_noleggio_e_poi_clicca_seleziona_un_veicolo">Imposta la durata del noleggio e poi clicca Seleziona un veicolo</string>
+    <string name="ore">Ore</string>
+    <string name="minuti">Minuti</string>
 
 </resources>
