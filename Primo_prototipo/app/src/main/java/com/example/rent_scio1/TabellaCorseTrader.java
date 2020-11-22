@@ -144,7 +144,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timeText.setText("TERMINATO");
-                timeText.setTextColor(Color.RED);
+                timeText.setTextColor(Color.rgb(236, 124, 124));
             }
         }.start();
 
@@ -189,10 +189,10 @@ public class TabellaCorseTrader extends AppCompatActivity {
         delete.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         delete.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         delete.setTypeface(typeface);
-        delete.setPadding(0,3,0,0);
+        delete.setPadding(0,1,0,0);
         delete.setBackgroundResource(R.drawable.rounded_button);
-        delete.setTextSize(15);
-        delete.setTextColor(Color.rgb(3,50,73));
+        delete.setTextSize(18);
+        delete.setTextColor(getResources().getColor(R.color.back));
         delete.setText("ELIMINA");
 
         delete.setOnClickListener(v -> {
