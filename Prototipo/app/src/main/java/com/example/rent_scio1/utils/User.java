@@ -144,7 +144,6 @@ public class User {
                 ", trader=" + trader +
                 ", shopname='" + shopname + '\'' +
                 ", traderposition=" + traderposition + '\'' +
-                ", delimited_area=" + delimited_area.toString() +
                 '}';
     }
 
