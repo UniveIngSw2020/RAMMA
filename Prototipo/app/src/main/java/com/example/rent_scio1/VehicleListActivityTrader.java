@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -51,6 +53,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
     private final ArrayList<Vehicle> vehicleArrayList = new ArrayList<>();
 
     private TextView warningEmpty;
+    Toolbar toolbar_vehicle_list_java;
 
 
     @Override
@@ -104,21 +107,8 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                     }
                 });*/
 
-
-
-        Button nuovo=findViewById(R.id.nuovo_veicolo);
-        nuovo.setOnClickListener(v -> {
-
-            if(vehicleArrayList.size()>=Vehicle.maxVehicles){
-                Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di 10 veicoli",Toast.LENGTH_LONG).show();
-            }
-            else{
-                Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
-                startActivity(toNewVehicleActivityTrader);
-            }
-        });
-
         initViews();
+        toolbar_vehicle_list_java = findViewById(R.id.toolbar_vehicle_list);
     }
 
     /*
@@ -231,6 +221,27 @@ public class VehicleListActivityTrader extends AppCompatActivity {
 
     }*/
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_new_vehicle_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.add_one_vehicle) {
+            if(vehicleArrayList.size()>=Vehicle.maxVehicles){
+                Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di 10 veicoli",Toast.LENGTH_LONG).show();
+            }
+            else{
+                Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);
+                startActivity(toNewVehicleActivityTrader);
+            }
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
+    }
+
     private void eliminazione(String ID){
         db.collection("vehicles").document(ID)
                 .delete()
@@ -260,6 +271,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             row = new TableRow(this);
             row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
             row.setBackgroundColor(Color.rgb(3, 50, 73));
+            row.setPadding(0,8,0,0);
             row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
@@ -291,8 +303,17 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                 tv3.setTextColor(Color.rgb(94, 214, 121));
             }
 
-            Button elimina=new Button(VehicleListActivityTrader.this);
-            elimina.setOnClickListener(view -> {
+            Button delete=new Button(VehicleListActivityTrader.this);
+            delete.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+            delete.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            delete.setTypeface(typeface);
+            delete.setPadding(0,1,0,0);
+            delete.setBackgroundResource(R.drawable.rounded_button);
+            delete.setTextSize(18);
+            delete.setTextColor(getResources().getColor(R.color.back));
+            delete.setText("ELIMINA");
+
+            delete.setOnClickListener(view -> {
                 if(v.isRented()){
                     Toast.makeText(getApplicationContext(),"Non puoi eliminare un veicolo occupato",Toast.LENGTH_LONG).show();
                 }
@@ -319,10 +340,10 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                 }
             });
 
-            row.addView(tv1);
             row.addView(tv2);
+            row.addView(tv1);
             row.addView(tv3);
-            row.addView(elimina);
+            row.addView(delete);
 
             table.addView(row);
 

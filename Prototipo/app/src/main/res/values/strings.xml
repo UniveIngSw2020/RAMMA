@@ -92,5 +92,7 @@
     <string name="non_ci_sono_corse_attive_al_momento">Non ci sono corse attive al momento.</string>
     <string name="rimasti">Rimasti</string>
     <string name="elimina_corsa_trader_table">Elimina</string>
+    <string name="elimina___">Elimina</string>
+    <string name="tipo_veicolo_max_15_caratteri">Tipo veicolo (max. 15 caratteri)</string>
 
 </resources>
