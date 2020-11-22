@@ -12,7 +12,7 @@ public class Run {
     private String trader;
     private String vehicle;
 
-    private @ServerTimestamp Date startTimestamp;
+    private Date startTimestamp;
     private long duration;
 
     public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle,Date startTimestamp, long duration) {

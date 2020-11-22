@@ -126,7 +126,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                long time=run.getStartTimestamp().getTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+                Long time=run.getStartTimestamp().getTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
                 if(time<=0){
                     timeText.setText("ESAURITO");
@@ -134,13 +134,9 @@ public class TabellaCorseTrader extends AppCompatActivity {
                 }
                 else{
 
-                    long timeSecond=time * DateUtils.SECOND_IN_MILLIS;
-                    long timeMinutes=0;
-                    if(timeSecond>59){
-                        timeMinutes=timeSecond/60;
-                        timeSecond=timeSecond-timeMinutes;
-                    }
-                    timeText.setText(String.format("%d : %d",timeMinutes,timeSecond));
+
+
+                    timeText.setText(String.format(" : "));
                 }
             }
         },1000);
