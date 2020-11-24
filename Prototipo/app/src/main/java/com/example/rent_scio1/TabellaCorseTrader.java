@@ -36,6 +36,7 @@ import java.util.Date;
 public class TabellaCorseTrader extends AppCompatActivity {
 
     private final String TAG="TabellaCorseTrader";
+    private static final String ToQR="QR_code_creation";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private TextView warning_empty_table;
 
@@ -210,10 +211,13 @@ public class TabellaCorseTrader extends AppCompatActivity {
             builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
-                    deleteRun(run.getRunUID());
-                    unlockVehiclebyID(run.getVehicle());
-                    Intent intent=new Intent(getApplicationContext(),TabellaCorseTrader.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //deleteRun(run.getRunUID());
+                    //unlockVehiclebyID(run.getVehicle());
+                    //Intent intent=new Intent(getApplicationContext(),TabellaCorseTrader.class);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                    Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
+                    intent.putExtra(ToQR, run.getRunUID());
                     startActivity(intent);
                 }
             });

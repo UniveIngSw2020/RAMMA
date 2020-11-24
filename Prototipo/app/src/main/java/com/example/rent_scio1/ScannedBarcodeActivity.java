@@ -32,20 +32,25 @@ import java.io.IOException;
 public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private static final String TAG = "QRScannerClient";
+    private static final String ToQR="QR_code_creation";
     private Intent serviceIntent;
     SurfaceView surfaceView;
 
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
+    private Action event;
 
-
+    public enum Action{
+        DELETE, ADD;
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
+        event = (Action) getIntent().getSerializableExtra(ToQR);
 
         initViews();
     }
@@ -112,9 +117,19 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 if (barcodes.size() != 0) {
                     String rawValue = barcodes.valueAt(0).rawValue; //TODO FORSE VA
                     Log.w(TAG, rawValue);
-                    Intent intent=new Intent(getApplicationContext(), MapsActivityClient.class);
-                    startLocationService(rawValue);
-                    startActivity(intent);
+                    Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+                    switch (event){
+                        case ADD:
+                            startLocationService(rawValue);
+                            startActivity(intent);
+                            break;
+                        case DELETE:
+                            stopService(new Intent(getApplicationContext(), MyLocationService.class));
+                            // TODO: delete run effettiva
+                            startActivity(intent);
+                            break;
+                    }
+
 
                 }
             }

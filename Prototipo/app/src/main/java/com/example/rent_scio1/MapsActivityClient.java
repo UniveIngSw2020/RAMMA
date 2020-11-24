@@ -54,6 +54,7 @@ import java.util.ArrayList;
 public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MapsActivityClient";
+    private static final String ToQR="QR_code_creation";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final int ERROR_DIALOG_REQUEST = 9001;
@@ -162,8 +163,12 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
                 //evitaBarcodeScanner();
 
-                startActivity(new Intent(getApplicationContext(), ScannedBarcodeActivity.class));
+                Intent intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
+                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
+                startActivity(intent);
+
                 if(UserClient.getRun() != null){
+
                     navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
                     navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
                     navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);

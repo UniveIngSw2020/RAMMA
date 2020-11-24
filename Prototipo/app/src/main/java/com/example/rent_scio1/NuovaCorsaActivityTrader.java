@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,9 +31,8 @@ import java.util.Objects;
 public class NuovaCorsaActivityTrader extends AppCompatActivity {
 
     private static final String TAG="NuovaCorsaActivityTrader";
+    private static final String ToQR="QR_code_creation";
 
-    private static final String ToQRVehicle="QR_code_creation_vehicle";
-    private static final String ToQRDuration="QR_code_creation_duration";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     NumberPicker h;
@@ -128,8 +128,7 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
                         String durataString=durataMillisec.toString();
 
                         Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                        intent.putExtra(ToQRVehicle, vehicle.getVehicleUID());
-                        intent.putExtra(ToQRDuration,durataString);
+                        intent.putExtra(ToQR, UserClient.getUser().getUser_id() + " " + vehicle.getVehicleUID() + " " + durataString);
 
                         startActivity(intent);
                     }
