@@ -100,6 +100,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         navigationView.setNavigationItemSelectedListener(this);
         if(UserClient.getRun() != null){
             navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
+            navigationView.getMenu().findItem(R.id.end_run).setVisible(true);
             navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
             navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
             Log.e(TAG, UserClient.getRun().toString());
@@ -107,6 +108,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         else{
             navigationView.getMenu().findItem(R.id.Assistenza).setVisible(false);
             navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(false);
+            navigationView.getMenu().findItem(R.id.end_run).setVisible(false);
             Log.e(TAG, "sono entrato nel ramo else");
         }
 
@@ -149,6 +151,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()){
             case R.id.logout_client:
                 FirebaseAuth.getInstance().signOut();
@@ -163,7 +166,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
                 //evitaBarcodeScanner();
 
-                Intent intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
+                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
                 intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
                 startActivity(intent);
 
@@ -171,6 +174,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
                     navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
                     navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
+                    navigationView.getMenu().findItem(R.id.end_run).setVisible(true);
                     navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
                 }
                 else{
@@ -183,9 +187,11 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             case R.id.go_back_shop:
                 returnShop();
                 break;
-            /*case R.id.terminate_run:
-                terminate_run();
-                break;*/
+            case R.id.end_run:
+                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
+                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.DELETE);
+                startActivity(intent);
+                break;
         }
         return true;
     }

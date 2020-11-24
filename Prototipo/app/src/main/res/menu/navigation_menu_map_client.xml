@@ -18,5 +18,9 @@
         <item android:id="@+id/go_back_shop"
             android:title="@string/ritorno_al_negozio"
             android:icon="@drawable/ic_go_back_shop" />
+
+        <item
+            android:id="@+id/end_run"
+            android:title="Termina corsa" />
     </group>
 </menu>
