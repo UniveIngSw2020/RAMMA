@@ -33,6 +33,7 @@
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- Customize color of navigation drawer icon and back arrow -->
         <item name="colorControlNormal">@color/text</item>
+        <item name="fontFamily">@font/comfortaa_regular</item>
         <item name="android:visibility">visible</item>
     </style>
     <style name="ToolbarTheme_inverted" parent="@style/ThemeOverlay.AppCompat.ActionBar">

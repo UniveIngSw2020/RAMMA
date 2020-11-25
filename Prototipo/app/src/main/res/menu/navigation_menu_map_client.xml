@@ -21,6 +21,7 @@
 
         <item
             android:id="@+id/end_run"
-            android:title="Termina corsa" />
+            android:title="Termina corsa"
+            android:icon="@drawable/ic_stop_trade"/>
     </group>
 </menu>

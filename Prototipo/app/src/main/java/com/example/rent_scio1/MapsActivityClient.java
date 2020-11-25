@@ -8,10 +8,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.PermissionUtils;
+import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,15 +44,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 
 public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -72,6 +83,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private ArrayList<User> listTrader = new ArrayList<>();
     private NavigationView navigationView;
 
+    Polygon delimitedArea;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +101,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
 
+
     }
+
 
     private void initViews(){
         navigationView = findViewById(R.id.navigationView_Map_Client);
@@ -262,9 +277,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     private boolean checkMapServices() {
         if (isServicesOK()) {
-            if (isMapsEnabled()) {
-                return true;
-            }
+            return isMapsEnabled();
         }
         return false;
     }
@@ -303,8 +316,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
-
-
 
     public boolean isServicesOK() {
         Log.d(TAG, "isServicesOK: checking google services version");
@@ -365,6 +376,100 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         mMap = googleMap;
         enableMyLocation();
         getPositionTrader();
+
+        //se ho una corsa attiva vado a fare la ricerca dell'area limitata del commerciante e attivo il sistema di notifiche.
+        //ogni minuto controllo se il commerciante ha cambiato l'area.
+        Run run = UserClient.getRun();
+        if (run != null) {
+
+            // calcolo il tempo rimanente alla fine della corsa, in questo modo non spreco risorse.
+            // nel caso peggiore il cliente non uscirà mai da questa schermata e dovrò aggiornare ogni minuto della corsa.
+            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+
+            CountDownTimer timer = new CountDownTimer(time,60000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    delimitedArea(run);
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            }.start();
+
+            //notifiche
+            startNotification(run);
+        }
+    }
+
+    private void startNotification(Run run) {
+        //se il commerciante ha impostato un'area limitata attivo le notifiche di posizione non consentita
+        if(delimitedArea!=null){
+
+            LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
+
+            if(!PolyUtil.containsLocation(position,delimitedArea.getPoints(),true)){
+                
+            }
+        }
+    }
+
+    private void delimitedArea(Run r) {
+
+        User u = UserClient.getUser();
+
+        //se la corsa non è più attiva durante il countdown interrompo l'aggiornamento.
+        Run run = UserClient.getRun();
+        if (run != null) {
+            //query per trovarare il commerciante associato
+            Query getTrader = mStore.collection("users").whereEqualTo("user_id", r.getTrader());
+            getTrader.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+
+                        //una volta trovato il commerciante mi getto la sua delimited area
+                        User trader = new User(document.toObject(User.class));
+                        List<GeoPoint> geoPoints = trader.getDelimited_area();
+
+                        //se il commerciante ha impostato l'area limitata vado
+                        if (geoPoints != null) {
+
+
+                            //setto la delimited area nell'oggeto user di cliente
+                            u.setDelimited_area(geoPoints);
+
+                            //display della delimited area
+                            visualizzaDelimitedArea(u);
+                        }
+                    }
+                } else {
+                    Log.w(TAG, "Error getting documents.", task.getException());
+                }
+            });
+        }
+    }
+
+    private void visualizzaDelimitedArea(User u) {
+
+        //pulisco la mappa e risetto il negozio.
+        mMap.clear();
+        setMarkerTrader();
+
+        //se esiste una delimited area la visualizzo, altrimenti no.
+        if(u!=null && u.getDelimited_area()!=null){
+
+            List<LatLng> latLngs = new ArrayList<>();
+
+            List<GeoPoint> geoPoints = u.getDelimited_area();
+            for (GeoPoint a:geoPoints) {
+                latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+            }
+
+            PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
+            delimitedArea=mMap.addPolygon(polygonOptions);
+            delimitedArea.setStrokeColor(Color.BLACK);
+        }
     }
 
 

@@ -97,5 +97,6 @@
     <string name="imposta_la_durata_del_noleggio_e_poi_clicca_seleziona_un_veicolo">Imposta la durata del noleggio e poi clicca Seleziona un veicolo</string>
     <string name="ore">Ore</string>
     <string name="minuti">Minuti</string>
+    <string name="tutorial_utilizzo_area_limitata">Tutorial utilizzo Area Limitata</string>
 
 </resources>
