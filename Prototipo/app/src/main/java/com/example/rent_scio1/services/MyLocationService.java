@@ -137,6 +137,9 @@ public class MyLocationService extends Service {
                         UserClient.setRun(null);
                     }
                 });
+
+        //elimino l'area limitata dall'oggetto cliente
+        UserClient.getUser().setDelimited_area(null);
 }
 
     private void lockVehiclebyID(String id){

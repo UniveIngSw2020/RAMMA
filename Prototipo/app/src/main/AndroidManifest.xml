@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.rent_scio1">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -23,11 +22,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentScio1">
+
+        <activity android:name=".InfoTutorialDelimitedAreaTrader"
+            android:parentActivityName=".DelimitedAreaActivityTrader"/>
         <service
             android:name=".services.MyLocationService"
             android:enabled="true"
-            android:exported="true"></service>
-        <!-- <activity android:name=".QRScannerClient" /> -->
+            android:exported="true" /> <!-- <activity android:name=".QRScannerClient" /> -->
         <activity
             android:name=".TabellaCorseTrader"
             android:parentActivityName=".MapsActivityTrader" />
