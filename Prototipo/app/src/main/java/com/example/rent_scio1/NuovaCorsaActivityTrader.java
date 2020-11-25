@@ -128,7 +128,9 @@ public class NuovaCorsaActivityTrader extends AppCompatActivity {
                         String durataString=durataMillisec.toString();
 
                         Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                        intent.putExtra(ToQR, UserClient.getUser().getUser_id() + " " + vehicle.getVehicleUID() + " " + durataString);
+                        String str = UserClient.getUser().getUser_id() + " " + vehicle.getVehicleUID() + " " + durataString;
+                        Log.w(TAG, "APRO IL QR: "+str);
+                        intent.putExtra(ToQR, str);
 
                         startActivity(intent);
                     }

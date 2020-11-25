@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -31,7 +32,7 @@ import java.io.IOException;
 
 public class ScannedBarcodeActivity extends AppCompatActivity {
 
-    private static final String TAG = "QRScannerClient";
+    private static final String TAG = "ScannedBarcodeActivity";
     private static final String ToQR="QR_code_creation";
     private Intent serviceIntent;
     SurfaceView surfaceView;
@@ -52,7 +53,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan_barcode);
         event = (Action) getIntent().getSerializableExtra(ToQR);
 
-        initViews();
     }
 
 
@@ -100,7 +100,16 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                cameraSource.stop();
+
+                    if (cameraSource != null) {
+                        try {
+                            cameraSource.release();
+                            cameraSource = null;
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
             }
         });
 
@@ -118,15 +127,21 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     String rawValue = barcodes.valueAt(0).rawValue; //TODO FORSE VA
                     Log.w(TAG, rawValue);
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+                    Log.w(TAG, "PRE SWITCH");
                     switch (event){
                         case ADD:
+                            Log.w(TAG, "SWITCH ADD");
                             startLocationService(rawValue);
                             startActivity(intent);
                             break;
                         case DELETE:
+                            Log.w(TAG, "SWITCH DELETE");
                             stopService(new Intent(getApplicationContext(), MyLocationService.class));
                             // TODO: delete run effettiva
                             startActivity(intent);
+                            break;
+                        default:
+                            Log.w(TAG, "SWITCH DEFAULT");
                             break;
                     }
 
@@ -166,13 +181,24 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        cameraSource.release();
+
+            if (cameraSource != null) {
+                try {
+                    cameraSource.release();
+                    cameraSource = null;
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        initViews();
         initialiseDetectorsAndSources();
+
 
 
     }

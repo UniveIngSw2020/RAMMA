@@ -133,7 +133,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         return false;
     }
     private void evitaBarcodeScanner(){
-        String rawValue = "McjQ8VvrI2YRGboKYDuv26vMav52 2tGBtfOxbHcHNrKhQUtX 80000";
+        String rawValue = "McjQ8VvrI2YRGboKYDuv26vMav52 qBigNbdreFNjna5ufJKC 80000";
         if (!isLocationServiceRunning()) {
             serviceIntent.putExtra(TAG, rawValue);
             Log.w(TAG, rawValue);
