@@ -111,9 +111,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 break;
 
             case R.id.how_to:
-                Toast.makeText(getApplicationContext(), "tutorial", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(), InfoTutorialDelimitedAreaTrader.class));
                 break;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
