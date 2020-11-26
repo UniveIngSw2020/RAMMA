@@ -4,25 +4,17 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.example.rent_scio1.services.LocationService;
 import com.example.rent_scio1.services.MyLocationService;
+import com.example.rent_scio1.utils.UserClient;
+
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -34,16 +26,15 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private static final String TAG = "ScannedBarcodeActivity";
     private static final String ToQR="QR_code_creation";
-    private Intent serviceIntent;
     SurfaceView surfaceView;
 
-    private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
     private Action event;
 
     public enum Action{
-        DELETE, ADD;
+        DELETE,
+        ADD
     }
 
 
@@ -67,7 +58,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
         Toast.makeText(getApplicationContext(), "Scansiona il QR!", Toast.LENGTH_SHORT).show();
 
-        barcodeDetector = new BarcodeDetector.Builder(this)
+        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
 
@@ -83,8 +74,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     if (ActivityCompat.checkSelfPermission(ScannedBarcodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         cameraSource.start(surfaceView.getHolder());
                     } else {
-                        ActivityCompat.requestPermissions(ScannedBarcodeActivity.this, new
-                                String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                        ActivityCompat.requestPermissions(ScannedBarcodeActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
                     }
 
                 } catch (IOException e) {
@@ -122,26 +112,37 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
+
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
-                    String rawValue = barcodes.valueAt(0).rawValue; //TODO FORSE VA
+                    String rawValue = barcodes.valueAt(0).rawValue;
+                    String message = "Te si drio lezar el cu erre sbaglià insemenio";
+                    int length = rawValue.split(" ").length;
                     Log.w(TAG, rawValue);
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                     Log.w(TAG, "PRE SWITCH");
+
                     switch (event){
                         case ADD:
                             Log.w(TAG, "SWITCH ADD");
-                            startLocationService(rawValue);
-                            startActivity(intent);
+                            if(length == 1){
+                                runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
+                            }else {
+                                startLocationService(rawValue);
+                                startActivity(intent);
+                            }
                             break;
                         case DELETE:
                             Log.w(TAG, "SWITCH DELETE");
-                            stopService(new Intent(getApplicationContext(), MyLocationService.class));
-                            // TODO: delete run effettiva
-                            startActivity(intent);
+                            if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
+                                stopService(new Intent(getApplicationContext(), MyLocationService.class));
+                                startActivity(intent);
+                            }else{
+                                runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
+                            }
                             break;
                         default:
-                            Log.w(TAG, "SWITCH DEFAULT");
+                            Log.w(TAG, "SWITCH DEFAULT se te riva qua e xe rogne...");
                             break;
                     }
 
@@ -166,7 +167,9 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private void startLocationService(String rawValue) {
         if (!isLocationServiceRunning()) {
-            serviceIntent = new Intent(this, MyLocationService.class);
+
+            Intent serviceIntent = new Intent(this, MyLocationService.class);
+
             serviceIntent.putExtra(TAG, rawValue);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
