@@ -15,7 +15,9 @@ public class Run {
     private long startTime;
     private long duration;
 
-    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle, String runUID, long startTime, long duration) {
+    private double speed;
+
+    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle, String runUID, long startTime, long duration, double speed) {
 
         this.geoPoint = geoPoint;
         this.timestamp = timestamp;
@@ -25,6 +27,7 @@ public class Run {
         this.runUID = runUID;
         this.startTime = startTime;
         this.duration = duration;
+        this.speed=speed;
     }
 
     public Run(Run o) {
@@ -36,6 +39,7 @@ public class Run {
         this.runUID = o.runUID;
         this.startTime=o.startTime;
         this.duration=o.duration;
+        this.speed=o.speed;
     }
 
     public Run(){
@@ -122,5 +126,13 @@ public class Run {
                     ", vehicle='" + vehicle + '\'' +
                     '}';
         }
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 }

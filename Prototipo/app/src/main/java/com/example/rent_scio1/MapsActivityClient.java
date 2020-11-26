@@ -5,13 +5,18 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -24,6 +29,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -85,7 +92,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
     Polygon delimitedArea;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +106,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(this);
-
 
     }
 
@@ -126,7 +131,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             Log.e(TAG, "sono entrato nel ramo else");
         }
 
-        textView.setText(UserClient.getUser().getEmail());
+        if(UserClient.getUser()!=null)
+            textView.setText(UserClient.getUser().getEmail());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer_map_trader.addDrawerListener(toggle);
@@ -383,14 +389,21 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         Run run = UserClient.getRun();
         if (run != null) {
 
+            NotificationCompat.Builder n=createNotificationChannel();
+
             // calcolo il tempo rimanente alla fine della corsa, in questo modo non spreco risorse.
             // nel caso peggiore il cliente non uscirà mai da questa schermata e dovrò aggiornare ogni minuto della corsa.
             long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
-            CountDownTimer timer = new CountDownTimer(time,60000) {
+            CountDownTimer timerDelimitedArea = new CountDownTimer(time,10000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
+
                     delimitedArea(run);
+                    //TODO volendo si puo' gestire un po' meglio il discorso dell'id di notifica, così da fare azioni quando bla bla bla
+
+                    startNotification(run, n,0);
+                    Log.e(TAG,"TICK TIMER");
                 }
 
                 @Override
@@ -399,19 +412,59 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 }
             }.start();
 
-            //notifiche
-            startNotification(run);
         }
     }
 
-    private void startNotification(Run run) {
+    private NotificationCompat.Builder createNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= 26) {
+
+            CharSequence name = getString(R.string.delimitedAreaChannel);
+            String description = getString(R.string.delimitedAreaChannelD);
+
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel("delimitedAreaChannel", name, importance);
+
+            channel.setDescription(description);
+
+            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "delimitedAreaChannel")
+                    .setSmallIcon(R.drawable.ic_not_permitted)
+                    .setContentTitle("My notification")
+                    .setContentText("Hello World!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .setTimeoutAfter(60000)
+                    .setSound(alarmSound);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+            // notificationId is a unique int for each notification that you must define
+            Log.e(TAG,"ENTRATO QUA: createNotificationChannel");
+
+            return builder;
+        }
+
+        return null;
+    }
+
+    private void startNotification(Run run, NotificationCompat.Builder n,int notificationID) {
+
         //se il commerciante ha impostato un'area limitata attivo le notifiche di posizione non consentita
-        if(delimitedArea!=null){
+        if(UserClient.getUser().getDelimited_area()!=null){
 
             LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
 
+
+            Log.e(TAG,"ENTRATO QUA: pre notifica");
             if(!PolyUtil.containsLocation(position,delimitedArea.getPoints(),true)){
-                
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+                // notificationId is a unique int for each notification that you must define
+                notificationManager.notify(notificationID, n.build());
             }
         }
     }
@@ -456,9 +509,10 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         //pulisco la mappa e risetto il negozio.
         mMap.clear();
         setMarkerTrader();
+        delimitedArea=null;
 
         //se esiste una delimited area la visualizzo, altrimenti no.
-        if(u!=null && u.getDelimited_area()!=null){
+        if(u!=null && u.getDelimited_area()!=null && u.getDelimited_area().size()!=0){
 
             List<LatLng> latLngs = new ArrayList<>();
 

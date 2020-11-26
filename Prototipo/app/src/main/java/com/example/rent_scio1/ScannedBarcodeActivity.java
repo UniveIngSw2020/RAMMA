@@ -161,13 +161,13 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 return true;
             }
         }
-        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        Log.e(TAG, "isLocationServiceRunning: location service is not running.");
         return false;
     }
 
     private void startLocationService(String rawValue) {
         if (!isLocationServiceRunning()) {
-
+            Log.e(TAG, "RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
             Intent serviceIntent = new Intent(this, MyLocationService.class);
 
             serviceIntent.putExtra(TAG, rawValue);

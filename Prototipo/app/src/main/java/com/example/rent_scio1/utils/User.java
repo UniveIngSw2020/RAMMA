@@ -2,7 +2,9 @@ package com.example.rent_scio1.utils;
 
 
 import com.google.firebase.firestore.GeoPoint;
+import com.google.type.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {

@@ -98,5 +98,7 @@
     <string name="ore">Ore</string>
     <string name="minuti">Minuti</string>
     <string name="tutorial_utilizzo_area_limitata">Tutorial utilizzo Area Limitata</string>
+    <string name="delimitedAreaChannel">Uscita dall\'area limitata</string>
+    <string name="delimitedAreaChannelD">Avvisa l\'utente dell\'uscita dall\'area limitata</string>
 
 </resources>

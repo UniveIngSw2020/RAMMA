@@ -115,7 +115,7 @@ public class LocationService extends Service {
 
                         //UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, "QUI ANDREBBE L'ID MA SE FUNZIONA QUELLO CHE PENSO VA BUTTATO VIA TUTTO"));
 
-                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, "ID CORSA MA TANTO NON SERVE",Calendar.getInstance().getTime().getTime(),80000));
+                        UserClient.setRun(new Run(geoPoint, null, user, idComm , idVehicle, "ID CORSA MA TANTO NON SERVE",Calendar.getInstance().getTime().getTime(),80000,0));
 
 
                         saveUserLocation(UserClient.getRun());

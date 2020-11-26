@@ -41,21 +41,28 @@ public class MyLocationService extends Service {
 
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
+        Location mPreLastLocation;
 
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
+            mPreLastLocation=new Location(provider);
         }
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
             Log.e(TAG, "POSIZIONE CAMBIATA");
+
+            mPreLastLocation.set(mLastLocation);
+
             mLastLocation.set(location);
-            updateUserLocation(location);
+            double speed= mLastLocation.getSpeed()/3.6;/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
+
+            updateUserLocation(location, speed);
 //            stopService();
         }
 
-        private void updateUserLocation(Location location){
+        private void updateUserLocation(Location location, double speed){
             if(UserClient.getRun() != null) {
                 Log.w(TAG, "update user location ");
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -63,6 +70,7 @@ public class MyLocationService extends Service {
                 UserClient.getRun().setGeoPoint(geoPoint);
                 DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
                 mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si"));
+                mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si2"));
             }
         }
 //        private void stopService(){
@@ -102,7 +110,7 @@ public class MyLocationService extends Service {
 
             //Prendo l'id del documento che conterrà la nuova corsa
             String runUID = ref.getId();
-            UserClient.setRun(new Run(null, null, user, idComm, idVehicle, runUID, Calendar.getInstance().getTime().getTime(),duration));
+            UserClient.setRun(new Run(null, null, user, idComm, idVehicle, runUID, Calendar.getInstance().getTime().getTime(),duration,0));
 
             //Salvo la corsa con tutte le informazioni accetto la posizione
             addRunIntoDB(UserClient.getRun());
@@ -138,9 +146,10 @@ public class MyLocationService extends Service {
                     }
                 });
 
+        Log.e(TAG,"AREA ELIMINATA");
         //elimino l'area limitata dall'oggetto cliente
         UserClient.getUser().setDelimited_area(null);
-}
+    }
 
     private void lockVehiclebyID(String id){
         Log.d(TAG, "cerco di lockare il veicolo");
@@ -194,7 +203,7 @@ public class MyLocationService extends Service {
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "My Channel",
+                    "Posizione",
                     NotificationManager.IMPORTANCE_DEFAULT);
 
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
@@ -213,10 +222,15 @@ public class MyLocationService extends Service {
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
+
         unlockVehiclebyID(UserClient.getRun().getVehicle());
+
         deleteRun(UserClient.getRun().getRunUID());
+
         stopForeground(true);
+
         stopSelf();
+
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {
