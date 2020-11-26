@@ -35,7 +35,7 @@ import com.google.zxing.integration.android.IntentResult;*/
 
 
 @Deprecated
-public class QRScannerClient extends AppCompatActivity {
+class QRScannerClient extends AppCompatActivity {
 
     Boolean hasAQr= false;
     private Map<String, Object> run = new HashMap<>();

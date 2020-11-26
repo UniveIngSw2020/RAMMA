@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     private static final String TAG = "MapsActivityTrader";
     //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
+    //private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
 
         mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
+        //serviceIntent = new Intent(this, GetLocationService);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapDelimiter);
@@ -116,12 +119,15 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         toggle.syncState();
     }
 
-    @SuppressLint("MissingPermission")
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Bundle b = new Bundle();
         mMap = googleMap;
         getUserDetails(googleMap);
         areaLimitata();
+        //b.putParcelable("Map", (Parcelable) mMap);
+
         //enableMyLocation();  // TODO attivare GPS in automatico
         //mMap.setMyLocationEnabled(true);
     }

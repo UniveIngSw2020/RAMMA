@@ -65,7 +65,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private void initialiseDetectorsAndSources() {
 
-        Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Scansiona il QR!", Toast.LENGTH_SHORT).show();
 
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
@@ -117,7 +117,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
-                Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -166,7 +166,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private void startLocationService(String rawValue) {
         if (!isLocationServiceRunning()) {
-            serviceIntent = new Intent(this, MyLocationService.class); //TODO PASSARGLI L'INTENT AL MapsActivityClient PER FERMARE IL SERVICE
+            serviceIntent = new Intent(this, MyLocationService.class);
             serviceIntent.putExtra(TAG, rawValue);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -181,7 +181,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
             if (cameraSource != null) {
                 try {
                     cameraSource.release();
@@ -190,7 +189,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
     }
 
     @Override
@@ -198,8 +196,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         super.onResume();
         initViews();
         initialiseDetectorsAndSources();
-
-
 
     }
 }

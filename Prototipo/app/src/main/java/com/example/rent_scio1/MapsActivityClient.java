@@ -108,7 +108,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     private void initViews(){
         navigationView = findViewById(R.id.navigationView_Map_Client);
         TextView textView = navigationView.getHeaderView(0).findViewById(R.id.text_email_client);
-        textView.setText(UserClient.getUser().getEmail());
         DrawerLayout drawer_map_trader = findViewById(R.id.drawer_map_client1);
         Toolbar toolbar = findViewById(R.id.toolbar_map_client);
         setSupportActionBar(toolbar);
@@ -126,6 +125,8 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             navigationView.getMenu().findItem(R.id.end_run).setVisible(false);
             Log.e(TAG, "sono entrato nel ramo else");
         }
+
+        textView.setText(UserClient.getUser().getEmail());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer_map_trader.addDrawerListener(toggle);
