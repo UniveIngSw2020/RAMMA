@@ -3,16 +3,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConfermaFragmentTutorial">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ConfermaFragmentTutorial"
+    android:background="@color/text">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/fragment_per_il_conferma"
-        android:textSize="25sp"
-        android:background="@color/text"
-        android:fontFamily="@font/comfortaa_regular"
-        android:textColor="@color/back" />
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/primo_testo_conferma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/text"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="center"
+            android:text="@string/una_volta_premuto_il_tasto_costruisci_per_poter_salvare_l_area_creata_baster_premere_la_spunta_che_comparir_in_alto_a_destra_per_confermare_il_tutto"
+            android:textColor="@color/back"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/prima_freccia_conferma"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/prima_freccia_conferma"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_round_arrow_down"
+            app:layout_constraintEnd_toEndOf="@id/secondo_testo_conferma"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/primo_testo_conferma" />
+
+        <TextView
+            android:id="@+id/secondo_testo_conferma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="center"
+            android:text="@string/se_hai_gi_confermato_un_area_precedente_e_vuoi_modificarla_ulteriormente_baster_tener_premuto_su_un_marker_e_spostarlo_nella_posizione_desiderata_poi_ripremere_conferma"
+            android:textColor="@color/back"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/prima_freccia_conferma"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/seconda_freccia_conferma"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_round_arrow_down"
+            app:layout_constraintEnd_toEndOf="@id/terzo_testo_conferma"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/secondo_testo_conferma" />
+
+        <TextView
+            android:id="@+id/terzo_testo_conferma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="center"
+            android:text="@string/una_volta_premuto_il_tasto_conferma_ritornerai_alla_mappa_iniziale_con_l_area_limitata_impostata"
+            android:textColor="@color/back"
+            android:textSize="18sp"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seconda_freccia_conferma" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

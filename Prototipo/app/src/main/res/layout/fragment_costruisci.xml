@@ -7,14 +7,9 @@
     android:background="@color/text"
     tools:context=".CostruisciFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="5dp"
             android:orientation="vertical">
 
@@ -22,30 +17,28 @@
                 android:id="@+id/primo_testo_costruisci"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/text"
                 android:fontFamily="@font/comfortaa_regular"
                 android:gravity="center"
                 android:text="@string/per_costruire_la_tua_area_limitata_assicurati_di_vedere_il_tuo_negozio_sulla_mappa"
                 android:textColor="@color/back"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/prima_freccia_costruisci"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.242" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/prima_freccia_costruisci"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_round_arrow_down"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/secondo_testo_costruisci"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/primo_testo_costruisci" />
+                app:layout_constraintTop_toBottomOf="@+id/primo_testo_costruisci" />
 
             <TextView
                 android:id="@+id/secondo_testo_costruisci"
@@ -59,13 +52,83 @@
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/prima_freccia_costruisci" />
+                app:layout_constraintTop_toBottomOf="@+id/prima_freccia_costruisci"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/seconda_freccia_costruisci"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_round_arrow_down"
+                app:layout_constraintEnd_toEndOf="@id/terzo_testo_costruisci"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secondo_testo_costruisci" />
+
+            <TextView
+                android:id="@+id/terzo_testo_costruisci"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text"
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center"
+                android:text="@string/una_volta_creati_i_marker_attorno_al_tuo_negozio_premi_costruisci_e_la_zona_selezionata_si_colorer"
+                android:textColor="@color/back"
+                android:textSize="18sp"
+                app:layout_constraintVertical_bias="0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seconda_freccia_costruisci" />
+
+            <ImageView
+                android:id="@+id/terza_freccia_costruisci"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_round_arrow_down"
+                app:layout_constraintBottom_toTopOf="@+id/quinto_testo_costruisci"
+                app:layout_constraintEnd_toEndOf="@id/quarto_testo_costruisci"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/terzo_testo_costruisci"
+                app:layout_constraintVertical_bias="0.0" />
 
 
+            <TextView
+                android:id="@+id/quarto_testo_costruisci"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text"
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center"
+                android:text="@string/puoi_spostare_e_quindi_modificare_la_tua_area_limitata_tenendo_premuto_un_marker_aspettando_qualche_secondo_e_trascinandolo_in_una_nuova_posizione_l_area_verr_ricalcolata_subito_dopo"
+                android:textColor="@color/back"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/terzo_testo_costruisci"
+                app:layout_constraintVertical_bias="0.158" />
 
+            <TextView
+                android:id="@+id/quinto_testo_costruisci"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text"
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center"
+                android:paddingTop="50dp"
+                android:text="@string/nota_bene_che_per_poter_disegnare_l_area_devono_esserci_minimo_3_marker_escluso_il_marker_del_tuo_negozio"
+                android:textColor="@color/back"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quarto_testo_costruisci"
+                app:layout_constraintVertical_bias="0.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </ScrollView>
 </FrameLayout>
