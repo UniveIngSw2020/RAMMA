@@ -100,5 +100,15 @@
     <string name="tutorial_utilizzo_area_limitata">Tutorial utilizzo Area Limitata</string>
     <string name="delimitedAreaChannel">Uscita dall\'area limitata</string>
     <string name="delimitedAreaChannelD">Avvisa l\'utente dell\'uscita dall\'area limitata</string>
+    <string name="pulisci_tutto">pulisci tutto</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_per_il_costruisci">Fragment per il costruisci</string>
+    <string name="fragment_per_elimina_ultimo">Fragment per elimina ultimo</string>
+    <string name="fragment_elimina_tutto">Fragment elimina tutto</string>
+    <string name="fragment_per_il_conferma">Fragment per il conferma</string>
+    <string name="per_costruire_la_tua_area_limitata_assicurati_di_vedere_il_tuo_negozio_come_nell_immagine_sottostante">Per costruire la tua area limitata assicurati di vedere il tuo negozio come nell\'immagine sottostante.</string>
+    <string name="per_costruire_la_tua_area_limitata_assicurati_di_vedere_il_tuo_negozio_sulla_mappa">Per costruire la tua area limitata, assicurati di vedere il tuo negozio sulla mappa.</string>
+    <string name="ora_tocca_sullo_schermo_per_piazzare_dei_marker_attorno_al_tuo_negozio">Ora tocca sullo schermo per piazzare dei marker attorno al tuo negozio.</string>
 
 </resources>

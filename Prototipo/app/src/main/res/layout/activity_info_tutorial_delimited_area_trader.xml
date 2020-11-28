@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,32 +11,89 @@
     android:focusableInTouchMode="true"
     android:clickable="true">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_info_tutorial_"
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ToolbarTheme"
-        android:visibility="visible"
+        android:background="@color/back"
+        app:layout_constraintBottom_toTopOf="@+id/viewPager_tutorial"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title=""
-        app:titleTextColor="@color/text" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/primo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/tutorial_utilizzo_area_limitata"
-        android:fontFamily="@font/comfortaa_regular"
-        android:textColor="@color/text"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_info_tutorial_"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ToolbarTheme"
+            app:layout_scrollFlags="scroll|snap"
+            app:title="@string/tutorial_utilizzo_area_limitata"
+            app:titleTextColor="@color/text" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tutorial_horyzontal_navbar_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="0dp"
+            android:paddingLeft="0dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
+            android:theme="@style/ToolbarTheme"
+            app:layout_collapseMode="pin"
+            app:title="@string/tutorial_utilizzo_area_limitata"
+            app:titleTextColor="@color/text">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabella_tutorial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabTextColor="@color/text">
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/build"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/costruisci"
+                    android:textAlignment="center" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/delete_ultimo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/elimina_l_ultimo" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/delete_tutto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pulisci_tutto" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/conferma" />
+
+
+            </com.google.android.material.tabs.TabLayout>
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager_tutorial"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_info_tutorial_" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
