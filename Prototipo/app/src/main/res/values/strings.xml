@@ -101,8 +101,6 @@
     <string name="delimitedAreaChannel">Uscita dall\'area limitata</string>
     <string name="delimitedAreaChannelD">Avvisa l\'utente dell\'uscita dall\'area limitata</string>
     <string name="pulisci_tutto">pulisci tutto</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fragment_per_il_costruisci">Fragment per il costruisci</string>
     <string name="fragment_per_elimina_ultimo">Fragment per elimina ultimo</string>
     <string name="fragment_elimina_tutto">Fragment elimina tutto</string>
