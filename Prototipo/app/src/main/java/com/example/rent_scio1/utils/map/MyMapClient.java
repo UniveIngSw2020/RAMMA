@@ -54,7 +54,7 @@ public class MyMapClient extends MyMap{
     private MyNotify mNotify;
     private FusedLocationProviderClient mFusedLocationClient;
     private LatLngBounds mMapBoundary;
-    //private Polygon delimitedArea;
+    private static CountDownTimer timerDelimitedArea;
 
     public MyMapClient(){
         super();
@@ -76,12 +76,12 @@ public class MyMapClient extends MyMap{
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         enableMyLocation();
-        getPositionTrader();
+        setMapDetails();
 
     }
 
 
-    private void getPositionTrader(){
+    private void setMapDetails(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query getTrader;
         if(UserClient.getRun() != null){
@@ -93,12 +93,12 @@ public class MyMapClient extends MyMap{
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                 listTrader.add(new User(document.toObject(User.class)));
             }
-            setMarkerDelimitedTrader();
+            setMarkerDelimitedTraderNotify();
         });
     }
 
 
-    private void setMarkerDelimitedTrader(){
+    private void setMarkerDelimitedTraderNotify(){
         for (User trader : listTrader) {
             //Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
             getmMap().addMarker(new MarkerOptions()
@@ -120,7 +120,8 @@ public class MyMapClient extends MyMap{
 
                 if(UserClient.getRun()!=null){
                     mNotify = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata", R.drawable.ic_not_permitted);
-                    startNotification(UserClient.getRun(), mNotify.getNotify(), 0);
+                    createNotification(UserClient.getRun(), mNotify.getNotify(), 0);
+                    timerDelimitedArea.start();
                 }
             }
         }
@@ -141,17 +142,18 @@ public class MyMapClient extends MyMap{
         }
     }
 
-    private void startNotification(Run run, Notification n, int notificationID) {
+
+    private void createNotification(Run run, Notification n, int notificationID) {
 
         // calcolo il tempo rimanente alla fine della corsa, in questo modo non spreco risorse.
         // nel caso peggiore il cliente non uscirà mai da questa schermata e dovrò aggiornare ogni minuto della corsa.
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
-        CountDownTimer timerDelimitedArea = new CountDownTimer(time,10000) {
+        timerDelimitedArea = new CountDownTimer(time,10000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
-                if(run!=null && listTrader.get(0).getDelimited_area()!=null){
+                if(run != null && run.getGeoPoint() != null && listTrader.get(0).getDelimited_area() != null){
 
                     LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
 
@@ -178,9 +180,16 @@ public class MyMapClient extends MyMap{
             public void onFinish() {
 
             }
-        }.start();
+        };
 
     }
+
+    public static void stopNotification() {
+        Log.e(TAG, "STOP DELLA NOTIFICA");
+        timerDelimitedArea.cancel();
+    }
+
+
 
     /*private void delimitedArea(Run r) {
 

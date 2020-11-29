@@ -82,8 +82,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 9004;
     private boolean mCameraPermissionGranted = false;
     private boolean mLocationPermissionGranted = false;
-    //private Notification notification_delarea;
+    //private MyMapClient myMapClient;
 
+
+    //private Notification notification_delarea;
     //private FirebaseFirestore mStore;
     //private FusedLocationProviderClient mFusedLocationClient;
     //private GoogleMap mMap;
@@ -117,7 +119,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
             }
         });*/
-
+       // myMapClient = new MyMapClient(this.getApplicationContext());
         mapFragment.getMapAsync(new MyMapClient(this.getApplicationContext()));
         /*if(UserClient.getRun() != null){
             notification_delarea = createNotificationChannel("delimitedAreaChannel", getString(R.string.delimitedAreaChannel), getString(R.string.delimitedAreaChannelD), R.drawable.ic_not_permitted);
@@ -540,6 +542,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     protected void onDestroy() {
         super.onDestroy();
         if (isLocationServiceRunning()) { //TODO: richimaare queste due righe al momento della terminazionedella corsa
+            //myMapClient.stopNotification();
             stopService(serviceIntent);
         }
     }

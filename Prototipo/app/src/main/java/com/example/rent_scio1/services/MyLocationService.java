@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.map.MyMapClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -227,6 +228,8 @@ public class MyLocationService extends Service {
         unlockVehiclebyID(UserClient.getRun().getVehicle());
 
         deleteRun(UserClient.getRun().getRunUID());
+
+        MyMapClient.stopNotification();
 
         stopForeground(true);
 

@@ -37,8 +37,8 @@ public class MyNotify{
 
             Notification not = new NotificationCompat.Builder(context, "delimitedAreaChannel")
                     .setSmallIcon(icon/*R.drawable.ic_not_permitted*/)
-                    .setContentTitle("My notification")
-                    .setContentText("Hello World!")
+                    .setContentTitle("Attenzione!")
+                    .setContentText("Hai oltrepassato l'area limitata!")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT).build();
             //.setAutoCancel(true);
             //.setTimeoutAfter(60000)
