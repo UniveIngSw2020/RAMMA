@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EliminaTuttoFragmentTutorial"
+    android:background="@color/text">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/primo_testo_elimina_ultimo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/text"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="center"
+            android:text="@string/premi_sul_tasto_pulisci_area_se_vuoi_eliminare_tutta_l_area_per_rifarla_da_capo"
+            android:textColor="@color/back"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/prima_freccia_elimina_ultimo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/prima_freccia_elimina_ultimo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_round_arrow_down"
+            app:layout_constraintEnd_toEndOf="@id/secondo_testo_elimina_ultimo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/primo_testo_elimina_ultimo" />
+
+        <TextView
+            android:id="@+id/secondo_testo_elimina_ultimo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text"
+            android:fontFamily="@font/comfortaa_regular"
+            android:gravity="center"
+            android:text="@string/rester_anche_dopo_la_cancellazione_il_marker_che_indica_il_tuo_negozio"
+            android:textColor="@color/back"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/prima_freccia_elimina_ultimo"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
