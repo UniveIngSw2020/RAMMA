@@ -13,6 +13,7 @@ public class Vehicle {
     private String vehicleUID;
     private int seats;
     private boolean rented;
+    private double maxSpeedKMH;
 
 
     public Vehicle(Vehicle v) {
@@ -21,6 +22,7 @@ public class Vehicle {
         this.seats = v.seats;
         this.rented = v.rented;
         this.vehicleUID = v.vehicleUID;
+        this.maxSpeedKMH=v.maxSpeedKMH;
     }
 
     public Vehicle(){
@@ -29,6 +31,7 @@ public class Vehicle {
         fk_trader = null;
         rented = false;
         vehicleUID = null;
+        maxSpeedKMH=0;
     }
 
     public String getVehicleType() {
@@ -62,6 +65,18 @@ public class Vehicle {
     public String getVehicleUID() { return vehicleUID; }
 
     public void setVehicleUID(String vehicleUID) { this.vehicleUID = vehicleUID; }
+
+    public static int getMaxVehicles() {
+        return maxVehicles;
+    }
+
+    public double getMaxSpeedKMH() {
+        return maxSpeedKMH;
+    }
+
+    public void setMaxSpeedKMH(double maxSpeedKMH) {
+        this.maxSpeedKMH = maxSpeedKMH;
+    }
 
     @NonNull
     @Override

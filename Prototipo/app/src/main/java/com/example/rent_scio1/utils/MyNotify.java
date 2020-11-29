@@ -15,30 +15,28 @@ public class MyNotify{
     private NotificationManager notificationManager;
     private static String TAG = "MyNotify";
 
-    public MyNotify(Context context, String IDChannel, String nameNot, String descriptionNot, int icon){
+    public MyNotify(Context context, String IDChannel, String channelName, String channelDescriptionNot, String notificationTitle, String notificationText, int icon){
         this.context = context;
         //Log.e(TAG, "diodiodiodiodio");
-        this.notify = createNotificationChannel(IDChannel, nameNot, descriptionNot, icon);
+        this.notify = createNotificationChannel(IDChannel, channelName,notificationTitle,notificationText, channelDescriptionNot, icon);
     }
 
-    private Notification createNotificationChannel(String IDChannel, String nameNot, String descriptionNot, int icon) {
-        if (Build.VERSION.SDK_INT >= 26) {
+    private Notification createNotificationChannel(String IDChannel, String channelName, String channelDescriptionNot,String notificationTitle, String notificationText, int icon) {
 
-            CharSequence name = nameNot;
-            String description = descriptionNot;
+        if (Build.VERSION.SDK_INT >= 26) {
 
             //int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
-            NotificationChannel channel = new NotificationChannel(IDChannel, name, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(IDChannel, channelName, NotificationManager.IMPORTANCE_DEFAULT);
             //Log.e(TAG, "NotificationChannel, " + channel.toString());
-            channel.setDescription(description);
+            channel.setDescription(channelDescriptionNot);
 
             //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
             Notification not = new NotificationCompat.Builder(context, "delimitedAreaChannel")
                     .setSmallIcon(icon/*R.drawable.ic_not_permitted*/)
-                    .setContentTitle("Attenzione!")
-                    .setContentText("Hai oltrepassato l'area limitata!")
+                    .setContentTitle(notificationTitle)
+                    .setContentText(notificationText)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT).build();
             //.setAutoCancel(true);
             //.setTimeoutAfter(60000)

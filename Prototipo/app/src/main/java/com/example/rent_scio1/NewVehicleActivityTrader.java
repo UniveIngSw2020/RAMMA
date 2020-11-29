@@ -38,6 +38,7 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         //creo oggetti testo per poi estrapolare il contenuto
         EditText vehicle_type = findViewById(R.id.tipo_veicolo);
         EditText seats = findViewById(R.id.posti_a_sedere);
+        EditText maxSpeed=findViewById(R.id.maxSpeed);
 
 
 
@@ -64,6 +65,12 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
 
             newVehicle.put("rented", false);
 
+            Integer maxSpeedKMH=tryParse( maxSpeed.getText().toString() );
+            if(maxSpeedKMH==null){
+                Toast.makeText(getApplicationContext(),"Va talmente veloce che viaggia nel tempo!",Toast.LENGTH_LONG).show();
+                return;
+            }
+            newVehicle.put("maxSpeedKMH", maxSpeedKMH);
 
             //aggiungo il veicolo al db
             ref.set(newVehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
