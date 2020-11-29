@@ -77,36 +77,7 @@ public class MyMapClient extends MyMap{
         super.onMapReady(googleMap);
         enableMyLocation();
         getPositionTrader();
-        Run run = UserClient.getRun();
-        if (run != null) {
 
-            Log.e(TAG, context.toString());
-            mNotify = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata", R.drawable.ic_not_permitted);
-
-            // calcolo il tempo rimanente alla fine della corsa, in questo modo non spreco risorse.
-            // nel caso peggiore il cliente non uscirà mai da questa schermata e dovrò aggiornare ogni minuto della corsa.
-            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
-
-            CountDownTimer timerDelimitedArea = new CountDownTimer(time,10000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-
-                    //IN QUESTO CASO IL CLIENTE VISUALIZZA IN TEMPO REALE LE MODIFICHE DELL'AREA LIMITATA
-                    //SPOSTARE FUORI DALL'EVENTE IL METODO ALTRIMENTI
-                    //delimitedArea(run);
-                    //TODO volendo si puo' gestire un po' meglio il discorso dell'id di notifica, così da fare azioni quando bla bla bla
-
-                    startNotification(run, mNotify.getNotify(),0);
-                    Log.e(TAG,"TICK TIMER");
-                }
-
-                @Override
-                public void onFinish() {
-
-                }
-            }.start();
-
-        }
     }
 
 
@@ -146,6 +117,11 @@ public class MyMapClient extends MyMap{
                 PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
                 Polygon polygon=getmMap().addPolygon(polygonOptions);
                 polygon.setStrokeColor(Color.BLACK);
+
+                if(UserClient.getRun()!=null){
+                    mNotify = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata", R.drawable.ic_not_permitted);
+                    startNotification(UserClient.getRun(), mNotify.getNotify(), 0);
+                }
             }
         }
     }
@@ -167,25 +143,43 @@ public class MyMapClient extends MyMap{
 
     private void startNotification(Run run, Notification n, int notificationID) {
 
-        //se il commerciante ha impostato un'area limitata attivo le notifiche di posizione non consentita
-        if(UserClient.getUser().getDelimited_area()!=null){
+        // calcolo il tempo rimanente alla fine della corsa, in questo modo non spreco risorse.
+        // nel caso peggiore il cliente non uscirà mai da questa schermata e dovrò aggiornare ogni minuto della corsa.
+        long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
-            LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
+        CountDownTimer timerDelimitedArea = new CountDownTimer(time,10000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 
-            List<LatLng> latLngs = new ArrayList<>();
-            for (GeoPoint a: listTrader.get(0).getDelimited_area()) {
-                latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+                if(run!=null && listTrader.get(0).getDelimited_area()!=null){
+
+                    LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
+
+                    List<LatLng> latLngs = new ArrayList<>();
+                    for (GeoPoint a: listTrader.get(0).getDelimited_area()) {
+                        latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+                    }
+
+                    Log.e(TAG,"ENTRATO QUA: pre notifica");
+                    if(!PolyUtil.containsLocation(position, latLngs,true)){
+
+                        //NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+                        // notificationId is a unique int for each notification that you must define
+                        mNotify.getNotificationManager().notify(notificationID, n);
+                    }
+
+                }
+
+                Log.e(TAG,"TICK TIMER");
             }
 
-            Log.e(TAG,"ENTRATO QUA: pre notifica");
-            if(!PolyUtil.containsLocation(position, latLngs,true)){
+            @Override
+            public void onFinish() {
 
-                //NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-                // notificationId is a unique int for each notification that you must define
-                mNotify.getNotificationManager().notify(notificationID, n);
             }
-        }
+        }.start();
+
     }
 
     /*private void delimitedArea(Run r) {

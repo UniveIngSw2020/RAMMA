@@ -147,8 +147,9 @@ public class MyLocationService extends Service {
                 });
 
         Log.e(TAG,"AREA ELIMINATA");
+
         //elimino l'area limitata dall'oggetto cliente
-        UserClient.getUser().setDelimited_area(null);
+        //UserClient.getUser().setDelimited_area(null);
     }
 
     private void lockVehiclebyID(String id){
