@@ -39,6 +39,7 @@ import com.example.rent_scio1.utils.PermissionUtils;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.map.MyMapClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -69,28 +70,29 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-public class MapsActivityClient extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
+public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MapsActivityClient";
     private static final String ToQR="QR_code_creation";
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 9004;
     private boolean mCameraPermissionGranted = false;
     private boolean mLocationPermissionGranted = false;
+    //private Notification notification_delarea;
 
-    private FirebaseFirestore mStore;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private GoogleMap mMap;
-    private LatLngBounds mMapBoundary;
+    //private FirebaseFirestore mStore;
+    //private FusedLocationProviderClient mFusedLocationClient;
+    //private GoogleMap mMap;
+    //private LatLngBounds mMapBoundary;
     private Intent serviceIntent;
-    private ArrayList<User> listTrader = new ArrayList<>();
+    //private ArrayList<User> listTrader = new ArrayList<>();
     private NavigationView navigationView;
 
-    Polygon delimitedArea;
+    //Polygon delimitedArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,15 +100,28 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mStore = FirebaseFirestore.getInstance();
+        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        //mStore = FirebaseFirestore.getInstance();
         serviceIntent = new Intent(this, MyLocationService.class);
         getCameraPermission();
         initViews();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
-        mapFragment.getMapAsync(this);
+        /*Query query;
+        if(UserClient.getRun() == null)
+            query = mStore.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
+        else
+            query = mStore.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
+        query.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
 
+            }
+        });*/
+
+        mapFragment.getMapAsync(new MyMapClient(this.getApplicationContext()));
+        /*if(UserClient.getRun() != null){
+            notification_delarea = createNotificationChannel("delimitedAreaChannel", getString(R.string.delimitedAreaChannel), getString(R.string.delimitedAreaChannelD), R.drawable.ic_not_permitted);
+        }*/
     }
 
 
@@ -139,6 +154,34 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         toggle.syncState();
 
     }
+
+    /*private Notification createNotificationChannel(String IDChannel, String nameNot, String descriptionNot, int icon) {
+        if (Build.VERSION.SDK_INT >= 26) {
+
+            CharSequence name = nameNot;
+            String description = descriptionNot;
+
+
+            NotificationChannel channel = new NotificationChannel(IDChannel, name, NotificationManager.IMPORTANCE_DEFAULT);
+
+            channel.setDescription(description);
+
+
+            Notification not = new NotificationCompat.Builder(this, "delimitedAreaChannel")
+                    .setSmallIcon(icon)
+                    .setContentTitle("My notification")
+                    .setContentText("Hello World!")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT).build();
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+            Log.e(TAG, "ENTRATO QUA: createNotificationChannel");
+
+            return not;
+        }
+        return null;
+    }*/
 
 
 
@@ -249,37 +292,6 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    private void getPositionTrader(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        if(UserClient.getRun() != null){
-            Query getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
-            getTrader.get().addOnSuccessListener(queryDocumentSnapshots -> {
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    listTrader.add(new User(document.toObject(User.class))) ;
-                }
-                setMarkerTrader();
-            });
-        }else{
-            Query getTrader = db.collection("users").whereEqualTo("trader", true);
-            getTrader.get().addOnSuccessListener(queryDocumentSnapshots -> {
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    listTrader.add(new User(document.toObject(User.class))) ;
-                }
-                setMarkerTrader();
-            });
-        }
-    }
-
-
-    private void setMarkerTrader(){
-        for (User trader : listTrader) {
-            Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
-                    .title(trader.getShopname())
-                    .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
-        }
-    }
 
 
     private boolean checkMapServices() {
@@ -378,21 +390,17 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    @Override
+    /*@Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         enableMyLocation();
         getPositionTrader();
 
-        //se ho una corsa attiva vado a fare la ricerca dell'area limitata del commerciante e attivo il sistema di notifiche.
-        //ogni minuto controllo se il commerciante ha cambiato l'area.
         Run run = UserClient.getRun();
         if (run != null) {
 
             NotificationCompat.Builder n=createNotificationChannel();
 
-            // calcolo il tempo rimanente alla fine della corsa, in questo modo non spreco risorse.
-            // nel caso peggiore il cliente non uscirà mai da questa schermata e dovrò aggiornare ogni minuto della corsa.
             long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
             CountDownTimer timerDelimitedArea = new CountDownTimer(time,10000) {
@@ -413,9 +421,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             }.start();
 
         }
-    }
+    }*/
 
-    private NotificationCompat.Builder createNotificationChannel(){
+    /*private NotificationCompat.Builder createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= 26) {
 
             CharSequence name = getString(R.string.delimitedAreaChannel);
@@ -448,87 +456,13 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
         }
 
         return null;
-    }
-
-    private void startNotification(Run run, NotificationCompat.Builder n,int notificationID) {
-
-        //se il commerciante ha impostato un'area limitata attivo le notifiche di posizione non consentita
-        if(UserClient.getUser().getDelimited_area()!=null){
-
-            LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
+    }*/
 
 
-            Log.e(TAG,"ENTRATO QUA: pre notifica");
-            if(!PolyUtil.containsLocation(position,delimitedArea.getPoints(),true)){
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-                // notificationId is a unique int for each notification that you must define
-                notificationManager.notify(notificationID, n.build());
-            }
-        }
-    }
-
-    private void delimitedArea(Run r) {
-
-        User u = UserClient.getUser();
-
-        //se la corsa non è più attiva durante il countdown interrompo l'aggiornamento.
-        Run run = UserClient.getRun();
-        if (run != null) {
-            //query per trovarare il commerciante associato
-            Query getTrader = mStore.collection("users").whereEqualTo("user_id", r.getTrader());
-            getTrader.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-
-                        //una volta trovato il commerciante mi getto la sua delimited area
-                        User trader = new User(document.toObject(User.class));
-                        List<GeoPoint> geoPoints = trader.getDelimited_area();
-
-                        //se il commerciante ha impostato l'area limitata vado
-                        if (geoPoints != null) {
 
 
-                            //setto la delimited area nell'oggeto user di cliente
-                            u.setDelimited_area(geoPoints);
 
-                            //display della delimited area
-                            visualizzaDelimitedArea(u);
-                        }
-                    }
-                } else {
-                    Log.w(TAG, "Error getting documents.", task.getException());
-                }
-            });
-        }
-    }
-
-    private void visualizzaDelimitedArea(User u) {
-
-        //pulisco la mappa e risetto il negozio.
-        mMap.clear();
-        setMarkerTrader();
-        delimitedArea=null;
-
-        //se esiste una delimited area la visualizzo, altrimenti no.
-        if(u!=null && u.getDelimited_area()!=null && u.getDelimited_area().size()!=0){
-
-            List<LatLng> latLngs = new ArrayList<>();
-
-            List<GeoPoint> geoPoints = u.getDelimited_area();
-            for (GeoPoint a:geoPoints) {
-                latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
-            }
-
-            PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
-            delimitedArea=mMap.addPolygon(polygonOptions);
-            delimitedArea.setStrokeColor(Color.BLACK);
-        }
-    }
-
-
-    private void enableMyLocation() {
+   /* private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
@@ -541,7 +475,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
-    }
+    }*/
 
 //    private void getUserDetails() {
 //        if (UserClient.getRun() == null) {
@@ -563,7 +497,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
 //        }
 //    }
 
-    private void getLastKnownLocation() {
+    /*private void getLastKnownLocation() {
         Log.d(TAG, "getLastKnownLocation: called.");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -581,9 +515,9 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
                 return this;
             }
         }).addOnSuccessListener(this::setCameraView);
-    }
+    }*/
 
-    private void setCameraView(Location location) {
+    /*private void setCameraView(Location location) {
         try {
 
             double bottomBundary = location.getLatitude() - .01;
@@ -599,7 +533,7 @@ public class MapsActivityClient extends AppCompatActivity implements OnMapReadyC
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
         } catch (Exception e) {
         }
-    }
+    }*/
 
 
     @Override

@@ -124,7 +124,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
                     switch (event){
                         case ADD:
-                            Log.w(TAG, "SWITCH ADD");
+                            Log.e(TAG, "SWITCH ADD");
                             if(length == 1){
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
                             }else {
@@ -133,7 +133,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                             }
                             break;
                         case DELETE:
-                            Log.w(TAG, "SWITCH DELETE");
+                            Log.e(TAG, "SWITCH DELETE");
                             if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
                                 stopService(new Intent(getApplicationContext(), MyLocationService.class));
                                 startActivity(intent);

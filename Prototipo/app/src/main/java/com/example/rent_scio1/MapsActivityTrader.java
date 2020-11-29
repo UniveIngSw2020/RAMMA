@@ -1,10 +1,8 @@
 package com.example.rent_scio1;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -16,11 +14,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.rent_scio1.utils.map.MyMap;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.map.MyMapTrader;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -39,12 +38,12 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
+public class MapsActivityTrader extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
-    private User mTrader;
+
 
     private FirebaseAuth mAuth;
-    private FirebaseFirestore mStore;
+    //private FirebaseFirestore mStore;
 
     private static final String TAG = "MapsActivityTrader";
     //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -57,53 +56,17 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_maps_trader);
 
         mAuth = FirebaseAuth.getInstance();
-        mStore = FirebaseFirestore.getInstance();
+        //mStore = FirebaseFirestore.getInstance();
         //serviceIntent = new Intent(this, GetLocationService);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapDelimiter);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(new MyMapTrader());
 
         initViews();
     }
 
-    private void getUserDetails(GoogleMap googleMap){
-        if(mTrader == null){
-            mTrader = new User();
-            DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "onComplete: successfully get teh user details");
-                        User user = task.getResult().toObject(User.class);
-                        mTrader=new User(user);
-                        /*mTrader.setGeoPoint(user.getTraderposition());*/
-                        UserClient.setUser(user);
-                        setCameraView(googleMap);
-                    }
-                }
-            });
-        }
-    }
 
-    private void setCameraView(GoogleMap googleMap){
-        double bottomBundary = mTrader.getTraderposition().getLatitude() - .01;
-        double leftBoundary = mTrader.getTraderposition().getLongitude() - .01;
-        double topBoundary = mTrader.getTraderposition().getLatitude() + .01;
-        double rightBoundary = mTrader.getTraderposition().getLongitude() + .01;
-
-        LatLngBounds mMapBoundary = new LatLngBounds(
-                new LatLng(bottomBundary, leftBoundary),
-                new LatLng(topBoundary, rightBoundary)
-        );
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
-
-        googleMap.addMarker(new MarkerOptions()
-                .position( new LatLng(mTrader.getTraderposition().getLatitude(), mTrader.getTraderposition().getLongitude()))
-                .title("Tu sei qui!"));
-    }
 
     private void initViews(){
         NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
@@ -120,19 +83,17 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    @Override
+    /*@Override
     public void onMapReady(GoogleMap googleMap) {
-        Bundle b = new Bundle();
+
         mMap = googleMap;
         getUserDetails(googleMap);
         areaLimitata();
-        //b.putParcelable("Map", (Parcelable) mMap);
 
-        //enableMyLocation();  // TODO attivare GPS in automatico
-        //mMap.setMyLocationEnabled(true);
-    }
+    }*/
 
-    private void areaLimitata(){
+    //da spostare
+    /*private void areaLimitata(){
         User u=UserClient.getUser();
 
         if(u!=null && u.getDelimited_area()!=null){
@@ -148,7 +109,7 @@ public class MapsActivityTrader extends AppCompatActivity implements OnMapReadyC
             Polygon polygon=mMap.addPolygon(polygonOptions);
             polygon.setStrokeColor(Color.BLACK);
         }
-    }
+    }*/
 
     /*private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
