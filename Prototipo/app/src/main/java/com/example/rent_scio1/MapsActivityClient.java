@@ -88,7 +88,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             }
         });*/
        // myMapClient = new MyMapClient(this.getApplicationContext());
-        mapFragment.getMapAsync(new MyMapClient(this.getApplicationContext()));
+        assert mapFragment != null;
+        mapFragment.getMapAsync(new MyMapClient(this));
         /*if(UserClient.getRun() != null){
             notification_delarea = createNotificationChannel("delimitedAreaChannel", getString(R.string.delimitedAreaChannel), getString(R.string.delimitedAreaChannelD), R.drawable.ic_not_permitted);
         }*/
@@ -199,11 +200,11 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             case R.id.nuova_corsa_client:
 
                 //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
-                //evitaBarcodeScanner();
+                evitaBarcodeScanner();
 
-                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
-                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
-                startActivity(intent);
+//                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
+//                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
+//                startActivity(intent);
 
                 if(UserClient.getRun() != null){
 

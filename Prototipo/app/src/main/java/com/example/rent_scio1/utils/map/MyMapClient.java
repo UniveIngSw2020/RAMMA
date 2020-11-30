@@ -56,7 +56,7 @@ public class MyMapClient extends MyMap{
 
     private static final String TAG = "MyMapClient";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private Context context;
+    private AppCompatActivity context;
 
     private MyNotify mNotifyDelimitedArea;
     private MyNotify mNotifySpeed;
@@ -69,7 +69,7 @@ public class MyMapClient extends MyMap{
         super();
     }
 
-    public MyMapClient(Context context){
+    public MyMapClient(AppCompatActivity context){
         super();
         this.context = context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
@@ -167,7 +167,8 @@ public class MyMapClient extends MyMap{
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
-            PermissionUtils.requestPermission((AppCompatActivity) context, LOCATION_PERMISSION_REQUEST_CODE,
+
+            PermissionUtils.requestPermission(context, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
