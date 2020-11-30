@@ -5,11 +5,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -19,6 +21,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -54,42 +57,65 @@ public class MyMapTrader extends MyMap{
                 .whereEqualTo("trader", UserClient.getUser().getUser_id())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
                                         @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
                             Log.w(TAG, "Listen failed.", e);
                             return;
                         }
 
-                        ArrayList<Run> runs = new ArrayList<>();
+                        /*ArrayList<Run> runs = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : value) {
                             runs.add(doc.toObject(Run.class));
+                        }*/
+
+                        //viewCustomers(runs);
+
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    listMarker.add(mMap.addMarker(new MarkerOptions()
+                                            .position( new LatLng(
+                                                    UserClient.getUser().getTraderposition().getLatitude(),
+                                                    UserClient.getUser().getTraderposition().getLongitude()))
+                                            .title(dc.getDocument().toObject(Run.class).getUser())
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));
+                                    break;
+                                case MODIFIED:
+                                    modifyMarker(dc.getDocument().toObject(Run.class));
+                                    break;
+                                case REMOVED:
+                                    clearMarker(dc.getDocument().toObject(Run.class));
+                                    break;
+                            }
                         }
-
-                        viewCustomers(runs);
-
                     }
                 });
+
     }
 
-    private void viewCustomers(ArrayList<Run> runs){
-        for(Run r : runs){
-            if(r.getGeoPoint() != null){
-                //mMap.clear();
-                clearMarkers();
-                listMarker.add(mMap.addMarker(new MarkerOptions()
-                        .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
-                        .title(r.getUser())));
+    private void modifyMarker(Run run){
+        if(run.getGeoPoint() != null){
+            //clearMarkers();
+
+            for(Marker m : listMarker){
+                if(m.getTitle().equals(run.getUser())){
+                    m.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
+                }
             }
+
+            /*listMarker.add(mMap.addMarker(new MarkerOptions()
+                    .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
+                    .title(r.getUser())));*/
         }
     }
 
-    private void clearMarkers(){
-        if(listMarker.size() > 0){
-            for(Marker m : listMarker){
+    private void clearMarker(Run run){
+        for(Marker m : listMarker){
+            if(m.getTitle().equals(run.getUser())){
                 m.remove();
+                listMarker.remove(m);
             }
-            listMarker = new ArrayList<>();
         }
     }
 
