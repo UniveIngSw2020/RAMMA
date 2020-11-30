@@ -3,12 +3,16 @@ package com.example.rent_scio1.utils.map;
 import android.graphics.Color;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -17,8 +21,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +37,7 @@ public class MyMapTrader extends MyMap{
     private static final String TAG = "MyMapTrader";
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private GoogleMap mMap;
-
-
-    //TODO: VISUALIZZAZIONE DELLA MAPPA
+    private ArrayList<Marker> listMarker = new ArrayList<>();
 
 
     @Override
@@ -39,10 +46,52 @@ public class MyMapTrader extends MyMap{
         mMap = googleMap;
         getUserDetails(googleMap);
         areaLimitata();
-        //METODO
+        searchCustomers();
     }
 
-    
+    private void searchCustomers(){
+        FirebaseFirestore.getInstance().collection("run")
+                .whereEqualTo("trader", UserClient.getUser().getUser_id())
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+
+                        ArrayList<Run> runs = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : value) {
+                            runs.add(doc.toObject(Run.class));
+                        }
+
+                        viewCustomers(runs);
+
+                    }
+                });
+    }
+
+    private void viewCustomers(ArrayList<Run> runs){
+        for(Run r : runs){
+            if(r.getGeoPoint() != null){
+                //mMap.clear();
+                clearMarkers();
+                listMarker.add(mMap.addMarker(new MarkerOptions()
+                        .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
+                        .title(r.getUser())));
+            }
+        }
+    }
+
+    private void clearMarkers(){
+        if(listMarker.size() > 0){
+            for(Marker m : listMarker){
+                m.remove();
+            }
+            listMarker = new ArrayList<>();
+        }
+    }
 
     private void getUserDetails(GoogleMap googleMap){
         if(mTrader == null){
