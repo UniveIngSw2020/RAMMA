@@ -33,15 +33,19 @@ import java.util.Calendar;
 public class MyLocationService extends Service {
 
     private static final String TAG = "MyLocationService";
+
     private LocationManager mLocationManager = null;
+
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
+
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private boolean runAlreadyInsert = false;
 
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
+        //in teoria non serve ma bisogna fare una prova
         Location mPreLastLocation;
 
         public LocationListener(String provider) {
@@ -71,7 +75,7 @@ public class MyLocationService extends Service {
                 UserClient.getRun().setGeoPoint(geoPoint);
                 DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
                 mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si"));
-                mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si2"));
+                mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si al quadrato"));
             }
         }
 //        private void stopService(){
