@@ -116,7 +116,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
                     String rawValue = barcodes.valueAt(0).rawValue;
-                    String message = "Te si drio lezar el cu erre sbaglià insemenio";
+                    String message = "Te si drio lezar el cu erre sbaglià";
                     int length = rawValue.split(" ").length;
                     Log.w(TAG, rawValue);
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
@@ -136,6 +136,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                             Log.e(TAG, "SWITCH DELETE");
                             if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
                                 stopService(new Intent(getApplicationContext(), MyLocationService.class));
+                                UserClient.setRun(null);
                                 startActivity(intent);
                             }else{
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
