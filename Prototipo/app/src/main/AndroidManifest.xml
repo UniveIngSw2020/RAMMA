@@ -35,7 +35,7 @@
             android:enabled="true"
             android:exported="true" /> <!-- <activity android:name=".QRScannerClient" /> -->
         <activity
-            android:name=".TabellaCorseTrader"
+            android:name=".RunTableTrader"
             android:parentActivityName=".MapsActivityTrader" />
         <activity android:name=".QRGeneratorTrader" />
         <activity
@@ -45,7 +45,7 @@
             android:name=".VehicleListActivityTrader"
             android:parentActivityName=".MapsActivityTrader" />
         <activity
-            android:name=".NuovaCorsaActivityTrader"
+            android:name=".NewRunActivityTrader"
             android:parentActivityName=".MapsActivityTrader" />
         <activity
             android:name=".DelimitedAreaActivityTrader"

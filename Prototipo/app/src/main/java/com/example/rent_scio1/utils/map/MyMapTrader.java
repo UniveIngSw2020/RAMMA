@@ -1,5 +1,6 @@
 package com.example.rent_scio1.utils.map;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,10 @@ public class MyMapTrader extends MyMap{
     private static final String TAG = "MyMapTrader";
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private GoogleMap mMap;
+    //private ArrayList<ClusterMarkers> listMarker = new ArrayList<>();
     private ArrayList<Marker> listMarker = new ArrayList<>();
+    private ClusterManager<ClusterMarkers> clusterManager;
+    private Context context;
 
 
     @Override
@@ -49,7 +54,51 @@ public class MyMapTrader extends MyMap{
         mMap = googleMap;
         getUserDetails(googleMap);
         areaLimitata();
+        setUpClusterer();
+        //searchCustomers();
+
+    }
+
+
+    public MyMapTrader(Context context) {
+        this.context = context;
+    }
+
+    private void setUpClusterer() {
+        // Position the map.
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+                UserClient.getUser().getTraderposition().getLatitude(),
+                UserClient.getUser().getTraderposition().getLatitude()), 10));
+
+        // Initialize the manager with the context and the map.
+        // (Activity extends context, so we can pass 'this' in the constructor.)
+        clusterManager = new ClusterManager<>(context, mMap);
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
+        mMap.setOnCameraIdleListener(clusterManager);
+        mMap.setOnMarkerClickListener(clusterManager);
+
+        // Add cluster items (markers) to the cluster manager.
+        //addItems();
+
         searchCustomers();
+    }
+
+    private void addItems() {
+
+        // Set some lat/lng coordinates to start with.
+        //double lat = 51.5145160;
+        //double lng = -0.1270060;
+
+        // Add ten cluster items in close proximity, for purposes of this example.
+        /*for (int i = 0; i < 10; i++) {
+            double offset = i / 60d;
+            lat = lat + offset;
+            lng = lng + offset;
+            ClusterMarkers offsetItem = new ClusterMarkers(lat, lng, "Title " + i, "Snippet " + i);
+            clusterManager.addItem(offsetItem);
+        }*/
     }
 
     private void searchCustomers(){
@@ -74,12 +123,29 @@ public class MyMapTrader extends MyMap{
                         for (DocumentChange dc : snapshots.getDocumentChanges()) {
                             switch (dc.getType()) {
                                 case ADDED:
-                                    listMarker.add(mMap.addMarker(new MarkerOptions()
+
+
+
+                                    //Aggiunto il marker alla lista di marker
+                                    clusterManager.getClusterMarkerCollection().addMarker(new MarkerOptions()
                                             .position( new LatLng(
                                                     UserClient.getUser().getTraderposition().getLatitude(),
                                                     UserClient.getUser().getTraderposition().getLongitude()))
                                             .title(dc.getDocument().toObject(Run.class).getUser())
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))
+                                    );
+
+                                    clusterManager.addItem(new ClusterMarkers(
+                                            UserClient.getUser().getTraderposition().getLatitude(),
+                                            UserClient.getUser().getTraderposition().getLongitude(),
+                                            dc.getDocument().toObject(Run.class).getUser()));
+
+                                    /*listMarker.add(mMap.addMarker(new MarkerOptions()
+                                            .position( new LatLng(
+                                                    UserClient.getUser().getTraderposition().getLatitude(),
+                                                    UserClient.getUser().getTraderposition().getLongitude()))
+                                            .title(dc.getDocument().toObject(Run.class).getUser())
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));*/
                                     break;
                                 case MODIFIED:
                                     modifyMarker(dc.getDocument().toObject(Run.class));
@@ -98,11 +164,12 @@ public class MyMapTrader extends MyMap{
         if(run.getGeoPoint() != null){
             //clearMarkers();
 
-            for(Marker m : listMarker){
+            for(/*ClusterMarkers*/ Marker m : clusterManager.getClusterMarkerCollection().getMarkers()){
                 if(m.getTitle().equals(run.getUser())){
                     m.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
                 }
             }
+
 
             /*listMarker.add(mMap.addMarker(new MarkerOptions()
                     .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
@@ -111,10 +178,12 @@ public class MyMapTrader extends MyMap{
     }
 
     private void clearMarker(Run run){
-        for(Marker m : listMarker){
+        for(Marker m : clusterManager.getClusterMarkerCollection().getMarkers()){
             if(m.getTitle().equals(run.getUser())){
+                //listMarker.remove(m);
+                //clusterManager.removeItem(m);
                 m.remove();
-                listMarker.remove(m);
+                clusterManager.getClusterMarkerCollection().getMarkers().remove(m);
             }
         }
     }

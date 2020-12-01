@@ -5,14 +5,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TableLayout;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -41,10 +37,10 @@ public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager(), 1);
-        adapter.addFragment(new CostruisciFragment(), "Costruisci");
-        adapter.addFragment(new EliminaUltimoFragmentTutorial(), "Elimina l'ultimo");
-        adapter.addFragment(new EliminaTuttoFragmentTutorial(), "Pulisci Area");
-        adapter.addFragment(new ConfermaFragmentTutorial(), "Conferma");
+        adapter.addFragment(new BuildFragment(), "Costruisci");
+        adapter.addFragment(new DeleteLastFragmentTutorial(), "Elimina l'ultimo");
+        adapter.addFragment(new DeleteAllragmentTutorial(), "Pulisci Area");
+        adapter.addFragment(new ConfirmFragmentTutorial(), "Conferma");
         viewPager.setAdapter(adapter);
     }
 
