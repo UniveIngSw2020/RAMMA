@@ -68,7 +68,7 @@
                     android:id="@+id/delete_tutto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/pulisci_tutto" />
+                    android:text="@string/pulisci_area" />
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/confirm"
