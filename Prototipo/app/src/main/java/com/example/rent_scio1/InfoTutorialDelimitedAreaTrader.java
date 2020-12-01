@@ -43,7 +43,7 @@ public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
         Adapter adapter = new Adapter(getSupportFragmentManager(), 1);
         adapter.addFragment(new CostruisciFragment(), "Costruisci");
         adapter.addFragment(new EliminaUltimoFragmentTutorial(), "Elimina l'ultimo");
-        adapter.addFragment(new EliminaTuttoFragmentTutorial(), "Elimina tutto");
+        adapter.addFragment(new EliminaTuttoFragmentTutorial(), "Pulisci Area");
         adapter.addFragment(new ConfermaFragmentTutorial(), "Conferma");
         viewPager.setAdapter(adapter);
     }
