@@ -233,6 +233,8 @@ public class MyLocationService extends Service {
 
         stopSelf();
 
+        UserClient.setRun(null);
+
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
                 try {

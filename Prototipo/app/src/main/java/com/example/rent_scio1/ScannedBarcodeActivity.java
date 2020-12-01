@@ -136,7 +136,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                             Log.e(TAG, "SWITCH DELETE");
                             if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
                                 stopService(new Intent(getApplicationContext(), MyLocationService.class));
-                                UserClient.setRun(null);
                                 startActivity(intent);
                             }else{
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
