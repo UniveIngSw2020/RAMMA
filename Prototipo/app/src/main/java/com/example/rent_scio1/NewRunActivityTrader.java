@@ -28,7 +28,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class NuovaCorsaActivityTrader extends AppCompatActivity {
+public class NewRunActivityTrader extends AppCompatActivity {
 
     private static final String TAG="NuovaCorsaActivityTrader";
     private static final String ToQR="QR_code_creation";

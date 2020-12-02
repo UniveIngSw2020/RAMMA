@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.view.ViewGroup.LayoutParams;
 
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
@@ -33,7 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class TabellaCorseTrader extends AppCompatActivity {
+public class RunTableTrader extends AppCompatActivity {
 
     private final String TAG="TabellaCorseTrader";
     private static final String ToQR="QR_code_creation";
@@ -170,14 +169,14 @@ public class TabellaCorseTrader extends AppCompatActivity {
         row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView tv;
-        tv = new TextView(TabellaCorseTrader.this);
+        tv = new TextView(RunTableTrader.this);
         tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         tv.setText(user);
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv.setTypeface(typeface);
         tv.setTextColor(Color.rgb(113, 152, 241));
 
-        TextView tv1 = new TextView(TabellaCorseTrader.this);
+        TextView tv1 = new TextView(RunTableTrader.this);
         tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         tv1.setText(vehicle);
         tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -185,14 +184,14 @@ public class TabellaCorseTrader extends AppCompatActivity {
         tv1.setTextColor(Color.rgb(113, 152, 241));
 
 
-        TextView tv2 = new TextView(TabellaCorseTrader.this);
+        TextView tv2 = new TextView(RunTableTrader.this);
         tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv2.setTypeface(typeface);
         tv2.setTextColor(Color.rgb(113, 152, 241));
 
 
-        Button delete=new Button(TabellaCorseTrader.this);
+        Button delete=new Button(RunTableTrader.this);
         delete.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         delete.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         delete.setTypeface(typeface);
@@ -203,7 +202,7 @@ public class TabellaCorseTrader extends AppCompatActivity {
         delete.setText("ELIMINA");
 
         delete.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(TabellaCorseTrader.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(RunTableTrader.this);
             builder.setTitle("Conferma eliminazione");
             builder.setMessage("Sei sicuro di voler eliminare definitivamente questa corsa?");
 

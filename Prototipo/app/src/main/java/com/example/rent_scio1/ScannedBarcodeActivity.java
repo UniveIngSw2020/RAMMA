@@ -116,7 +116,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
                     String rawValue = barcodes.valueAt(0).rawValue;
-                    String message = "Te si drio lezar el cu erre sbaglià insemenio";
+                    String message = "Te si drio lezar el cu erre sbaglià";
                     int length = rawValue.split(" ").length;
                     Log.w(TAG, rawValue);
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);

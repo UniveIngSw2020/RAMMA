@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link EliminaUltimoFragmentTutorial#newInstance} factory method to
+ * Use the {@link DeleteLastFragmentTutorial#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EliminaUltimoFragmentTutorial extends Fragment {
+public class DeleteLastFragmentTutorial extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +24,7 @@ public class EliminaUltimoFragmentTutorial extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public EliminaUltimoFragmentTutorial() {
+    public DeleteLastFragmentTutorial() {
         // Required empty public constructor
     }
 
@@ -37,8 +37,8 @@ public class EliminaUltimoFragmentTutorial extends Fragment {
      * @return A new instance of fragment EliminaUltimoFragmentTutorial.
      */
     // TODO: Rename and change types and number of parameters
-    public static EliminaUltimoFragmentTutorial newInstance(String param1, String param2) {
-        EliminaUltimoFragmentTutorial fragment = new EliminaUltimoFragmentTutorial();
+    public static DeleteLastFragmentTutorial newInstance(String param1, String param2) {
+        DeleteLastFragmentTutorial fragment = new DeleteLastFragmentTutorial();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

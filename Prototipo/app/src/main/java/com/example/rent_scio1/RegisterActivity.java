@@ -75,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String userID;
     private FusedLocationProviderClient mFusedLocationClient;
     private boolean mLocationPermissionGranted = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -344,6 +345,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void checkTraderRegister (){
+
         mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(mTrader.isChecked()){
 
@@ -366,6 +368,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -377,7 +380,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         }
-
     }
 
     @Override
@@ -394,9 +396,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private boolean checkMapServices(){
         if(isServicesOK()){
-            if(isMapsEnabled()){
-                return true;
-            }
+            return isMapsEnabled();
         }
         return false;
     }
@@ -438,6 +438,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
+
                         Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
 
