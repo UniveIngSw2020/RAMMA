@@ -134,11 +134,14 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                             break;
                         case DELETE:
                             Log.e(TAG, "SWITCH DELETE");
-                            if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
-                                stopService(new Intent(getApplicationContext(), MyLocationService.class));
-                                startActivity(intent);
-                            }else{
-                                runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
+                            //Log.e(TAG, "SWITCH DELETE           " + UserClient.getRun().getRunUID());
+                            if(UserClient.getRun() != null){
+                                if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
+                                    stopService(new Intent(getApplicationContext(), MyLocationService.class));
+                                    startActivity(intent);
+                                }else{
+                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
+                                }
                             }
                             break;
                         default:

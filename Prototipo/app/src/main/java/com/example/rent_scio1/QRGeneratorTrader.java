@@ -88,16 +88,16 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
                             switch (dc.getType()) {
                                 case ADDED:
-                                    if(code.split(" ").length==3){
+                                    //if(code.split(" ").length==3){
                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                         Toast.makeText(QRGeneratorTrader.this, "Corsa Creaata con Successo!", Toast.LENGTH_SHORT).show();
-                                    }
+                                    //}
                                     break;
                                 case REMOVED:
-                                    if(code.split(" ").length==1){
+                                    //if(code.split(" ").length==1){
                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                         Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
-                                    }
+                                    //}
                                     break;
                             }
                         }
