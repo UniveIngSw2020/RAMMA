@@ -32,6 +32,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 
 import com.example.rent_scio1.services.LocationService;
+import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -56,64 +58,93 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
-    public static final int ERROR_DIALOG_REQUEST = 9001;
+    /*public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
-    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;*/
 
     private Map<String, Object> user = new HashMap<>();
 
     //widgets
     private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva, mShopname;
-    private CheckBox mTrader, mPositionTrader;
-    private ProgressBar progressBar;
+    private CheckBox mTrader/*, mPositionTrader*/;
+    //private ProgressBar progressBar;
 
     //vars
     private FirebaseFirestore mStore;
     private String userID;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private boolean mLocationPermissionGranted = false;
+    //private FusedLocationProviderClient mFusedLocationClient;
+    //private boolean mLocationPermissionGranted = false;
+
+    //metodo richiamato nell'XML
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        findViewById(R.id.confitmregister_btn).setOnClickListener(this);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        //findViewById(R.id.confitmregister_btn).setOnClickListener(this);
+
+        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        //mi getto gli oggetti dall'xml
         mName = findViewById(R.id.name);
         mSourname = findViewById(R.id.sourname);
         mEmail = findViewById(R.id.email_register);
         mPassword = findViewById(R.id.password_register);
         mConfirmPasswod = findViewById(R.id.passwordregister_confirm);
         mPhone = findViewById(R.id.phone_register);
-        progressBar = findViewById(R.id.progressBarregister);
+        //progressBar = findViewById(R.id.progressBarregister);
         mDate = findViewById(R.id.dateBorn);
         mPiva = findViewById(R.id.piva);
         mTrader = findViewById(R.id.check_Trader);
         mShopname = findViewById(R.id.shopName);
-        mPositionTrader = findViewById(R.id.checkPositionTrader);
+        //mPositionTrader = findViewById(R.id.checkPositionTrader);
         mStore = FirebaseFirestore.getInstance();
+
+        //metodo per inizializzare la UI
         initViews();
-        checkTraderRegister();
     }
 
     private void initViews() {
+
         Toolbar toolbar_regist = findViewById(R.id.toolbar_register);
         setSupportActionBar(toolbar_regist);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //setto il listener per il bottone di conferma
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_activity_register);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.confitmregister_btn:
-                    onClick(findViewById(R.id.confitmregister_btn));
+
+                    if (chekForm())
+                        signIn(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
+
                     break;
             }
             return true;
+        });
+
+        //checkbox commerciante
+        mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (mTrader.isChecked()) {
+
+                mPiva.setVisibility(View.VISIBLE);
+                //mPositionTrader.setVisibility(View.VISIBLE);
+                mShopname.setVisibility(View.VISIBLE);
+            } else {
+                mShopname.setVisibility(View.INVISIBLE);
+                mPiva.setVisibility(View.INVISIBLE);
+                //mPositionTrader.setVisibility(View.INVISIBLE);
+            }
         });
     }
 
@@ -144,20 +175,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             mPhone.setError("Numero di Cellulare Richiesto!");
             flag = false;
         }
+
         if (mTrader.isChecked()) {
             if (TextUtils.isEmpty(mPiva.getText().toString().trim())) {
                 mPiva.setError("Partita IVA Richesta!");
                 flag = false;
             }
-            if (!mPositionTrader.isChecked()) {
+            /*if (!mPositionTrader.isChecked()) {
                 mPositionTrader.setError("Posizione Richesta!");
                 flag = false;
-            }
+            }*/
+
             if (TextUtils.isEmpty(mShopname.getText().toString().trim())) {
-                mPhone.setError("Nome del Negozio Richiesto!");
+                mShopname.setError("Nome del Negozio Richiesto!");
                 flag = false;
             }
         }
+
         if (!mPassword.getText().toString().trim().equals(mConfirmPasswod.getText().toString().trim())) {
             mConfirmPasswod.setError("Entrambe le Passowrd devono essere Uguali!");
             flag = false;
@@ -165,36 +199,75 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return flag;
     }
 
-
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
 
-        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
 
         Log.d(TAG, "CREDENZIALIIIIIIIIIIIIIIIIII:        email: " + email + " password: " + password);
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NotNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            generateStoreUser();
-                        } else {
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed: ." + task.getException(), Toast.LENGTH_SHORT).show();
-                        }
-                        progressBar.setVisibility(View.INVISIBLE);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        generateStoreUser();
+                    } else {
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(RegisterActivity.this, "Authentication failed: ." + task.getException(), Toast.LENGTH_SHORT).show();
                     }
+                    //progressBar.setVisibility(View.INVISIBLE);
                 });
     }
 
+    private void generateStoreUser (){
+
+        //inserisci nell'oggetto user le informazioni
+        user.put("user_id", FirebaseAuth.getInstance().getUid());
+        user.put("name", mName.getText().toString().trim());
+        user.put("sourname", mSourname.getText().toString().trim());
+        user.put("email", mEmail.getText().toString().trim());
+        user.put("born", mDate.getText().toString().trim());
+        user.put("phone", mPhone.getText().toString().trim());
+        user.put("piva", mPiva.getText().toString().trim());
+        user.put("trader", mTrader.isChecked());
+        user.put("shopname", mShopname.getText().toString().trim());
+
+        //oggetti che verranno settati durante l'utilizzo dell'app
+        user.put("delimited_area", null );
+        user.put("traderposition",null);
+
+
+        //push dell'oggeto su db
+        Log.d(TAG, "signInWithEmail:success");
+
+        DocumentReference documentReference = mStore.collection("users").document(userID);
+
+        documentReference.set(user).addOnSuccessListener(aVoid -> Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + user))
+                .addOnFailureListener(e -> System.out.println("onFaiulure: "+ e.toString()));
+
+        Toast.makeText(RegisterActivity.this, "User, Created!", Toast.LENGTH_SHORT).show();
+
+        finishAffinity();
+
+        UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSourname.getText().toString().trim(),mEmail.getText().toString().trim(),mDate.getText().toString().trim(),mPhone.getText().toString().trim(),mPiva.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null));
+
+        if(Objects.equals(user.get("trader"), true)){
+            startActivity(new Intent(getApplicationContext(),SetShopActivityTrader.class));
+            //startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+        }else{
+            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+        }
+
+        //getPosition();
+    }
+
+    /*
     private void getPosition() {
         if (mPositionTrader.isChecked()) {
-            Log.d(TAG, "getLastKnownLocation: called.");
+            Log.d(TAG, "getLastKnownLocation: called.");*/
             /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "getLastKnownLocation: IIIIIIIIIIIIIIIFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.");
                 return;
-            }*/
+            }*//*
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -233,7 +306,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZIONE NON PRESA");
                     }
                 }
-            });
+            });*/
             /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
@@ -259,51 +332,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Log.d(TAG, " REGISTERRRRRRRR EEEEEEEEEEEEEERRORE -> POSIZONE NON PRESA");
                     }
                 }
-            });*/
+            });*//*
         }else{
             user.put("traderposition",null);
-            storeUser();
+            //storeUser();
         }
-    }
-
-    private void generateStoreUser (){
-        user.put("user_id", FirebaseAuth.getInstance().getUid());
-        user.put("name", mName.getText().toString().trim());
-        user.put("sourname", mSourname.getText().toString().trim());
-        user.put("email", mEmail.getText().toString().trim());
-        user.put("born", mDate.getText().toString().trim());
-        user.put("phone", mPhone.getText().toString().trim());
-        user.put("piva", mPiva.getText().toString().trim());
-        user.put("trader", mTrader.isChecked());
-        user.put("shopname", mShopname.getText().toString().trim());
-        user.put("delimited_area", null );
-        getPosition();
-    }
-
-    private void storeUser () {
-        Log.d(TAG, "signInWithEmail:success");
-        DocumentReference documentReference = mStore.collection("users").document(userID);
-        documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + user);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("onFaiulure: "+ e.toString());
-            }
-        });
-
-        Toast.makeText(RegisterActivity.this, "User, Creadted!", Toast.LENGTH_SHORT).show();
-
-        finishAffinity();
-        if(Objects.equals(user.get("trader"), true)){
-            startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-        }else{
-            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-        }
-    }
+    }*/
 
     /*private void sendEmailVerification() {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -322,12 +356,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
     }*/
 
+    /*
     @Override
-    public void onClick(View view) {
-        Log.d(TAG,"VIEWWWWWWWWWWW " + view.getId());
-        if (view.getId() == R.id.confitmregister_btn) {
-            if (chekForm())
-                signIn(mEmail.getText().toString().trim(), mPassword.getText().toString().trim());
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: called.");
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ENABLE_GPS: {
+                if(!mLocationPermissionGranted){
+                    getLocationPermission();
+                }
+            }
         }
     }
 
@@ -342,23 +381,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-    }
+    }*/
 
-    private void checkTraderRegister (){
-
-        mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(mTrader.isChecked()){
-
-                mPiva.setVisibility(View.VISIBLE);
-                mPositionTrader.setVisibility(View.VISIBLE);
-                mShopname.setVisibility(View.VISIBLE);
-            }else{
-                mShopname.setVisibility(View.INVISIBLE);
-                mPiva.setVisibility(View.INVISIBLE);
-                mPositionTrader.setVisibility(View.INVISIBLE);
-            }
-        });
-
+        /*
         mPositionTrader.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -366,22 +391,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     checkMapServices();
                 }
             }
-        });
+        });*/
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: called.");
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if(!mLocationPermissionGranted){
-                    getLocationPermission();
-                }
-            }
-        }
-    }
 
+    /*
     @Override
     protected void onResume() {
         super.onResume();
@@ -391,16 +405,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     }
+*/
 
-
-
+    /*
     private boolean checkMapServices(){
         if(isServicesOK()){
             return isMapsEnabled();
         }
         return false;
-    }
+    }*/
 
+    /*
     public boolean isServicesOK(){
         Log.d(TAG, "isServicesOK: checking google services version");
 
@@ -420,8 +435,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
         }
         return false;
-    }
+    }*/
 
+    /*
     public boolean isMapsEnabled(){
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -430,8 +446,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return false;
         }
         return true;
-    }
+    }*/
 
+    /*
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
@@ -446,10 +463,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
         final AlertDialog alert = builder.create();
         alert.show();
-    }
 
-    public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-}
+
+    }*/

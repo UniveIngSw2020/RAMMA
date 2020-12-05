@@ -53,7 +53,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-database'
-    implementation 'com.google.firebase:firebase-auth:20.0.0'
+    implementation 'com.google.firebase:firebase-auth:20.0.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
 
     //Polygon Utility
@@ -71,6 +71,7 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
     implementation 'com.google.zxing:core:3.3.3'
 
-    implementation 'androidx.core:core:1.0.0'
+    implementation 'androidx.core:core:1.3.2'
 
+    implementation 'com.google.android.libraries.places:places:2.4.0'
 }

@@ -30,7 +30,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private Action event;
+    public Action event;
 
     public enum Action{
         DELETE,
