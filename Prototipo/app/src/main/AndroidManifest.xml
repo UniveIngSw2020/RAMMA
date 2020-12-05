@@ -68,11 +68,6 @@
             android:name=".DelimitedAreaActivityTrader"
             android:parentActivityName=".MapsActivityTrader" />
 
-        <service
-            android:name=".services.LocationService"
-            android:enabled="true"
-            android:exported="true" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
