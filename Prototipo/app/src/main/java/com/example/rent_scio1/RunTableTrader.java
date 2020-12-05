@@ -6,7 +6,6 @@ import androidx.core.content.res.ResourcesCompat;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -23,7 +22,6 @@ import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -210,24 +208,18 @@ public class RunTableTrader extends AppCompatActivity {
             builder.setMessage("Sei sicuro di voler eliminare definitivamente questa corsa?");
 
             //builder.setIcon(R.drawable.ic_launcher);
-            builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                    //deleteRun(run.getRunUID());
-                    //unlockVehiclebyID(run.getVehicle());
-                    //Intent intent=new Intent(getApplicationContext(), RunTableTrader.class);
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            builder.setPositiveButton("Sì", (dialog, id) -> {
+                dialog.dismiss();
+                //deleteRun(run.getRunUID());
+                //unlockVehiclebyID(run.getVehicle());
+                //Intent intent=new Intent(getApplicationContext(), RunTableTrader.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                    Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                    intent.putExtra(ToQR, run.getRunUID());
-                    startActivity(intent);
-                }
+                Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
+                intent.putExtra(ToQR, run.getRunUID());
+                startActivity(intent);
             });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
             builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
             AlertDialog alert = builder.create();
             alert.show();
