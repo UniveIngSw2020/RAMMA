@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MyMapClient extends MyMap{
+public class MyMapClient extends MyMap {
 
     private ArrayList<User> listTrader = new ArrayList<>();
 
@@ -65,11 +65,11 @@ public class MyMapClient extends MyMap{
     private LatLngBounds mMapBoundary;
     private static CountDownTimer timerDelimitedArea;
 
-    public MyMapClient(){
+    public MyMapClient() {
         super();
     }
 
-    public MyMapClient(AppCompatActivity context){
+    public MyMapClient(AppCompatActivity context) {
         super();
         this.context = context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
@@ -105,7 +105,9 @@ public class MyMapClient extends MyMap{
 
         getTrader.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                listTrader.add(new User(document.toObject(User.class)));
+                User u=new User(document.toObject(User.class));
+                if(u.getTraderposition()!=null)
+                    listTrader.add(u);
             }
 
             if(UserClient.getRun() != null){
@@ -130,10 +132,12 @@ public class MyMapClient extends MyMap{
     private void setMarkerDelimitedTraderNotify(){
         for (User trader : listTrader) {
             //Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
-            getmMap().addMarker(new MarkerOptions()
-                    .position(new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
-                    .title(trader.getShopname())
-                    .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
+            if (trader.getTraderposition() != null) {
+                getmMap().addMarker(new MarkerOptions()
+                        .position(new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
+                        .title(trader.getShopname())
+                        .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
+            }
 
             List<LatLng> latLngs = new ArrayList<>();
             if(trader.getDelimited_area() != null){
@@ -157,9 +161,9 @@ public class MyMapClient extends MyMap{
         }
     }
 
+
     private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (getmMap() != null) {
                 getmMap().setMyLocationEnabled(true);
                 getLastKnownLocation();
@@ -227,7 +231,9 @@ public class MyMapClient extends MyMap{
 
     public static void stopNotification() {
         Log.e(TAG, "STOP DELLA NOTIFICA");
-        timerDelimitedArea.cancel();
+        if(timerDelimitedArea != null){
+            timerDelimitedArea.cancel();
+        }
     }
 
 
@@ -303,5 +309,6 @@ public class MyMapClient extends MyMap{
         } catch (Exception e) {
         }
     }
+
 
 }

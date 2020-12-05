@@ -1,14 +1,26 @@
 package com.example.rent_scio1;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.map.ClusterMarkers;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.WriterException;
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -18,6 +30,7 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class QRGeneratorTrader extends AppCompatActivity {
 
     private static final String ToQR="QR_code_creation";
+    private static final String TAG="QRGeneratorTrader";
 
 
     @Override
@@ -27,7 +40,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
         ImageView qrImage = findViewById(R.id.QR_code);
 
-        //ID univoco del veicolo
+        //ID univoco
         final String code = getIntent().getStringExtra(ToQR);
 
 
@@ -53,6 +66,43 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
 
         //quando il cliente ha stabile la connessione devo ritornare alla mappa principale
+
+
+        redirectMasActivityTrader(code);
+
+    }
+
+    private void redirectMasActivityTrader(String code){
+        FirebaseFirestore.getInstance().collection("run")
+                .whereEqualTo("trader", UserClient.getUser().getUser_id())
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    if(code.split(" ").length==3){
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                        Toast.makeText(QRGeneratorTrader.this, "Corsa Creaata con Successo!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                                case REMOVED:
+                                    if(code.split(" ").length==1){
+                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                        Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                });
 
     }
 }

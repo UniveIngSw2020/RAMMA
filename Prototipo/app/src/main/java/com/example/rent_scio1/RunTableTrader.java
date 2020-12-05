@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -58,7 +59,7 @@ public class RunTableTrader extends AppCompatActivity {
 
     private void queryRuns(){
 
-        Query getRunsTrader = db.collection("run").whereEqualTo("trader", FirebaseAuth.getInstance().getUid());
+        Query getRunsTrader = db.collection("run").whereEqualTo("trader", UserClient.getUser().getUser_id());
 
         getRunsTrader.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -208,16 +209,23 @@ public class RunTableTrader extends AppCompatActivity {
             builder.setMessage("Sei sicuro di voler eliminare definitivamente questa corsa?");
 
             //builder.setIcon(R.drawable.ic_launcher);
-            builder.setPositiveButton("Sì", (dialog, id) -> {
-                dialog.dismiss();
-                //deleteRun(run.getRunUID());
-                //unlockVehiclebyID(run.getVehicle());
-                //Intent intent=new Intent(getApplicationContext(),TabellaCorseTrader.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    //deleteRun(run.getRunUID());
+                    //unlockVehiclebyID(run.getVehicle());
+                    //Intent intent=new Intent(getApplicationContext(), RunTableTrader.class);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                intent.putExtra(ToQR, run.getRunUID());
-                startActivity(intent);
+                    Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
+                    intent.putExtra(ToQR, run.getRunUID());
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
             });
             builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
             AlertDialog alert = builder.create();
@@ -237,8 +245,8 @@ public class RunTableTrader extends AppCompatActivity {
 
         return tv2;
     }
-    /*
-    private void deleteRun(String PK_run){
+
+    /*private void deleteRun(String PK_run){
         db.collection("run").document(PK_run)
                 .delete()
                 .addOnSuccessListener(aVoid ->
@@ -252,6 +260,5 @@ public class RunTableTrader extends AppCompatActivity {
         mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
             Log.d(TAG, "VEICOLO LIBERATO");
         });
-    }
-    */
+    }*/
 }

@@ -73,7 +73,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //mStore = FirebaseFirestore.getInstance();
         serviceIntent = new Intent(this, MyLocationService.class);
-        getCameraPermission();
+        //getCameraPermission();
         initViews();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
@@ -187,7 +187,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Intent intent;
+
         switch (item.getItemId()){
             case R.id.logout_client:
                 FirebaseAuth.getInstance().signOut();
@@ -200,22 +200,14 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             case R.id.nuova_corsa_client:
 
                 //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
-                evitaBarcodeScanner();
+                //evitaBarcodeScanner();
 
-//                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
-//                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
-//                startActivity(intent);
+                getCameraPermission();
 
-                if(UserClient.getRun() != null){
-
-                    navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
-                    navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
-                    navigationView.getMenu().findItem(R.id.end_run).setVisible(true);
-                    navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+                if(mCameraPermissionGranted) {
+                    startActivityBarcode(ScannedBarcodeActivity.Action.ADD);
                 }
-                else{
-                    navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(true);
-                }
+
                 break;
             case R.id.Assistenza:
                 help();
@@ -224,47 +216,89 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 returnShop();
                 break;
             case R.id.end_run:
-                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
-                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.DELETE);
-                startActivity(intent);
+
+                getCameraPermission();
+
+                if(mCameraPermissionGranted) {
+                    startActivityBarcode(ScannedBarcodeActivity.Action.DELETE);
+                }
+
                 break;
         }
         return true;
     }
 
 
-    private void getCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED) {
-            mCameraPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    PERMISSIONS_REQUEST_ACCESS_CAMERA);
-        }
-    }
 
-    private void returnShop() {
-        //TODO: Molto diffcile ora come ora
-    }
 
-    private void help() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
-        getTrader.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            String phoneNumber = "";
-            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                phoneNumber = new User(document.toObject(User.class)).getPhone();
-            }
-            Intent intent = new Intent(Intent.ACTION_DIAL);
-            intent.setData(Uri.parse("tel:" + phoneNumber));
+    private void startActivityBarcode(ScannedBarcodeActivity.Action action){
+        if(action==ScannedBarcodeActivity.Action.ADD){
+
+            Intent intent;
+            intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
+            intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
             startActivity(intent);
-        });
+
+            if (UserClient.getRun() != null) {
+
+                navigationView.getMenu().findItem(R.id.Assistenza).setVisible(true);
+                navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
+                navigationView.getMenu().findItem(R.id.end_run).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+            } else {
+                navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(true);
+            }
+        }
+        else{
+            Intent intent;
+            intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
+            intent.putExtra(ToQR, ScannedBarcodeActivity.Action.DELETE);
+            startActivity(intent);
+        }
+
+    }
+
+    private void buildAlertMessagePermissionDeniedCamera(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Hai rifiutato il permesso :( , se vuoi scanerizzare il QR devi attivare il permesso dalle impostazioni di sistema")
+                .setCancelable(false)
+                .setPositiveButton("Apri impostazioni", (dialog, id) -> {
+                    //apri impostazioni
+                });
+
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void buildAlertMessageNoPermissionCamera() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("L'applicazione per scanerizzare il QR ha bisogno dei permessi per utilizzare la fotocamera")
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, id) ->
+                        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_ACCESS_CAMERA));
+
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void getCameraPermission() {
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if(!ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.CAMERA)){
+                buildAlertMessageNoPermissionCamera();
+                return;
+            }
+            buildAlertMessagePermissionDeniedCamera();
+            return;
+        }
+        mCameraPermissionGranted=true;
     }
 
 
 
+
+
+
+/*
     private boolean checkMapServices() {
         if (isServicesOK()) {
             return isMapsEnabled();
@@ -274,7 +308,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
+        builder.setMessage("\"L'applicazione per funzionare ha bisogno che la geolocalizzazione sia attiva dalle impostazioni.")
                 .setCancelable(false)
                 .setPositiveButton("Yes", (dialog, id) -> {
                     Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -295,15 +329,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     }
 
     private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-            //getUserDetails();
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
 
@@ -329,13 +358,17 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-            }
-
+        switch (requestCode) {// If request is cancelled, the result arrays are empty.
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                }
+                break;
+            case PERMISSIONS_REQUEST_ACCESS_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mCameraPermissionGranted = true;
+                }
+                break;
         }
     }
 
@@ -348,7 +381,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 getLocationPermission();
             }
         }
-
     }
 
     @Override
@@ -359,6 +391,24 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 getLocationPermission();
             }
         }
+    }*/
+
+    private void returnShop() {
+        //TODO: Molto diffcile ora come ora
+    }
+
+    private void help() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
+        getTrader.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            String phoneNumber = "";
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                phoneNumber = new User(document.toObject(User.class)).getPhone();
+            }
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + phoneNumber));
+            startActivity(intent);
+        });
     }
 
 

@@ -54,8 +54,8 @@ public class MyMapTrader extends MyMap{
         mMap = googleMap;
         getUserDetails(googleMap);
         areaLimitata();
-        setUpClusterer();
-        //searchCustomers();
+        //setUpClusterer();
+        searchCustomers();
 
     }
 
@@ -127,25 +127,25 @@ public class MyMapTrader extends MyMap{
 
 
                                     //Aggiunto il marker alla lista di marker
-                                    clusterManager.getClusterMarkerCollection().addMarker(new MarkerOptions()
+                                    /*clusterManager.getClusterMarkerCollection().addMarker(new MarkerOptions()
                                             .position( new LatLng(
                                                     UserClient.getUser().getTraderposition().getLatitude(),
                                                     UserClient.getUser().getTraderposition().getLongitude()))
                                             .title(dc.getDocument().toObject(Run.class).getUser())
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))
-                                    );
+                                    );*/
 
-                                    clusterManager.addItem(new ClusterMarkers(
+                                    /*clusterManager.addItem(new ClusterMarkers(
                                             UserClient.getUser().getTraderposition().getLatitude(),
                                             UserClient.getUser().getTraderposition().getLongitude(),
-                                            dc.getDocument().toObject(Run.class).getUser()));
+                                            dc.getDocument().toObject(Run.class).getUser()));*/
 
-                                    /*listMarker.add(mMap.addMarker(new MarkerOptions()
+                                    listMarker.add(mMap.addMarker(new MarkerOptions()
                                             .position( new LatLng(
                                                     UserClient.getUser().getTraderposition().getLatitude(),
                                                     UserClient.getUser().getTraderposition().getLongitude()))
                                             .title(dc.getDocument().toObject(Run.class).getUser())
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));*/
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));
                                     break;
                                 case MODIFIED:
                                     modifyMarker(dc.getDocument().toObject(Run.class));
@@ -164,7 +164,7 @@ public class MyMapTrader extends MyMap{
         if(run.getGeoPoint() != null){
             //clearMarkers();
 
-            for(/*ClusterMarkers*/ Marker m : clusterManager.getClusterMarkerCollection().getMarkers()){
+            for(/*ClusterMarkers*/ Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
                 if(m.getTitle().equals(run.getUser())){
                     m.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
                 }
@@ -178,12 +178,12 @@ public class MyMapTrader extends MyMap{
     }
 
     private void clearMarker(Run run){
-        for(Marker m : clusterManager.getClusterMarkerCollection().getMarkers()){
+        for(Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
             if(m.getTitle().equals(run.getUser())){
-                //listMarker.remove(m);
+                listMarker.remove(m);
                 //clusterManager.removeItem(m);
                 m.remove();
-                clusterManager.getClusterMarkerCollection().getMarkers().remove(m);
+                //clusterManager.getClusterMarkerCollection().getMarkers().remove(m);
             }
         }
     }
