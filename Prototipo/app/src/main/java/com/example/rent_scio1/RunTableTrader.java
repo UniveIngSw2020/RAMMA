@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -22,14 +22,12 @@ import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
 import java.util.Calendar;
-import java.util.Date;
 
 
 public class RunTableTrader extends AppCompatActivity {
@@ -119,7 +117,7 @@ public class RunTableTrader extends AppCompatActivity {
 
                     Vehicle v=new Vehicle(document.toObject(Vehicle.class));
 
-                    updateTime(createRow(user, v.getVehicleType(),run.getTimestamp(),run),run);
+                    updateTime(createRow(user, v.getVehicleType(), run),run);
 
                 }
 
@@ -134,19 +132,21 @@ public class RunTableTrader extends AppCompatActivity {
 
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
-        CountDownTimer timer= new CountDownTimer(time, 1000) {
+        new CountDownTimer(time, 1000) {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onTick(long millisUntilFinished) {
-                Integer minutes=(int) (millisUntilFinished / 1000) / 60;
-                Integer seconds=(int) (millisUntilFinished / 1000) % 60;
+                int minutes=(int) (millisUntilFinished / 1000) / 60;
+                int seconds=(int) (millisUntilFinished / 1000) % 60;
 
-                timeText.setText(minutes.toString()+":"+seconds.toString());
+                timeText.setText(String.format("%d:%d", minutes, seconds));
 
                 if(minutes<5){
                     timeText.setTextColor(Color.YELLOW);
                 }
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onFinish() {
                 timeText.setText("TERMINATO");
@@ -156,7 +156,8 @@ public class RunTableTrader extends AppCompatActivity {
 
     }
 
-    private TextView createRow(String user, String vehicle, Date time, Run run){
+    @SuppressLint("SetTextI18n")
+    private TextView createRow(String user, String vehicle, Run run){
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.tabella_corse);
@@ -198,33 +199,27 @@ public class RunTableTrader extends AppCompatActivity {
         delete.setPadding(0,1,0,0);
         delete.setBackgroundResource(R.drawable.rounded_button);
         delete.setTextSize(18);
-        delete.setTextColor(getResources().getColor(R.color.back));
+        delete.setTextColor(getColor(R.color.back));
         delete.setText("ELIMINA");
 
         delete.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(RunTableTrader.this);
-            builder.setTitle("Conferma eliminazione");
+            builder.setTitle("Elimina");
             builder.setMessage("Sei sicuro di voler eliminare definitivamente questa corsa?");
 
             //builder.setIcon(R.drawable.ic_launcher);
-            builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                    //deleteRun(run.getRunUID());
-                    //unlockVehiclebyID(run.getVehicle());
-                    //Intent intent=new Intent(getApplicationContext(),TabellaCorseTrader.class);
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            builder.setPositiveButton("Sì", (dialog, id) -> {
+                dialog.dismiss();
+                //deleteRun(run.getRunUID());
+                //unlockVehiclebyID(run.getVehicle());
+                //Intent intent=new Intent(getApplicationContext(),TabellaCorseTrader.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                    Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                    intent.putExtra(ToQR, run.getRunUID());
-                    startActivity(intent);
-                }
+                Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
+                intent.putExtra(ToQR, run.getRunUID());
+                startActivity(intent);
             });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
             AlertDialog alert = builder.create();
             alert.show();
         });
@@ -242,7 +237,7 @@ public class RunTableTrader extends AppCompatActivity {
 
         return tv2;
     }
-
+    /*
     private void deleteRun(String PK_run){
         db.collection("run").document(PK_run)
                 .delete()
@@ -258,4 +253,5 @@ public class RunTableTrader extends AppCompatActivity {
             Log.d(TAG, "VEICOLO LIBERATO");
         });
     }
+    */
 }
