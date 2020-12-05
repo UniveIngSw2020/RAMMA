@@ -10,10 +10,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.SetShopActivityTrader;

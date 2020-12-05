@@ -13,7 +13,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.Init.StartActivity;
-import com.example.rent_scio1.Main.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.map.MyMapTrader;
