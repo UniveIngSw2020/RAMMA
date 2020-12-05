@@ -200,11 +200,11 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             case R.id.nuova_corsa_client:
 
                 //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
-                evitaBarcodeScanner();
+                //evitaBarcodeScanner();
 
-//                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
-//                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
-//                startActivity(intent);
+                intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
+                intent.putExtra(ToQR, ScannedBarcodeActivity.Action.ADD);
+                startActivity(intent);
 
                 if(UserClient.getRun() != null){
 

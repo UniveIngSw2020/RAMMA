@@ -130,10 +130,12 @@ public class MyMapClient extends MyMap{
     private void setMarkerDelimitedTraderNotify(){
         for (User trader : listTrader) {
             //Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
-            getmMap().addMarker(new MarkerOptions()
-                    .position(new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
-                    .title(trader.getShopname())
-                    .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
+            if (trader.getTraderposition() != null) {
+                getmMap().addMarker(new MarkerOptions()
+                        .position(new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
+                        .title(trader.getShopname())
+                        .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
+            }
 
             List<LatLng> latLngs = new ArrayList<>();
             if(trader.getDelimited_area() != null){
@@ -227,7 +229,9 @@ public class MyMapClient extends MyMap{
 
     public static void stopNotification() {
         Log.e(TAG, "STOP DELLA NOTIFICA");
-        timerDelimitedArea.cancel();
+        if(timerDelimitedArea != null){
+            timerDelimitedArea.cancel();
+        }
     }
 
 
