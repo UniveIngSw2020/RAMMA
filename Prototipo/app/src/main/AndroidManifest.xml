@@ -40,45 +40,45 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".SetPositionActivityTrader"
+            android:name=".Trader.SetPositionActivityTrader"
             android:label="@string/title_activity_set_position_trader"></activity>
-        <activity android:name=".SetShopActivityTrader" />
+        <activity android:name=".Trader.SetShopActivityTrader" />
         <activity
-            android:name=".InfoTutorialDelimitedAreaTrader"
-            android:parentActivityName=".DelimitedAreaActivityTrader" />
+            android:name=".Trader.InfoTutorialDelimitedAreaTrader"
+            android:parentActivityName=".Trader.DelimitedAreaActivityTrader" />
 
         <service
             android:name=".services.MyLocationService"
             android:enabled="true"
             android:exported="true" /> <!-- <activity android:name=".QRScannerClient" /> -->
         <activity
-            android:name=".RunTableTrader"
-            android:parentActivityName=".MapsActivityTrader" />
-        <activity android:name=".QRGeneratorTrader" />
+            android:name=".Trader.RunTableTrader"
+            android:parentActivityName=".Trader.MapsActivityTrader" />
+        <activity android:name=".Trader.QRGeneratorTrader" />
         <activity
-            android:name=".NewVehicleActivityTrader"
-            android:parentActivityName=".VehicleListActivityTrader" />
+            android:name=".Trader.NewVehicleActivityTrader"
+            android:parentActivityName=".Trader.VehicleListActivityTrader" />
         <activity
-            android:name=".VehicleListActivityTrader"
-            android:parentActivityName=".MapsActivityTrader" />
+            android:name=".Trader.VehicleListActivityTrader"
+            android:parentActivityName=".Trader.MapsActivityTrader" />
         <activity
-            android:name=".NewRunActivityTrader"
-            android:parentActivityName=".MapsActivityTrader" />
+            android:name=".Trader.NewRunActivityTrader"
+            android:parentActivityName=".Trader.MapsActivityTrader" />
         <activity
-            android:name=".DelimitedAreaActivityTrader"
-            android:parentActivityName=".MapsActivityTrader" />
+            android:name=".Trader.DelimitedAreaActivityTrader"
+            android:parentActivityName=".Trader.MapsActivityTrader" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".LoginActivity"
-            android:parentActivityName=".StartActivity" />
+            android:name=".Main.LoginActivity"
+            android:parentActivityName=".Main.StartActivity" />
         <activity
-            android:name=".RegisterActivity"
-            android:parentActivityName=".StartActivity" />
-        <activity android:name=".StartActivity">
+            android:name=".Main.RegisterActivity"
+            android:parentActivityName=".Main.StartActivity" />
+        <activity android:name=".Main.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -86,12 +86,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MapsActivityClient"
+            android:name=".Client.MapsActivityClient"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".MapsActivityTrader"
+            android:name=".Trader.MapsActivityTrader"
             android:label="@string/title_activity_maps_trader" />
-        <activity android:name=".ScannedBarcodeActivity" />
+        <activity android:name=".Client.ScannedBarcodeActivity" />
 
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"

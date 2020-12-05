@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InfoTutorialDelimitedAreaTrader"
+    tools:context=".Trader.InfoTutorialDelimitedAreaTrader"
     android:background="@color/back"
     android:focusable="true"
     android:focusableInTouchMode="true"

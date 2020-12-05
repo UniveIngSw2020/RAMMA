@@ -1,4 +1,4 @@
-package com.example.rent_scio1;
+package com.example.rent_scio1.Trader;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;

@@ -10,7 +10,7 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     app:flow_firstHorizontalStyle="spread_inside"
-    tools:context=".VehicleListActivityTrader">
+    tools:context=".Trader.VehicleListActivityTrader">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_vehicle_list"

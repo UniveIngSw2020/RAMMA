@@ -1,4 +1,4 @@
-package com.example.rent_scio1;
+package com.example.rent_scio1.Trader;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,6 +9,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
+import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.TutorialDelimitedArea.BuildFragment;
+import com.example.rent_scio1.Trader.TutorialDelimitedArea.ConfirmFragmentTutorial;
+import com.example.rent_scio1.Trader.TutorialDelimitedArea.DeleteAllragmentTutorial;
+import com.example.rent_scio1.Trader.TutorialDelimitedArea.DeleteLastFragmentTutorial;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

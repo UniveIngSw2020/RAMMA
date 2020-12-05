@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewVehicleActivityTrader"
+    tools:context=".Trader.NewVehicleActivityTrader"
     android:background="@color/back"
     android:clickable="true"
     android:focusableInTouchMode="true"

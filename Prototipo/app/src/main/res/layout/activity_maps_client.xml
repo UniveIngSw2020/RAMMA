@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivityClient"
+    tools:context=".Client.MapsActivityClient"
     tools:openDrawer="start"
     android:id="@+id/drawer_map_client1"
     android:focusableInTouchMode="true"

@@ -1,4 +1,4 @@
-package com.example.rent_scio1;
+package com.example.rent_scio1.Trader;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Button;
 
 
+import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.MyPermission;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.firestore.DocumentReference;

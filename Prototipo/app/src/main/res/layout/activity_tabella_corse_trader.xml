@@ -9,7 +9,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".RunTableTrader">
+    tools:context=".Trader.RunTableTrader">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_trader_list"

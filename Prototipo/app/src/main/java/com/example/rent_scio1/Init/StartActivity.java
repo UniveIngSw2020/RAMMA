@@ -1,15 +1,15 @@
-package com.example.rent_scio1;
+package com.example.rent_scio1.Init;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
+import com.example.rent_scio1.Trader.MapsActivityTrader;
+import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.UserClient;
 
 public class StartActivity extends AppCompatActivity {

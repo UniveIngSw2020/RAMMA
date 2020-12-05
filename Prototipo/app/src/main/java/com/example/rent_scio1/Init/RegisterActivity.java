@@ -1,4 +1,4 @@
-package com.example.rent_scio1;
+package com.example.rent_scio1.Init;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
+import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.SetShopActivityTrader;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -219,7 +222,7 @@ public class RegisterActivity extends AppCompatActivity {
         UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSourname.getText().toString().trim(),mEmail.getText().toString().trim(),mDate.getText().toString().trim(),mPhone.getText().toString().trim(),mPiva.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null));
 
         if(Objects.equals(user.get("trader"), true)){
-            startActivity(new Intent(getApplicationContext(),SetShopActivityTrader.class));
+            startActivity(new Intent(getApplicationContext(), SetShopActivityTrader.class));
             //startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
         }else{
             startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));

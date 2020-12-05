@@ -1,4 +1,4 @@
-package com.example.rent_scio1;
+package com.example.rent_scio1.Client;
 
 import android.Manifest;
 import android.app.ActivityManager;
@@ -12,6 +12,8 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.UserClient;
 

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/back"
-    tools:context=".LoginActivity"
+    tools:context=".Main.LoginActivity"
     android:clickable="true"
     android:onClick="hideKeyboard"
     android:focusableInTouchMode="true"
