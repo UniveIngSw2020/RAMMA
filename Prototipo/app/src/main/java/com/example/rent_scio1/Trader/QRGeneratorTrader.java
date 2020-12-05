@@ -41,7 +41,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
 
         
-        Log.d("ciao", UserClient.getUser().toString());
+        Log.e(TAG, UserClient.getUser().toString());
 
 
         Toast.makeText(this, code, Toast.LENGTH_LONG).show();
@@ -57,7 +57,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
             // Setting Bitmap to ImageView
             qrImage.setImageBitmap(bitmap);
         } catch (WriterException e) {
-            Log.v("ciao", e.toString());
+            Log.v(TAG, e.toString());
         }
 
 
@@ -81,19 +81,22 @@ public class QRGeneratorTrader extends AppCompatActivity {
                         }
 
                         for (DocumentChange dc : snapshots.getDocumentChanges()) {
-
-                            switch (dc.getType()) {
+                            Log.w(TAG, "PRE SWITCH");
+                            switch (dc.getType()) { //dc.getType()
                                 case ADDED:
-                                    //if(code.split(" ").length==3){
+                                    Log.e(TAG, "SWITCH ADD");
+                                    //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE ECONDERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
+                                    if(code.split(" ").length==3){
                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                         Toast.makeText(QRGeneratorTrader.this, "Corsa Creaata con Successo!", Toast.LENGTH_SHORT).show();
-                                    //}
+                                    }
                                     break;
                                 case REMOVED:
-                                    //if(code.split(" ").length==1){
+                                    Log.e(TAG, "SWITCH DELETE");
+                                    if(code.split(" ").length==1){
                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                         Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
-                                    //}
+                                    }
                                     break;
                             }
                         }

@@ -73,12 +73,12 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".Main.LoginActivity"
-            android:parentActivityName=".Main.StartActivity" />
+            android:name=".Init.LoginActivity"
+            android:parentActivityName=".Init.StartActivity" />
         <activity
-            android:name=".Main.RegisterActivity"
-            android:parentActivityName=".Main.StartActivity" />
-        <activity android:name=".Main.StartActivity">
+            android:name=".Init.RegisterActivity"
+            android:parentActivityName=".Init.StartActivity" />
+        <activity android:name=".Init.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

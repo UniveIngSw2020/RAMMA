@@ -215,7 +215,7 @@ public class RunTableTrader extends AppCompatActivity {
                 //unlockVehiclebyID(run.getVehicle());
                 //Intent intent=new Intent(getApplicationContext(), RunTableTrader.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
+                Log.e(TAG, "Sto eliminando la corsa: " + run.getRunUID());
                 Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
                 intent.putExtra(ToQR, run.getRunUID());
                 startActivity(intent);
