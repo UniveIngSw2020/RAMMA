@@ -1,4 +1,4 @@
-package com.example.rent_scio1.utils;
+package com.example.rent_scio1.utils.permissions;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,9 +6,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -125,22 +127,21 @@ public class MyPermission {
     }
 
 
-    private void buildAlertMessageNoPermission(String text,String positiveArgs) {
+    private void buildAlertMessageNoPermission(String text,String positiveArgs,DialogInterface.OnClickListener listener) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(text)
                 .setCancelable(false)
-                .setPositiveButton(positiveArgs, (dialog, id) ->
-                        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION));
+                .setPositiveButton(positiveArgs,listener);
 
         final AlertDialog alert = builder.create();
         alert.show();
     }
 
-    public boolean getLocationPermission(String textNoPermission,String textPermissionDenied,String positiveArgsNoPermission, String negativeArgsPermissionDenied) {
+    public boolean getLocationPermission(String textNoPermission,String textPermissionDenied,String positiveArgsNoPermission, String negativeArgsPermissionDenied,DialogInterface.OnClickListener listener) {
 
         if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if(!ActivityCompat.shouldShowRequestPermissionRationale(activity,android.Manifest.permission.ACCESS_FINE_LOCATION)){
-                buildAlertMessageNoPermission(textNoPermission,positiveArgsNoPermission);
+                buildAlertMessageNoPermission(textNoPermission,positiveArgsNoPermission,listener);
                 return false;
             }
             buildAlertMessagePermissionDenied(textPermissionDenied,negativeArgsPermissionDenied);
@@ -155,7 +156,9 @@ public class MyPermission {
         builder.setMessage(text)
                 .setCancelable(false)
                 .setPositiveButton("Apri impostazioni", (dialog, id) -> {
-                    //apri impostazioni
+
+                    Intent enableApplicationDetails = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
+                    activity.startActivity(enableApplicationDetails);
                 })
                 .setNegativeButton(negativeArgs, (dialog, which) -> {
                     //apri mappa in modo "limitato"

@@ -1,17 +1,23 @@
 package com.example.rent_scio1.Client;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,10 +28,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyLocationService;
+import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.map.MyMapClient;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,6 +65,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     //private ArrayList<User> listTrader = new ArrayList<>();
     private NavigationView navigationView;
 
+    MyMapClient myMapClient;
+
+    private ScannedBarcodeActivity.Action LastAction;
+
     //Polygon delimitedArea;
 
     @Override
@@ -64,6 +76,11 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_client);
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //mStore = FirebaseFirestore.getInstance();
@@ -82,14 +99,56 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
             }
         });*/
-       // myMapClient = new MyMapClient(this.getApplicationContext());
+        // myMapClient = new MyMapClient(this.getApplicationContext());
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         assert mapFragment != null;
-        mapFragment.getMapAsync(new MyMapClient(this));
+
+        myMapClient=new MyMapClient(MapsActivityClient.this,manager,(dialog, which) -> {
+
+            Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivityForResult(enableGpsIntent, MyPermission.PERMISSIONS_REQUEST_ENABLE_GPS);
+        });
+
+        mapFragment.getMapAsync(myMapClient);
+
         /*if(UserClient.getRun() != null){
             notification_delarea = createNotificationChannel("delimitedAreaChannel", getString(R.string.delimitedAreaChannel), getString(R.string.delimitedAreaChannelD), R.drawable.ic_not_permitted);
         }*/
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MyPermission.PERMISSIONS_REQUEST_ENABLE_GPS) {
+
+            new MyPermission(MapsActivityClient.this, this, location -> { })
+                    .getLocationPermission(
+                            "L'applicazione per settare la posizione del negozio in automatico ha bisogno del permesso della posizione.",
+                            "Hai rifiutato il permesso :( , dovrai settare la posizione manualmente o attivare il permesso dalle impostazioni di sistema",
+                            "Ok", "Voglio proseguire senza permessi", (dialog, which) ->
+                                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MyPermission.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION));
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==MyPermission.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                myMapClient.location();
+                Log.e(TAG,"SALUTO A TUTTI COME STATE");
+            }
+            else{
+                recreate();
+            }
+        }
+
+        if(requestCode==PERMISSIONS_REQUEST_ACCESS_CAMERA){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                startActivityBarcode(LastAction);
+            }
+        }
+    }
 
     private void initViews(){
         navigationView = findViewById(R.id.navigationView_Map_Client);
@@ -196,11 +255,12 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
                 //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
                 //evitaBarcodeScanner();
+                LastAction= ScannedBarcodeActivity.Action.ADD;
 
                 getCameraPermission();
 
                 if(mCameraPermissionGranted) {
-                    startActivityBarcode(ScannedBarcodeActivity.Action.ADD);
+                    startActivityBarcode(LastAction);
                 }
 
                 break;
@@ -212,10 +272,12 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 break;
             case R.id.end_run:
 
+                LastAction= ScannedBarcodeActivity.Action.DELETE;
+
                 getCameraPermission();
 
                 if(mCameraPermissionGranted) {
-                    startActivityBarcode(ScannedBarcodeActivity.Action.DELETE);
+                    startActivityBarcode(LastAction);
                 }
 
                 break;
@@ -258,7 +320,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         builder.setMessage("Hai rifiutato il permesso :( , se vuoi scanerizzare il QR devi attivare il permesso dalle impostazioni di sistema")
                 .setCancelable(false)
                 .setPositiveButton("Apri impostazioni", (dialog, id) -> {
-                    //apri impostazioni
+                    Intent enableApplicationDetails = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
+                    startActivity(enableApplicationDetails);
                 });
 
         final AlertDialog alert = builder.create();
@@ -377,16 +440,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             }
         }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (checkMapServices()) {
-            if (!mLocationPermissionGranted) {
-                getLocationPermission();
-            }
-        }
-    }*/
+*/
 
     private void returnShop() {
         //TODO: Molto diffcile ora come ora

@@ -2,20 +2,22 @@ package com.example.rent_scio1.utils.map;
 
 import android.Manifest;
 import android.app.Notification;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.CountDownTimer;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.SetShopActivityTrader;
 import com.example.rent_scio1.utils.MyNotify;
-import com.example.rent_scio1.utils.PermissionUtils;
+import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -49,24 +51,31 @@ public class MyMapClient extends MyMap {
     private Vehicle vehicleRun;
 
     private static final String TAG = "MyMapClient";
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
     private AppCompatActivity context;
 
     private MyNotify mNotifyDelimitedArea;
     private MyNotify mNotifySpeed;
 
     private FusedLocationProviderClient mFusedLocationClient;
-    private LatLngBounds mMapBoundary;
     private static CountDownTimer timerDelimitedArea;
+
+    private boolean mLocationPermissionGranted = false;
+
+    LocationManager manager;
+
+    DialogInterface.OnClickListener listener;
 
     public MyMapClient() {
         super();
     }
 
-    public MyMapClient(AppCompatActivity context) {
+    public MyMapClient(AppCompatActivity context, LocationManager manager, DialogInterface.OnClickListener listener) {
         super();
         this.context = context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        this.manager = manager;
+        this.listener = listener;
     }
 
     /*
@@ -75,13 +84,48 @@ public class MyMapClient extends MyMap {
     3- in clinete con corsa attiva solo quella affine
     */
 
+    public void location(){
+        if (getmMap() != null) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            getmMap().setMyLocationEnabled(true);
+            getLastKnownLocation();
+            //getUserDetails();
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        enableMyLocation();
+        //enableMyLocation();
+
+        //passo una lambda nulla
+        MyPermission permission = new MyPermission(context, context, location -> {
+        });
+
+        boolean bol = permission.checkMapServices(
+                "L'applicazione per settare la posizione del negozio in automatico ha bisogno che la geolocalizzazione sia attiva dalle impostazioni.",
+                "OK", manager, listener);
+
+        if (bol) {
+
+            if (!mLocationPermissionGranted) {
+
+                mLocationPermissionGranted = permission.getLocationPermission(
+                        "L'applicazione per settare la posizione del negozio in automatico ha bisogno del permesso della posizione.",
+                        "Hai rifiutato il permesso :( , dovrai settare la posizione manualmente o attivare il permesso dalle impostazioni di sistema",
+                        "Ok", "Voglio proseguire senza permessi", (dialog, which) ->
+                                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MyPermission.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION));
+
+            }
+        }
+
+        location();
         setMapDetails();
 
     }
+
 
 
     private void setMapDetails(){
@@ -155,7 +199,7 @@ public class MyMapClient extends MyMap {
         }
     }
 
-
+/*
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (getmMap() != null) {
@@ -169,7 +213,7 @@ public class MyMapClient extends MyMap {
             PermissionUtils.requestPermission(context, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
-    }
+    }*/
 
 
     private void createNotification(Run run, Notification dilimitedAreaNotification, Notification speedNotification ) {
@@ -294,7 +338,7 @@ public class MyMapClient extends MyMap {
             double topBoundary = location.getLatitude() + .01;
             double rightBoundary = location.getLongitude() + .01;
 
-            mMapBoundary = new LatLngBounds(
+            LatLngBounds mMapBoundary = new LatLngBounds(
                     new LatLng(bottomBundary, leftBoundary),
                     new LatLng(topBoundary, rightBoundary)
             );
