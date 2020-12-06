@@ -6,7 +6,9 @@
         <item android:id="@+id/locate_me"
             android:title="@string/localizzami"
             app:showAsAction="always"/>
+    </group>
 
+    <group>
         <item android:id="@+id/confirm_position"
             android:title=""
             android:icon="@drawable/ic_round_done_24"

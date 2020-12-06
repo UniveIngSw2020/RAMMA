@@ -1,6 +1,8 @@
 package com.example.rent_scio1.Trader;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -13,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.UserClient;
@@ -28,7 +29,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
-public class SetPositionActivityTrader extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMarkerDragListener {
+public class SetPositionActivityTrader extends AppCompatActivity implements OnMapReadyCallback,GoogleMap.OnMarkerDragListener {
 
     private GoogleMap mMap;
     private static final String TAG="SetPositionActivityTrader";
@@ -53,20 +54,21 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
 
     }
 
-    private void initViews(){
+    public void initViews(){
         toolbar_map = findViewById(R.id.toolbar_map_permission_delimited);
+        setSupportActionBar(toolbar_map);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_map_permission, menu);
         toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(false);
+        toolbar_map.getMenu().findItem(R.id.locate_me).setVisible(true);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch(item.getItemId()){
             case R.id.locate_me:
 
@@ -101,7 +103,6 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
                 }
                 permission.getPosition();
 
-                Toast.makeText(getApplicationContext(), "ciao sei nel locaTEme", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.confirm_position:
@@ -114,15 +115,14 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
                             startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                             Log.d(TAG, "POSIZIONE TRADER AGGIORNATA");
                         });
-
-                Toast.makeText(getApplicationContext(), "ciao sei nel confirm position", Toast.LENGTH_LONG).show();
                 break;
 
             default:
+                super.onOptionsItemSelected(item);
                 break;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     /**
