@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,10 +20,12 @@ import android.widget.Toast;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.permissions.MyPermission;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.DocumentReference;
@@ -76,7 +79,9 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
 
                     mMap.clear();
                     shop=mMap.addMarker(new MarkerOptions().position( new LatLng(location.getLatitude(),location.getLongitude() )));
+                    shop.setDraggable(true);
                     toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
+                    setCameraView(location, null);
 
                 });
 
@@ -140,10 +145,10 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
 
         mMap.setOnMapClickListener(latLng -> {
             mMap.clear();
-
             shop=mMap.addMarker(new MarkerOptions().position(latLng));
             shop.setDraggable(true);
             toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
+            setCameraView(null, shop.getPosition());
         });
 
 
@@ -212,6 +217,41 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 permission.getPosition();
             }
+        }
+    }
+
+    private void setCameraView(Location location,LatLng latLng) {
+        try {
+
+            if(location!=null){
+                double bottomBundary = location.getLatitude() - .01;
+                double leftBoundary = location.getLongitude() - .01;
+                double topBoundary = location.getLatitude() + .01;
+                double rightBoundary = location.getLongitude() + .01;
+
+                LatLngBounds mMapBoundary = new LatLngBounds(
+                        new LatLng(bottomBundary, leftBoundary),
+                        new LatLng(topBoundary, rightBoundary)
+                );
+
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+            }
+
+            if(latLng!=null){
+                double bottomBundary = latLng.latitude - .01;
+                double leftBoundary = latLng.longitude - .01;
+                double topBoundary = latLng.latitude + .01;
+                double rightBoundary = latLng.longitude + .01;
+
+                LatLngBounds mMapBoundary = new LatLngBounds(
+                        new LatLng(bottomBundary, leftBoundary),
+                        new LatLng(topBoundary, rightBoundary)
+                );
+
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+            }
+
+        } catch (Exception e) {
         }
     }
 }
