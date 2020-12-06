@@ -606,7 +606,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
     }*/
 
-
+/*
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -614,6 +614,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             //myMapClient.stopNotification();
             stopService(serviceIntent);
         }
-    }
+    }*/
 
 }
