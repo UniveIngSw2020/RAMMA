@@ -1,27 +1,19 @@
 package com.example.rent_scio1.Trader;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.rent_scio1.R;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.firebase.database.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class SetPositionActivityTrader extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMarkerDragListener {
 
@@ -29,15 +21,48 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
     private static final String TAG="SetPositionActivityTrader";
 
     private Marker shop;
+    private Toolbar toolbar_map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_position_trader);
+
+        initViews();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.map_permission);
         mapFragment.getMapAsync(this);
+    }
+
+    private void initViews(){
+        toolbar_map = findViewById(R.id.toolbar_map_permission_delimited);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_map_permission, menu);
+        toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.locate_me:
+                Toast.makeText(getApplicationContext(), "ciao sei nel locaTEme", Toast.LENGTH_LONG).show();
+                break;
+
+            case R.id.confirm_position:
+                Toast.makeText(getApplicationContext(), "ciao sei nel confirm position", Toast.LENGTH_LONG).show();
+                break;
+
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**

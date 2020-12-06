@@ -41,7 +41,7 @@
 
         <activity
             android:name=".Trader.SetPositionActivityTrader"
-            android:label="@string/title_activity_set_position_trader"></activity>
+            android:label="@string/title_activity_set_position_trader" />
         <activity android:name=".Trader.SetShopActivityTrader" />
         <activity
             android:name=".Trader.InfoTutorialDelimitedAreaTrader"
