@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+@Deprecated
 public class SetShopActivityTrader extends AppCompatActivity{
 
     private static final String TAG = "SetShopActivityTrader";

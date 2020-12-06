@@ -1,19 +1,32 @@
 package com.example.rent_scio1.Trader;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 public class SetPositionActivityTrader extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMarkerDragListener {
 
@@ -22,6 +35,10 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
 
     private Marker shop;
     private Toolbar toolbar_map;
+
+    MyPermission permission;
+
+    private boolean mLocationPermissionGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +50,7 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_permission);
         mapFragment.getMapAsync(this);
+
     }
 
     private void initViews(){
@@ -51,10 +69,52 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
 
         switch(item.getItemId()){
             case R.id.locate_me:
+
+                permission = new MyPermission(SetPositionActivityTrader.this, this, location -> {
+
+                    mMap.clear();
+                    shop=mMap.addMarker(new MarkerOptions().position( new LatLng(location.getLatitude(),location.getLongitude() )));
+                    toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
+
+                });
+
+                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                boolean bol=permission.checkMapServices(
+                        "L'applicazione per settare la posizione del negozio in automatico ha bisogno che la geolocalizzazione sia attiva dalle impostazioni.",
+                        "OK",manager, (dialog, which) -> {
+
+                            Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(enableGpsIntent, MyPermission.PERMISSIONS_REQUEST_ENABLE_GPS);
+                        });
+
+                if (bol) {
+
+                    if( !mLocationPermissionGranted ){
+                        mLocationPermissionGranted=permission.getLocationPermission(
+                                "L'applicazione per settare la posizione del negozio in automatico ha bisogno del permesso della posizione.",
+                                "Hai rifiutato il permesso :( , dovrai settare la posizione manualmente o attivare il permesso dalle impostazioni di sistema",
+                                "Ok", "Voglio proseguire senza permessi", (dialog, which) ->
+                                        ActivityCompat.requestPermissions(SetPositionActivityTrader.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MyPermission.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION));
+                    }
+
+                }
+                permission.getPosition();
+
                 Toast.makeText(getApplicationContext(), "ciao sei nel locaTEme", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.confirm_position:
+
+                UserClient.getUser().setTraderposition(new GeoPoint(shop.getPosition().latitude, shop.getPosition().longitude));
+
+                DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
+                mDatabase.update("traderposition", UserClient.getUser().getTraderposition())
+                        .addOnSuccessListener(aVoid -> {
+                            startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                            Log.d(TAG, "POSIZIONE TRADER AGGIORNATA");
+                        });
+
                 Toast.makeText(getApplicationContext(), "ciao sei nel confirm position", Toast.LENGTH_LONG).show();
                 break;
 
@@ -83,6 +143,7 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
 
             shop=mMap.addMarker(new MarkerOptions().position(latLng));
             shop.setDraggable(true);
+            toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
         });
 
 
@@ -127,5 +188,30 @@ public class SetPositionActivityTrader extends FragmentActivity implements OnMap
     @Override
     public void onMarkerDragEnd(Marker marker) {
         shop=marker;
+    }
+
+    @Override
+    protected void onActivityResult ( int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: called.");
+        if (requestCode == MyPermission.PERMISSIONS_REQUEST_ENABLE_GPS) {
+            if (!mLocationPermissionGranted) {
+
+                mLocationPermissionGranted=permission.getLocationPermission(
+                        "L'applicazione per settare la posizione del negozio in automatico ha bisogno del permesso della posizione.",
+                        "Hai rifiutato il permesso :( , dovrai settare la posizione manualmente o attivare il permesso dalle impostazioni di sistema",
+                        "Ok", "Voglio proseguire senza permessi", (dialog, which) ->
+                                ActivityCompat.requestPermissions(SetPositionActivityTrader.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MyPermission.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION));
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==MyPermission.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                permission.getPosition();
+            }
+        }
     }
 }

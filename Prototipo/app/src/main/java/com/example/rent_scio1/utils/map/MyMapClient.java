@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.Trader.SetShopActivityTrader;
 import com.example.rent_scio1.utils.MyNotify;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.Run;
