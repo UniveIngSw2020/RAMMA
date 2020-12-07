@@ -5,17 +5,17 @@
     android:layout_height="250dp"
     android:orientation="vertical"
     android:background="@color/back"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
-    android:paddingTop="20dp"
-    android:paddingBottom="40dp"
-    android:gravity="bottom">
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="0dp"
+    android:gravity="center">
 
-    <ImageView
+    <pl.droidsonroids.gif.GifImageView
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_logo_vettorizzato" />
+        android:src="@drawable/bike_new"/>
 
     <TextView
         android:id="@+id/text_email_trader"
@@ -29,6 +29,8 @@
         android:textColor="@color/text"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+
 
 
 </LinearLayout>

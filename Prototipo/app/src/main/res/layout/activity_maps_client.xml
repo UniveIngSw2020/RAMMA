@@ -38,6 +38,19 @@
             app:layout_constraintTop_toTopOf="@id/toolbar_map_client"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_area_delimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/text"
+            android:theme="@style/Widget.BottomNavigationView"
+            app:itemIconSize="25dp"
+            app:itemIconTint="@color/back"
+            app:itemTextColor="@color/back"
+            app:layout_constraintTop_toBottomOf="@id/mapDelimiter"
+            app:menu="@menu/maps_client_menu" />
+
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -53,5 +66,7 @@
         android:background="@color/text"
         app:headerLayout="@layout/navigation_header_map_client"
         app:menu="@menu/navigation_menu_map_client" />
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

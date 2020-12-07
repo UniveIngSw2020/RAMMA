@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.rent_scio1.Init.RegisterActivity;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyLocationService;
@@ -33,7 +34,9 @@ import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.map.MyMapClient;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -67,6 +70,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
     MyMapClient myMapClient;
 
+    private FirebaseAuth mAuth;
+
     private ScannedBarcodeActivity.Action LastAction;
 
     //Polygon delimitedArea;
@@ -75,6 +80,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_client);
+        mAuth = FirebaseAuth.getInstance();
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
     }
 
@@ -153,7 +159,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     private void initViews(){
         navigationView = findViewById(R.id.navigationView_Map_Client);
         TextView textView = navigationView.getHeaderView(0).findViewById(R.id.text_email_client);
-        DrawerLayout drawer_map_trader = findViewById(R.id.drawer_map_client1);
+        textView.setText(mAuth.getCurrentUser().getEmail());
+
+
+        DrawerLayout drawer_map_client= findViewById(R.id.drawer_map_client1);
         Toolbar toolbar = findViewById(R.id.toolbar_map_client);
         setSupportActionBar(toolbar);
         navigationView.setNavigationItemSelectedListener(this);
@@ -174,9 +183,13 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         if(UserClient.getUser()!=null)
             textView.setText(UserClient.getUser().getEmail());
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_trader, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawer_map_trader.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer_map_client , toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawer_map_client.addDrawerListener(toggle);
         toggle.syncState();
+
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_area_delimited);
+
 
     }
 
