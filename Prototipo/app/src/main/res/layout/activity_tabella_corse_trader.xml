@@ -32,16 +32,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_weight="1"
-        android:background="@drawable/border_tablelayout"
         android:gravity="center"
         android:paddingTop="0dp"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="@integer/viewfinder_border_width"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_trader_list"
-        app:layout_constraintVertical_bias="0.101">
+        app:layout_constraintVertical_bias="0.000001">
 
         <TableRow>
 
@@ -61,9 +59,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingBottom="10dp"
                 android:fontFamily="@font/comfortaa_regular"
                 android:gravity="center"
+                android:paddingBottom="10dp"
                 android:text="@string/veicolo"
                 android:textColor="@color/text"
                 android:textSize="18sp"
@@ -73,9 +71,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingBottom="10dp"
                 android:fontFamily="@font/comfortaa_regular"
                 android:gravity="center"
+                android:paddingBottom="10dp"
                 android:text="@string/rimasti"
                 android:textColor="@color/text"
                 android:textSize="18sp"
@@ -85,12 +83,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingBottom="10dp"
                 android:fontFamily="@font/comfortaa_regular"
+                android:paddingBottom="10dp"
                 android:text="@string/elimina_corsa_trader_table"
+                android:textAlignment="center"
                 android:textColor="@color/text"
                 android:textSize="18sp"
-                android:textAlignment="center"
                 android:textStyle="bold" />
         </TableRow>
     </TableLayout>

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -165,7 +166,7 @@ public class RunTableTrader extends AppCompatActivity {
 
         TableRow row;
         row = new TableRow(this);
-        row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         row.setBackgroundColor(Color.rgb(3, 50, 73));
         row.setPadding(0,5,0,0);
         row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -194,10 +195,10 @@ public class RunTableTrader extends AppCompatActivity {
 
 
         Button delete=new Button(RunTableTrader.this);
-        delete.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        delete.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
         delete.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         delete.setTypeface(typeface);
-        delete.setPadding(0,1,0,0);
+        delete.setPadding(0,2,0,0);
         delete.setBackgroundResource(R.drawable.rounded_button);
         delete.setTextSize(18);
         delete.setTextColor(getColor(R.color.back));
@@ -232,7 +233,12 @@ public class RunTableTrader extends AppCompatActivity {
         row.addView(delete);
 
 
+
+
         table.addView(row);
+
+
+
 
         //setti invisible
         warning_empty_table.setVisibility(View.INVISIBLE);
