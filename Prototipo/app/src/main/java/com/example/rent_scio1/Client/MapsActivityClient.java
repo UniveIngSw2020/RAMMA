@@ -7,6 +7,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -14,6 +16,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.GridLayout;
+import android.widget.GridView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,12 +30,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.Init.RegisterActivity;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.VehicleListActivityTrader;
 import com.example.rent_scio1.services.MyLocationService;
+import com.example.rent_scio1.utils.Vehicle;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -42,6 +52,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
 
 public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -82,6 +94,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         setContentView(R.layout.activity_maps_client);
         mAuth = FirebaseAuth.getInstance();
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
+
+        createTable();
     }
 
     @Override
@@ -156,6 +170,57 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
     }
 
+
+    private void createTable() {
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
+
+        TableLayout table = findViewById(R.id.gridview_maps_client);
+
+        /*da gettare il tempo rimasto e l'altra cosa che non ricordo ora all'interno delle textview*/
+
+            TableRow row;
+            row = new TableRow(this);
+            row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+            row.setBackgroundColor(getColor(R.color.text));
+            row.setPadding(0, 8, 0, 0);
+            row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+            TextView tv1 = new TextView(MapsActivityClient.this);
+            tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+            tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv1.setTypeface(typeface);
+            tv1.setTextColor(getColor(R.color.back));
+
+            if(UserClient.getRun() != null){
+                tv1.setText("primo"/*Inserisci qui il tempo rimasto*/);
+            }
+            else {
+                tv1.setText("-"/*ci metto un trattino ad indicare che la corsa non è attiva*/);
+            }
+
+
+
+            TextView tv2 = new TextView(MapsActivityClient.this);
+            tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+            tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tv2.setTypeface(typeface);
+            tv2.setTextColor(getColor(R.color.back));
+
+            if(UserClient.getRun() != null){
+                tv2.setText("secondo"/*Inserisci qui la velocità attuale*/);
+            }
+            else {
+                tv2.setText("-"/*ci metto un trattino ad indicare che la corsa non è attiva*/);
+            }
+
+
+            row.addView(tv1);
+            row.addView(tv2);
+
+            table.addView(row);
+    }
+
     private void initViews(){
         navigationView = findViewById(R.id.navigationView_Map_Client);
         TextView textView = navigationView.getHeaderView(0).findViewById(R.id.text_email_client);
@@ -188,7 +253,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         toggle.syncState();
 
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_area_delimited);
+        /*GridView gridView = findViewById(R.id.gridview_maps_client);*/
 
 
     }

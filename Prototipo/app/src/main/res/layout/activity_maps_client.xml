@@ -27,29 +27,59 @@
             android:id="@+id/mapDelimiter"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_above="@+id/gridview_maps_client"
             android:layout_below="@+id/toolbar_map_client"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="0dp"
+            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             app:layout_constraintBottom_toBottomOf="@id/toolbar_map_client"
-            app:layout_constraintTop_toTopOf="@id/toolbar_map_client"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintBottom_toTopOf="@id/gridview_maps_client"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_map_client"
+            app:layout_constraintTop_toTopOf="@id/toolbar_map_client" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation_area_delimited"
+        <TableLayout
+            android:id="@+id/gridview_maps_client"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:layout_alignParentBottom="true"
+            android:clickable="false"
+            android:gravity="center"
             android:background="@color/text"
             android:theme="@style/Widget.BottomNavigationView"
-            app:itemIconSize="25dp"
-            app:itemIconTint="@color/back"
             app:itemTextColor="@color/back"
-            app:layout_constraintTop_toBottomOf="@id/mapDelimiter"
-            app:menu="@menu/maps_client_menu" />
+            app:layout_constraintTop_toBottomOf="@+id/mapDelimiter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/maps_client_menu">
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/comfortaa_regular"
+                    android:gravity="center"
+                    android:text="@string/tempo_rimasto"
+                    android:textColor="@color/back"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/comfortaa_regular"
+                    android:gravity="center"
+                    android:text="@string/velocit_attuale"
+                    android:textColor="@color/back"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+        </TableLayout>
 
     </RelativeLayout>
 

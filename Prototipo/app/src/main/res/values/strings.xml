@@ -124,5 +124,7 @@
     <string name="title_activity_set_position_trader">Map</string>
     <string name="localizzami">Localizzami</string>
     <string name="velocit_massima">Velocità massima</string>
+    <string name="non_mi_ricordo">Non mi ricordo</string>
+    <string name="velocit_attuale">Velocità attuale</string>
 
 </resources>

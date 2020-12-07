@@ -36,13 +36,13 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="0dp"
-            app:layout_constraintEnd_toEndOf="@id/bottom_navigation_area_delimited"
-            app:layout_constraintBottom_toBottomOf="@id/bottom_navigation_area_delimited"
+            app:layout_constraintEnd_toEndOf="@id/gridview_maps_client"
+            app:layout_constraintBottom_toBottomOf="@id/gridview_maps_client"
             app:layout_constraintStart_toStartOf="@id/toolbar_map_trader_delimiter"
             app:layout_constraintTop_toTopOf="@id/toolbar_map_trader_delimiter" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation_area_delimited"
+            android:id="@+id/gridview_maps_client"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

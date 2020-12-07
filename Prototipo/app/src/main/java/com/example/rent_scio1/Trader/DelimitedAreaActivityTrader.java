@@ -224,7 +224,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_area_delimited);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.gridview_maps_client);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
             switch (item.getItemId()){
