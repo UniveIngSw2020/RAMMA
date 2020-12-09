@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         User user1 = task.getResult().toObject(User.class);
                         UserClient.setUser(user1);
-                        UserClient.setRun(null);
+                        UserClient.setRun(null); // TODO PRENDERE LA CORSA SE C'E
                         Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
                         if (user1 != null) {
