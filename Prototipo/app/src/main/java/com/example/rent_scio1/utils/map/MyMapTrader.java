@@ -10,6 +10,7 @@ import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -29,6 +30,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.android.clustering.ClusterManager;
@@ -121,10 +123,39 @@ public class MyMapTrader extends MyMap{
                         //viewCustomers(runs);
 
                         for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            Log.e(TAG, "PRE SWITCH");
                             switch (dc.getType()) {
                                 case ADDED:
+                                    Log.e(TAG, "ADDED");
+                                    Query getVehiclesTrader = FirebaseFirestore.getInstance().collection("users").whereEqualTo("user_id", dc.getDocument().toObject(Run.class).getUser());
 
+                                    getVehiclesTrader.get().addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                User user = new User(document.toObject(User.class));
+                                                Log.e(TAG, "OK");
+                                                listMarker.add(mMap.addMarker(new MarkerOptions()
+                                                        .position( new LatLng(
+                                                                UserClient.getUser().getTraderposition().getLatitude(),
+                                                                UserClient.getUser().getTraderposition().getLongitude()))
+                                                        .title(user.getName() + " " + user.getSourname())
+                                                        .
+                                                        .snippet(dc.getDocument().toObject(Run.class).getUser())
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));
 
+                                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                            }
+                                        } else {
+                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                        }
+                                    });
+
+                                    /*.add(mMap.addMarker(new MarkerOptions()
+                                            .position( new LatLng(
+                                                    UserClient.getUser().getTraderposition().getLatitude(),
+                                                    UserClient.getUser().getTraderposition().getLongitude()))
+                                            .title(dc.getDocument().toObject(Run.class).getUser())
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));*/
 
                                     //Aggiunto il marker alla lista di marker
                                     /*clusterManager.getClusterMarkerCollection().addMarker(new MarkerOptions()
@@ -140,17 +171,14 @@ public class MyMapTrader extends MyMap{
                                             UserClient.getUser().getTraderposition().getLongitude(),
                                             dc.getDocument().toObject(Run.class).getUser()));*/
 
-                                    listMarker.add(mMap.addMarker(new MarkerOptions()
-                                            .position( new LatLng(
-                                                    UserClient.getUser().getTraderposition().getLatitude(),
-                                                    UserClient.getUser().getTraderposition().getLongitude()))
-                                            .title(dc.getDocument().toObject(Run.class).getUser())
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));
+
                                     break;
                                 case MODIFIED:
+                                    Log.e(TAG, "MODIFIED");
                                     modifyMarker(dc.getDocument().toObject(Run.class));
                                     break;
                                 case REMOVED:
+                                    Log.e(TAG, "REMOVED");
                                     clearMarker(dc.getDocument().toObject(Run.class));
                                     break;
                             }
@@ -165,7 +193,9 @@ public class MyMapTrader extends MyMap{
             //clearMarkers();
 
             for(/*ClusterMarkers*/ Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
-                if(m.getTitle().equals(run.getUser())){
+                Log.e(TAG, m.getTitle());
+                if(m.getSnippet().equals(run.getUser())){
+                    Log.e(TAG, "modificato");
                     m.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
                 }
             }
@@ -179,7 +209,8 @@ public class MyMapTrader extends MyMap{
 
     private void clearMarker(Run run){
         for(Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
-            if(m.getTitle().equals(run.getUser())){
+            if(m.getSnippet().equals(run.getUser())){
+                Log.e(TAG, "rimosso");
                 listMarker.remove(m);
                 //clusterManager.removeItem(m);
                 m.remove();

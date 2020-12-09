@@ -101,6 +101,8 @@ public class QRGeneratorTrader extends AppCompatActivity {
                             }
                         }
                     }
+
+
                 });
 
     }
