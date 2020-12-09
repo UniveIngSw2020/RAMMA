@@ -143,7 +143,7 @@ public class RunTableTrader extends AppCompatActivity {
 
                 timeText.setText(String.format("%d:%d", minutes, seconds));
 
-                if(minutes<5){
+                if(minutes<10){
                     timeText.setTextColor(Color.YELLOW);
                 }
             }

@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -38,6 +39,7 @@ import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.VehicleListActivityTrader;
 import com.example.rent_scio1.services.MyLocationService;
+import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.Vehicle;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.User;
@@ -54,6 +56,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -170,6 +173,36 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
     }
 
+    private void updateTime(TextView timeText,TextView speedText, Run run){
+
+        long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+
+        new CountDownTimer(time, 100) {
+            @SuppressLint("DefaultLocale")
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int minutes=(int) (millisUntilFinished / 1000) / 60;
+                int seconds=(int) (millisUntilFinished / 1000) % 60;
+                double speed=run.getSpeed();
+
+                timeText.setText(String.format("%d:%d", minutes, seconds));
+                speedText.setText(String.format("%f km/h",speed));
+
+                if(minutes<10){
+                    timeText.setTextColor(Color.YELLOW);
+                }
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onFinish() {
+                timeText.setText("TERMINATO");
+                speedText.setText("-");
+                timeText.setTextColor(Color.rgb(236, 124, 124));
+            }
+        }.start();
+
+    }
 
     private void createTable() {
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
@@ -192,14 +225,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             tv1.setTypeface(typeface);
             tv1.setTextColor(getColor(R.color.back));
 
-            if(UserClient.getRun() != null){
-                tv1.setText("primo"/*Inserisci qui il tempo rimasto*/);
-            }
-            else {
-                tv1.setText("-"/*ci metto un trattino ad indicare che la corsa non è attiva*/);
-            }
-
-
 
             TextView tv2 = new TextView(MapsActivityClient.this);
             tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
@@ -207,18 +232,19 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             tv2.setTypeface(typeface);
             tv2.setTextColor(getColor(R.color.back));
 
-            if(UserClient.getRun() != null){
-                tv2.setText("secondo"/*Inserisci qui la velocità attuale*/);
-            }
-            else {
-                tv2.setText("-"/*ci metto un trattino ad indicare che la corsa non è attiva*/);
-            }
-
 
             row.addView(tv1);
             row.addView(tv2);
 
             table.addView(row);
+
+            if(UserClient.getRun() == null){
+                tv1.setText("-"/*ci metto un trattino ad indicare che la corsa non è attiva*/);
+                tv2.setText("-"/*ci metto un trattino ad indicare che la corsa non è attiva*/);
+            }
+            else{
+                updateTime(tv1,tv2,UserClient.getRun());
+            }
     }
 
     private void initViews(){

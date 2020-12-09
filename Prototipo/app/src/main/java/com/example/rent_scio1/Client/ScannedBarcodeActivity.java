@@ -121,7 +121,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     String message = "Te si drio lezar el cu erre sbaglià";
                     int length = rawValue.split(" ").length;
                     Log.w(TAG, rawValue);
-                    Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+
                     Log.w(TAG, "PRE SWITCH");
 
                     switch (event){
@@ -131,6 +131,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
                             }else {
                                 startLocationService(rawValue);
+                                Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                                 startActivity(intent);
                             }
                             break;
@@ -140,7 +141,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                             if(UserClient.getRun() != null){
                                 if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
                                     stopService(new Intent(getApplicationContext(), MyLocationService.class));
-                                    startActivity(intent);
+                                    //startActivity(intent);
                                 }else{
                                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
                                 }

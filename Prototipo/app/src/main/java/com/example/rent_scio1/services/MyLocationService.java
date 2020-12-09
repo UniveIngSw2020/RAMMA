@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.map.MyMapClient;
@@ -61,7 +62,7 @@ public class MyLocationService extends Service {
             mPreLastLocation.set(mLastLocation);
 
             mLastLocation.set(location);
-            double speed= mLastLocation.getSpeed()/3.6;/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
+            double speed= mLastLocation.getSpeed()*3.6;/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
 
             updateUserLocation(location, speed);
 //            stopService();
@@ -73,6 +74,8 @@ public class MyLocationService extends Service {
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
 
                 UserClient.getRun().setGeoPoint(geoPoint);
+                UserClient.getRun().setSpeed(speed);
+
                 DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
                 mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si"));
                 mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si al quadrato"));
@@ -148,6 +151,9 @@ public class MyLocationService extends Service {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         UserClient.setRun(null);
+                        Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                     }
                 });
 
