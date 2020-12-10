@@ -139,7 +139,6 @@ public class MyMapTrader extends MyMap{
                                                                 UserClient.getUser().getTraderposition().getLatitude(),
                                                                 UserClient.getUser().getTraderposition().getLongitude()))
                                                         .title(user.getName() + " " + user.getSourname())
-                                                        .
                                                         .snippet(dc.getDocument().toObject(Run.class).getUser())
                                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));
 
