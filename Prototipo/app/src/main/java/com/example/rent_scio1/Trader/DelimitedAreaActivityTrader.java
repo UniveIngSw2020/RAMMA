@@ -164,6 +164,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         //mMap.setMyLocationEnabled(true);
 
         mMap.setOnMapClickListener(latLng -> {
+            map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
+
             Marker marker=mMap.addMarker(new MarkerOptions().position(latLng));
             marker.setDraggable(true);
 
@@ -174,7 +176,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         mMap.setOnMarkerDragListener(this);
 
         //MARKER NEGOZIO
-       addNegozio();
+        addNegozio();
 
         //Carica area limitata precedente(se presente)
         //carica il mio array di markers e li aggiunge alla mappa

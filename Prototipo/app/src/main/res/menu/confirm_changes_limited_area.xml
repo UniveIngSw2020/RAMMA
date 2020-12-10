@@ -6,6 +6,7 @@
             android:id="@+id/confirm_changes_limited"
             android:title=""
             app:showAsAction="always"
+            android:visible="false"
             android:icon="@drawable/ic_round_done_24"/>
     </group>
 
