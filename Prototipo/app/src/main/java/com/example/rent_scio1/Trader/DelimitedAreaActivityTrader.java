@@ -207,8 +207,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
             PolygonOptions polygonOptions=new PolygonOptions().addAll(markers).clickable(true);
             polygon=mMap.addPolygon(polygonOptions);
-            polygon.setStrokeColor(Color.rgb(0,0,0));
-            polygon.setFillColor(0x7F00FF00);
+            polygon.setStrokeColor(getColor(R.color.stroke_delimited));
+            polygon.setFillColor(Color.argb(130, 111,163,167));
             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
         }
         else{

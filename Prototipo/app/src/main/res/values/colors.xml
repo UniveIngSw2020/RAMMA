@@ -11,4 +11,5 @@
     <color name="back">#033249</color>
     <color name="text">#7198f1</color>
     <color name="mid_stroke">#0954ff</color>
+    <color name="stroke_delimited">#6f5f6f</color>
 </resources>
