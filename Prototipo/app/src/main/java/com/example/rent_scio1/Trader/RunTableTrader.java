@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -168,30 +169,31 @@ public class RunTableTrader extends AppCompatActivity {
         row = new TableRow(this);
         row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         row.setBackgroundColor(Color.rgb(3, 50, 73));
-        row.setPadding(0,5,0,0);
+        row.setPadding(0,10,0,0);
         row.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView tv;
         tv = new TextView(RunTableTrader.this);
         tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         tv.setText(user);
-        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv.setPadding(0, 0, 0, 50);
+        tv.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
         tv.setTypeface(typeface);
-        tv.setTextColor(Color.rgb(113, 152, 241));
+        tv.setTextColor(getColor(R.color.text));
 
         TextView tv1 = new TextView(RunTableTrader.this);
         tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         tv1.setText(vehicle);
         tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv1.setTypeface(typeface);
-        tv1.setTextColor(Color.rgb(113, 152, 241));
+        tv1.setTextColor(getColor(R.color.text));
 
 
         TextView tv2 = new TextView(RunTableTrader.this);
         tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv2.setTypeface(typeface);
-        tv2.setTextColor(Color.rgb(113, 152, 241));
+        tv2.setTextColor(getColor(R.color.text));
 
 
         Button delete=new Button(RunTableTrader.this);
