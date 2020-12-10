@@ -57,33 +57,59 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
             newVehicle.put("vehicleUID", id);
 
             newVehicle.put("fk_trader", FirebaseAuth.getInstance().getUid());
-            newVehicle.put("vehicleType", vehicle_type.getText().toString());
 
-            Integer seatsInteger=tryParse( seats.getText().toString() );
-            if(seatsInteger==null){
-                Toast.makeText(getApplicationContext(),"Non è mica un concerto dei metallica! Troppe persone a bordo",Toast.LENGTH_LONG).show();
+            if(vehicle_type.getText().toString().length()==0){
+                Toast.makeText(getApplicationContext(),"Deve avere un nome!",Toast.LENGTH_LONG).show();
                 return;
             }
-            newVehicle.put("seats", seatsInteger);
+            else{
+                newVehicle.put("vehicleType", vehicle_type.getText().toString());
+            }
+
+            if(seats.getText().toString().length()==0){
+                Toast.makeText(getApplicationContext(),"Deve avere almeno un posto a sedere!",Toast.LENGTH_LONG).show();
+                return;
+            }
+            else{
+                Integer seatsInteger=tryParse( seats.getText().toString() );
+                if( seatsInteger==null){
+                    Toast.makeText(getApplicationContext(),"Non è mica un concerto dei metallica! Troppe persone a bordo",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if( seatsInteger==0){
+                    Toast.makeText(getApplicationContext(),"Deve avere almeno un posto a sedere!",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                newVehicle.put("seats", seatsInteger);
+            }
+
 
             newVehicle.put("rented", false);
 
-            Integer maxSpeedKMH=tryParse( maxSpeed.getText().toString() );
-            if(maxSpeedKMH==null){
-                Toast.makeText(getApplicationContext(),"Va talmente veloce che viaggia nel tempo!",Toast.LENGTH_LONG).show();
+            if(maxSpeed.getText().toString().length()==0){
+                Toast.makeText(getApplicationContext(),"Deve avere una velocità massima!",Toast.LENGTH_LONG).show();
                 return;
             }
-            newVehicle.put("maxSpeedKMH", maxSpeedKMH);
+            else{
+                Integer maxSpeedKMH=tryParse( maxSpeed.getText().toString() );
+                if(maxSpeedKMH==null){
+                    Toast.makeText(getApplicationContext(),"Va talmente veloce che viaggia nel tempo!",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(maxSpeedKMH==0){
+                    Toast.makeText(getApplicationContext(),"Si dovrà pur poter muovere! La velocità è 0",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                newVehicle.put("maxSpeedKMH", maxSpeedKMH);
+            }
+
 
             //aggiungo il veicolo al db
-            ref.set(newVehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + ref.getId());
-                    }else{
-                        Log.w(TAG, "Error adding document");
-                    }
+            ref.set(newVehicle).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "DocumentSnapshot added with ID: " + ref.getId());
+                }else{
+                    Log.w(TAG, "Error adding document");
                 }
             });
             //db.collection("vehicles").add(newVehicle).addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId())).addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));

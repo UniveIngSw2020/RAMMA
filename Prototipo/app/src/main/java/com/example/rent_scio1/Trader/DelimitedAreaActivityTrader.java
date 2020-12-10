@@ -59,6 +59,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     private final Stack<Marker> markersStack =new Stack<>();
     private boolean isThereAnArea=false;
 
+
     //posizione del trader
     private Marker trader;
 
@@ -166,6 +167,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         mMap.setOnMapClickListener(latLng -> {
             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
 
+
             Marker marker=mMap.addMarker(new MarkerOptions().position(latLng));
             marker.setDraggable(true);
 
@@ -233,6 +235,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 case R.id.costruisci:
                     costruisci();
                     isThereAnArea=true;
+
                     break;
                 case R.id.clear_last:
                     if(!markersStack.empty()){
@@ -253,6 +256,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                                 map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                             }
                         }
+
+
 
                         if(markersStack.empty())
                             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
