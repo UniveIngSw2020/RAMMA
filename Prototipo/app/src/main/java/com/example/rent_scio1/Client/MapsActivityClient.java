@@ -99,6 +99,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
 
         createTable();
+
     }
 
     @Override
@@ -339,6 +340,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             }
         }
     }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -348,12 +350,23 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
         switch (item.getItemId()){
             case R.id.logout_client:
-                FirebaseAuth.getInstance().signOut();
-                UserClient.setUser(null);
+                if(UserClient.getRun() == null) {
+                    FirebaseAuth.getInstance().signOut();
+                    UserClient.setUser(null);
 
-                startActivity(new Intent(getApplicationContext(), StartActivity.class));
-                finishAffinity();
-
+                    startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                    finishAffinity();
+                }else {
+                    {
+                        // TODO Non andrà fatto così
+                        stopService(new Intent(getApplicationContext(), MyLocationService.class));
+                        FirebaseAuth.getInstance().signOut();
+                        UserClient.setUser(null);
+                        startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                        finishAffinity();
+                    }
+                    Log.e(TAG, "Non puoi scappare, termina la corsa prima");
+                }
                 break;
             case R.id.nuova_corsa_client:
 

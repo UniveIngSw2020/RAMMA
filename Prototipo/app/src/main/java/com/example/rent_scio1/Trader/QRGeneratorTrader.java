@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -86,7 +87,8 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                 case ADDED:
                                     Log.e(TAG, "SWITCH ADD");
                                     //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE ECONDERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
-                                    if(code.split(" ").length==3){
+                                    if(code.split(" ").length==3 && dc.getDocument().toObject(Run.class).getVehicle().equals(code.split(" ")[1])){
+                                        Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                         Toast.makeText(QRGeneratorTrader.this, "Corsa Creaata con Successo!", Toast.LENGTH_SHORT).show();
                                     }
@@ -94,6 +96,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                 case REMOVED:
                                     Log.e(TAG, "SWITCH DELETE");
                                     if(code.split(" ").length==1){
+                                        Log.e(TAG, "ABBIAMO UN PROBLEMA REMOVE");
                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                         Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
                                     }

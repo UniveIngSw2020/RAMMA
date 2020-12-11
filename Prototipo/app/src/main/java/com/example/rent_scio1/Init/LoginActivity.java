@@ -1,6 +1,7 @@
 package com.example.rent_scio1.Init;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,18 +11,28 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.example.rent_scio1.Client.MapsActivityClient;
+import com.example.rent_scio1.Client.ScannedBarcodeActivity;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.SetPositionActivityTrader;
+import com.example.rent_scio1.services.MyLocationService;
+import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -118,26 +129,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         User user1 = task.getResult().toObject(User.class);
                         UserClient.setUser(user1);
-                        UserClient.setRun(null); // TODO PRENDERE LA CORSA SE C'E
-                        Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        UserClient.setRun(null);
+                        db.collection("run").whereEqualTo("user", user1.getUser_id()).get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                        for(DocumentSnapshot d : queryDocumentSnapshots.getDocuments()){
+                                            Log.e(TAG, "C'è UNA CORSA SOLA SPERO");
+                                            UserClient.setRun(d.toObject(Run.class)); // TODO PRENDERE LA CORSA SE C'E
+                                            startLocationService(true);
+                                        }
+                                    }
+                                })
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                        if (user1 != null) {
+                                        if (user1 != null) {
+                                            if(user1.getTrader()){
+                                                if(user1.getTraderposition()==null)
+                                                    startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
+                                                else
+                                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                            }else
+                                                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
 
-                            if(user1.getTrader()){
-
-                                if(user1.getTraderposition()==null){
-                                    startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
-                                }
-                                else{
-                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                }
-
-                            }else{
-
-                                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-                            }
-                            finishAffinity();
-                        }
+                                            finishAffinity();
+                                        }
+                                    }
+                                });
                     }
                 });
 
@@ -145,7 +166,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();*/
-
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -153,6 +173,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // ...
         };
     }
+
+
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            //TODO VEDERE SE SI PUO' METTERE IL PATH IN AUTOMATICO
+            if ("com.example.rent_scio1.services.MyLocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.e(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
+    }
+
+    private void startLocationService(Boolean rawValue) {
+        if (!isLocationServiceRunning()) {
+            Log.e(TAG, "RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+            Intent serviceIntent = new Intent(this, MyLocationService.class);
+
+            serviceIntent.putExtra(TAG, rawValue);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                LoginActivity.this.startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+        }
+    }
+
 
     @Override
     public void onStart() {

@@ -36,6 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MyMapTrader extends MyMap{
@@ -45,7 +46,7 @@ public class MyMapTrader extends MyMap{
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private GoogleMap mMap;
     //private ArrayList<ClusterMarkers> listMarker = new ArrayList<>();
-    private ArrayList<Marker> listMarker = new ArrayList<>();
+    private HashMap<String, Marker> listMarker = new HashMap<>();
     private ClusterManager<ClusterMarkers> clusterManager;
     private Context context;
 
@@ -134,7 +135,7 @@ public class MyMapTrader extends MyMap{
                                             for (QueryDocumentSnapshot document : task.getResult()) {
                                                 User user = new User(document.toObject(User.class));
                                                 Log.e(TAG, "OK");
-                                                listMarker.add(mMap.addMarker(new MarkerOptions()
+                                                listMarker.put(dc.getDocument().toObject(Run.class).getUser(), mMap.addMarker(new MarkerOptions()
                                                         .position( new LatLng(
                                                                 UserClient.getUser().getTraderposition().getLatitude(),
                                                                 UserClient.getUser().getTraderposition().getLongitude()))
@@ -191,14 +192,14 @@ public class MyMapTrader extends MyMap{
         if(run.getGeoPoint() != null){
             //clearMarkers();
 
-            for(/*ClusterMarkers*/ Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
-                Log.e(TAG, m.getTitle());
-                if(m.getSnippet().equals(run.getUser())){
-                    Log.e(TAG, "modificato");
-                    m.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
-                }
-            }
-
+//            for(/*ClusterMarkers*/ Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
+//                Log.e(TAG, m.getTitle());
+//                if(m.getSnippet().equals(run.getUser())){
+//                    Log.e(TAG, "modificato");
+//                    m.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
+//                }
+//            }
+            listMarker.get(run.getUser()).setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
 
             /*listMarker.add(mMap.addMarker(new MarkerOptions()
                     .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
@@ -207,15 +208,18 @@ public class MyMapTrader extends MyMap{
     }
 
     private void clearMarker(Run run){
-        for(Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
-            if(m.getSnippet().equals(run.getUser())){
-                Log.e(TAG, "rimosso");
-                listMarker.remove(m);
-                //clusterManager.removeItem(m);
-                m.remove();
-                //clusterManager.getClusterMarkerCollection().getMarkers().remove(m);
-            }
-        }
+//        for(Marker m : listMarker/*clusterManager.getClusterMarkerCollection().getMarkers()*/){
+//            if(m.getSnippet().equals(run.getUser())){
+//                Log.e(TAG, "rimosso");
+//                listMarker.remove(m);
+//                //clusterManager.removeItem(m);
+//                m.remove();
+//                //clusterManager.getClusterMarkerCollection().getMarkers().remove(m);
+//            }
+//        }
+        Marker m = listMarker.get(run.getUser());
+        listMarker.remove(run.getUser());
+        m.remove();
     }
 
     private void getUserDetails(GoogleMap googleMap){

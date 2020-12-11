@@ -93,6 +93,7 @@ public class MyLocationService extends Service {
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.PASSIVE_PROVIDER)
     };
+
     public MyLocationService() {
     }
 
@@ -101,11 +102,13 @@ public class MyLocationService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
+
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        runAlreadyInsert = intent.getBooleanExtra("LoginActivity", false);
         if(!runAlreadyInsert) {
             final String rawValue = intent.getStringExtra("ScannedBarcodeActivity");       //TODO PER FAR FUNZIONARE IL SALTA SCANNER -> "ScannedBarcodeActivity"
             String user = UserClient.getUser().getUser_id();
@@ -233,23 +236,24 @@ public class MyLocationService extends Service {
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
 
+        /* TODO TEMPORANEAMENTE COMMENTATO
         unlockVehiclebyID(UserClient.getRun().getVehicle());
 
         deleteRun(UserClient.getRun().getRunUID());
 
         MyMapClient.stopNotification();
-
+        */
         stopForeground(true);
 
         stopSelf();
 
         if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
+            for (LocationListener mLocationListener : mLocationListeners) {
                 try {
                     if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                    mLocationManager.removeUpdates(mLocationListener);
                 } catch (Exception ex) {
                     Log.i(TAG, "fail to remove location listener, ignore", ex);
                 }
@@ -266,4 +270,5 @@ public class MyLocationService extends Service {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
+
 }
