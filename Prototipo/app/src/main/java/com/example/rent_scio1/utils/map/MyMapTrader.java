@@ -2,6 +2,7 @@ package com.example.rent_scio1.utils.map;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,12 +45,16 @@ public class MyMapTrader extends MyMap{
 
     private User mTrader;
     private static final String TAG = "MyMapTrader";
-    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+
+    private final FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private GoogleMap mMap;
     //private ArrayList<ClusterMarkers> listMarker = new ArrayList<>();
-    private HashMap<String, Marker> listMarker = new HashMap<>();
+    private final HashMap<String, Marker> listMarker = new HashMap<>();
+
+    private final Context context;
+    private final String infoWindowText="Velocità attuale:%f\n" + "Tempo rimasto:%d:%d\n";
+
     private ClusterManager<ClusterMarkers> clusterManager;
-    private Context context;
 
 
     @Override
@@ -59,6 +65,15 @@ public class MyMapTrader extends MyMap{
         areaLimitata();
         //setUpClusterer();
         searchCustomers();
+
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(context));
+
+        mMap.setOnMarkerClickListener(marker -> {
+
+            marker.showInfoWindow();
+
+            return true;
+        });
 
     }
 
@@ -132,13 +147,38 @@ public class MyMapTrader extends MyMap{
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             User user = new User(document.toObject(User.class));
                                             Log.e(TAG, "OK");
+
                                             Marker costumer=mMap.addMarker(new MarkerOptions()
                                                     .position( new LatLng(
                                                             UserClient.getUser().getTraderposition().getLatitude(),
                                                             UserClient.getUser().getTraderposition().getLongitude()))
                                                     .title(user.getName() + " " + user.getSourname())
-                                                    .snippet(dc.getDocument().toObject(Run.class).getUser())
                                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1)));
+
+                                            long time=dc.getDocument().toObject(Run.class).getStartTime() + dc.getDocument().toObject(Run.class).getDuration() - Calendar.getInstance().getTime().getTime();
+
+                                            new CountDownTimer(time,1000){
+
+                                                @Override
+                                                public void onTick(long millisUntilFinished) {
+                                                    int minutes=(int) (millisUntilFinished / 1000) / 60;
+                                                    int seconds=(int) (millisUntilFinished / 1000) % 60;
+                                                    costumer.setSnippet(String.format(infoWindowText,dc.getDocument().toObject(Run.class).getSpeed(),minutes,seconds));
+
+                                                    if(costumer.isInfoWindowShown())
+                                                        costumer.showInfoWindow();
+                                                }
+
+                                                @Override
+                                                public void onFinish() {
+                                                    int minutes=0;
+                                                    int seconds=0;
+                                                    costumer.setSnippet(String.format("Velocità attuale:%f\\n\" + \"Tempo rimasto: TERMINATO\\n",dc.getDocument().toObject(Run.class).getSpeed(),minutes,seconds));
+
+                                                    if(costumer.isInfoWindowShown())
+                                                        costumer.showInfoWindow();
+                                                }
+                                            }.start();
 
                                             costumer.setVisible(false);
 
@@ -200,9 +240,12 @@ public class MyMapTrader extends MyMap{
 //                }
 //            }
             Marker costumer=listMarker.get(run.getUser());
-            costumer.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
-            costumer.setVisible(true);
 
+            if(costumer!=null){
+
+                costumer.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
+                costumer.setVisible(true);
+            }
             /*listMarker.add(mMap.addMarker(new MarkerOptions()
                     .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
                     .title(r.getUser())));*/
@@ -254,9 +297,10 @@ public class MyMapTrader extends MyMap{
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
 
-        googleMap.addMarker(new MarkerOptions()
-                .position( new LatLng(mTrader.getTraderposition().getLatitude(), mTrader.getTraderposition().getLongitude()))
-                .title("Tu sei qui!"));
+        Marker traderMarker = googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(mTrader.getTraderposition().getLatitude(), mTrader.getTraderposition().getLongitude()))
+                .title("Tu sei qui!")
+                .snippet("Posizione del negozio"));
     }
 
     private void areaLimitata(){
