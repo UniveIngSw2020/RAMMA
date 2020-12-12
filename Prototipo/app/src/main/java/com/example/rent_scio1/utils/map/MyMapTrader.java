@@ -107,81 +107,81 @@ public class MyMapTrader extends MyMap{
     private void searchCustomers(){
         FirebaseFirestore.getInstance().collection("run")
                 .whereEqualTo("trader", UserClient.getUser().getUser_id())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w(TAG, "Listen failed.", e);
-                            return;
-                        }
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
 
-                        /*ArrayList<Run> runs = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : value) {
-                            runs.add(doc.toObject(Run.class));
-                        }*/
+                    /*ArrayList<Run> runs = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : value) {
+                        runs.add(doc.toObject(Run.class));
+                    }*/
 
-                        //viewCustomers(runs);
+                    //viewCustomers(runs);
 
-                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                            Log.e(TAG, "PRE SWITCH");
-                            switch (dc.getType()) {
-                                case ADDED:
-                                    Log.e(TAG, "ADDED");
-                                    Query getVehiclesTrader = FirebaseFirestore.getInstance().collection("users").whereEqualTo("user_id", dc.getDocument().toObject(Run.class).getUser());
+                    for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                        Log.e(TAG, "PRE SWITCH");
+                        switch (dc.getType()) {
+                            case ADDED:
+                                Log.e(TAG, "ADDED");
+                                Query getVehiclesTrader = FirebaseFirestore.getInstance().collection("users").whereEqualTo("user_id", dc.getDocument().toObject(Run.class).getUser());
 
-                                    getVehiclesTrader.get().addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                User user = new User(document.toObject(User.class));
-                                                Log.e(TAG, "OK");
-                                                listMarker.put(dc.getDocument().toObject(Run.class).getUser(), mMap.addMarker(new MarkerOptions()
-                                                        .position( new LatLng(
-                                                                UserClient.getUser().getTraderposition().getLatitude(),
-                                                                UserClient.getUser().getTraderposition().getLongitude()))
-                                                        .title(user.getName() + " " + user.getSourname())
-                                                        .snippet(dc.getDocument().toObject(Run.class).getUser())
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));
+                                getVehiclesTrader.get().addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            User user = new User(document.toObject(User.class));
+                                            Log.e(TAG, "OK");
+                                            Marker costumer=mMap.addMarker(new MarkerOptions()
+                                                    .position( new LatLng(
+                                                            UserClient.getUser().getTraderposition().getLatitude(),
+                                                            UserClient.getUser().getTraderposition().getLongitude()))
+                                                    .title(user.getName() + " " + user.getSourname())
+                                                    .snippet(dc.getDocument().toObject(Run.class).getUser())
+                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1)));
 
-                                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                            }
-                                        } else {
-                                            Log.w(TAG, "Error getting documents.", task.getException());
+                                            costumer.setVisible(false);
+
+                                            listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
+
+                                            Log.d(TAG, document.getId() + " => " + document.getData());
                                         }
-                                    });
+                                    } else {
+                                        Log.w(TAG, "Error getting documents.", task.getException());
+                                    }
+                                });
 
-                                    /*.add(mMap.addMarker(new MarkerOptions()
-                                            .position( new LatLng(
-                                                    UserClient.getUser().getTraderposition().getLatitude(),
-                                                    UserClient.getUser().getTraderposition().getLongitude()))
-                                            .title(dc.getDocument().toObject(Run.class).getUser())
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));*/
+                                /*.add(mMap.addMarker(new MarkerOptions()
+                                        .position( new LatLng(
+                                                UserClient.getUser().getTraderposition().getLatitude(),
+                                                UserClient.getUser().getTraderposition().getLongitude()))
+                                        .title(dc.getDocument().toObject(Run.class).getUser())
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))));*/
 
-                                    //Aggiunto il marker alla lista di marker
-                                    /*clusterManager.getClusterMarkerCollection().addMarker(new MarkerOptions()
-                                            .position( new LatLng(
-                                                    UserClient.getUser().getTraderposition().getLatitude(),
-                                                    UserClient.getUser().getTraderposition().getLongitude()))
-                                            .title(dc.getDocument().toObject(Run.class).getUser())
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))
-                                    );*/
+                                //Aggiunto il marker alla lista di marker
+                                /*clusterManager.getClusterMarkerCollection().addMarker(new MarkerOptions()
+                                        .position( new LatLng(
+                                                UserClient.getUser().getTraderposition().getLatitude(),
+                                                UserClient.getUser().getTraderposition().getLongitude()))
+                                        .title(dc.getDocument().toObject(Run.class).getUser())
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1))
+                                );*/
 
-                                    /*clusterManager.addItem(new ClusterMarkers(
-                                            UserClient.getUser().getTraderposition().getLatitude(),
-                                            UserClient.getUser().getTraderposition().getLongitude(),
-                                            dc.getDocument().toObject(Run.class).getUser()));*/
+                                /*clusterManager.addItem(new ClusterMarkers(
+                                        UserClient.getUser().getTraderposition().getLatitude(),
+                                        UserClient.getUser().getTraderposition().getLongitude(),
+                                        dc.getDocument().toObject(Run.class).getUser()));*/
 
 
-                                    break;
-                                case MODIFIED:
-                                    Log.e(TAG, "MODIFIED");
-                                    modifyMarker(dc.getDocument().toObject(Run.class));
-                                    break;
-                                case REMOVED:
-                                    Log.e(TAG, "REMOVED");
-                                    clearMarker(dc.getDocument().toObject(Run.class));
-                                    break;
-                            }
+                                break;
+                            case MODIFIED:
+                                Log.e(TAG, "MODIFIED");
+                                modifyMarker(dc.getDocument().toObject(Run.class));
+                                break;
+                            case REMOVED:
+                                Log.e(TAG, "REMOVED");
+                                clearMarker(dc.getDocument().toObject(Run.class));
+                                break;
                         }
                     }
                 });
@@ -199,7 +199,9 @@ public class MyMapTrader extends MyMap{
 //                    m.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
 //                }
 //            }
-            listMarker.get(run.getUser()).setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
+            Marker costumer=listMarker.get(run.getUser());
+            costumer.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
+            costumer.setVisible(true);
 
             /*listMarker.add(mMap.addMarker(new MarkerOptions()
                     .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
@@ -226,17 +228,14 @@ public class MyMapTrader extends MyMap{
         if(mTrader == null){
             mTrader = new User();
             DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "onComplete: successfully get teh user details");
-                        User user = task.getResult().toObject(User.class);
-                        mTrader=new User(user);
-                        /*mTrader.setGeoPoint(user.getTraderposition());*/
-                        UserClient.setUser(user);
-                        setCameraView(googleMap);
-                    }
+            userRef.get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: successfully get teh user details");
+                    User user = task.getResult().toObject(User.class);
+                    mTrader=new User(user);
+                    /*mTrader.setGeoPoint(user.getTraderposition());*/
+                    UserClient.setUser(user);
+                    setCameraView(googleMap);
                 }
             });
         }
@@ -245,7 +244,7 @@ public class MyMapTrader extends MyMap{
     private void setCameraView(GoogleMap googleMap){
         double bottomBundary = mTrader.getTraderposition().getLatitude() - .01;
         double leftBoundary = mTrader.getTraderposition().getLongitude() - .01;
-        double topBoundary = mTrader.getTraderposition().getLatitude() + .01;
+        double topBoundary = mTrader.getTraderposition().getLatitude()  + .01;
         double rightBoundary = mTrader.getTraderposition().getLongitude() + .01;
 
         LatLngBounds mMapBoundary = new LatLngBounds(
