@@ -52,7 +52,6 @@ public class MyMapTrader extends MyMap{
     private final HashMap<String, Marker> listMarker = new HashMap<>();
 
     private final Context context;
-    private final String infoWindowText="Velocità attuale:%f\n" + "Tempo rimasto:%d:%d\n";
 
     private ClusterManager<ClusterMarkers> clusterManager;
 
@@ -155,15 +154,16 @@ public class MyMapTrader extends MyMap{
                                                     .title(user.getName() + " " + user.getSourname())
                                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1)));
 
-                                            long time=dc.getDocument().toObject(Run.class).getStartTime() + dc.getDocument().toObject(Run.class).getDuration() - Calendar.getInstance().getTime().getTime();
+                                            Run run=dc.getDocument().toObject(Run.class);
+                                            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
                                             new CountDownTimer(time,1000){
 
                                                 @Override
                                                 public void onTick(long millisUntilFinished) {
-                                                    int minutes=(int) (millisUntilFinished / 1000) / 60;
-                                                    int seconds=(int) (millisUntilFinished / 1000) % 60;
-                                                    costumer.setSnippet(String.format(infoWindowText,dc.getDocument().toObject(Run.class).getSpeed(),minutes,seconds));
+                                                    Integer minutes=(int) (millisUntilFinished / 1000) / 60;
+                                                    Integer seconds=(int) (millisUntilFinished / 1000) % 60;
+                                                    costumer.setSnippet( run.getSpeed()+" "+minutes+":"+seconds );
 
                                                     if(costumer.isInfoWindowShown())
                                                         costumer.showInfoWindow();
@@ -173,7 +173,7 @@ public class MyMapTrader extends MyMap{
                                                 public void onFinish() {
                                                     int minutes=0;
                                                     int seconds=0;
-                                                    costumer.setSnippet(String.format("Velocità attuale:%f\\n\" + \"Tempo rimasto: TERMINATO\\n",dc.getDocument().toObject(Run.class).getSpeed(),minutes,seconds));
+                                                    costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
 
                                                     if(costumer.isInfoWindowShown())
                                                         costumer.showInfoWindow();

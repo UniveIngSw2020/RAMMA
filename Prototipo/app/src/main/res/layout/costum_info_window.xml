@@ -13,6 +13,14 @@
         android:orientation="vertical"
         android:background="@drawable/rounded_textview_marker">
 
+        <TextView
+            android:id="@+id/title_marker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/back"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
         <TableLayout
             android:id="@+id/tablelayout_trade"
             android:layout_width="match_parent"
