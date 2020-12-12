@@ -43,9 +43,9 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             tvTitle.setText(title);
         }
 
-        TextView tvSnippet = view.findViewById(R.id.snippet);
+       /* TextView tvSnippet = view.findViewById(R.id.snippet);
 
-        tvSnippet.setText(snippet);
+        tvSnippet.setText(snippet);*/
 
 
 
@@ -58,7 +58,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private void createTable(View view) {
         Typeface typeface = ResourcesCompat.getFont(mContext, R.font.comfortaa_regular);
 
-        TableLayout table = view.findViewById(R.id.gridview_maps_client);
+        TableLayout table = view.findViewById(R.id.tablelayout_trade);
 
         /*da gettare il tempo rimasto e l'altra cosa che non ricordo ora all'interno delle textview*/
 
