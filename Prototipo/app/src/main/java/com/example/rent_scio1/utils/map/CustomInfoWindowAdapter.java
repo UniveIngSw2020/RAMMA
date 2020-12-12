@@ -1,6 +1,7 @@
 package com.example.rent_scio1.utils.map;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,23 +34,20 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         String title = marker.getTitle();
 
         TextView titleMarker=view.findViewById(R.id.title_marker);
+        titleMarker.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        titleMarker.setTextSize(20);
+        titleMarker.setTextColor(Color.rgb(3,50,73));
         titleMarker.setText(title);
 
 
         String snippet = marker.getSnippet();
         TableLayout table = view.findViewById(R.id.tablelayout_trade);
+        table.removeAllViews();
+        if(snippet!=null){
 
-        if(snippet==null){
-
-            //codice marker negozio
-            table.removeAllViews();
-        }
-        else{
-            //clienti
             String[] strings=snippet.split(" ");
 
             createTableCustomers(table,strings[0],strings[1]);
-
         }
 
     }
@@ -60,7 +58,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         TableRow rowTitle= new TableRow(mContext);
         rowTitle.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-        rowTitle.setBackgroundColor(mContext.getColor(R.color.text));
+        rowTitle.setBackgroundColor(Color.argb(50, 172, 202, 204));
         rowTitle.setPadding(0, 8, 0, 0);
         rowTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -68,15 +66,16 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv1.setTypeface(typeface);
-        tv1.setTextColor(mContext.getColor(R.color.back));
-        tv1.setText("Tempo Rimasto:");
+        tv1.setTextColor(Color.rgb(3,50,73));
+        tv1.setText("Tempo Rimasto");
 
         TextView tv2 = new TextView(mContext);
         tv2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        tv2.setPadding(30,0,0,0);
         tv2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv2.setTypeface(typeface);
-        tv2.setTextColor(mContext.getColor(R.color.back));
-        tv2.setText("Velocità attuale:");
+        tv2.setTextColor(Color.rgb(3,50,73));
+        tv2.setText("Velocità attuale");
 
         rowTitle.addView(tv1);
         rowTitle.addView(tv2);
@@ -87,7 +86,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         TableRow rowNumbers= new TableRow(mContext);
         rowNumbers.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-        rowNumbers.setBackgroundColor(mContext.getColor(R.color.text));
+        rowNumbers.setBackgroundColor(Color.argb(50, 172, 202, 204));
         rowNumbers.setPadding(0, 8, 0, 0);
         rowNumbers.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -95,14 +94,15 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         textView1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         textView1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView1.setTypeface(typeface);
-        textView1.setTextColor(mContext.getColor(R.color.back));
+        textView1.setTextColor(Color.rgb(3,50,73));
         textView1.setText(remainingTime);
 
         TextView textView2 = new TextView(mContext);
         textView2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        tv2.setPadding(30,0,0,0);
         textView2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView2.setTypeface(typeface);
-        textView2.setTextColor(mContext.getColor(R.color.back));
+        textView2.setTextColor(Color.rgb(3,50,73));
         textView2.setText(speed);
 
         rowNumbers.addView(textView1);
