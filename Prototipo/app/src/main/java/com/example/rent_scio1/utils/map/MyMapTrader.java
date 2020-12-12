@@ -299,8 +299,7 @@ public class MyMapTrader extends MyMap{
 
         Marker traderMarker = googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mTrader.getTraderposition().getLatitude(), mTrader.getTraderposition().getLongitude()))
-                .title("Tu sei qui!")
-                .snippet("Posizione del negozio"));
+                .title("Tu sei qui!"));
     }
 
     private void areaLimitata(){
