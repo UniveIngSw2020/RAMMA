@@ -147,23 +147,36 @@ public class MyMapClient extends MyMap {
 
 
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader){
-                if(trader.getSecond().getSecond() != null && marker.getPosition().equals(new LatLng(trader.getFirst().getTraderposition().getLatitude(), trader.getFirst().getTraderposition().getLongitude()))){
+                if(trader.getFirst().getDelimited_area() != null && marker.getPosition().equals(new LatLng(trader.getFirst().getTraderposition().getLatitude(), trader.getFirst().getTraderposition().getLongitude()))){
+                    int col = Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.2f, 1.0f });
+                    trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
+                    trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
 
-                    int first =Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.2f, 1.0f });
-                    trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(first), Color.green(first), Color.blue(first)));
-                    fillPol = trader.getSecond().getSecond();
+                    //fillPol = trader.getSecond().getSecond();
                     return true;
+                    /*else{
+                        trader.getSecond().getSecond().setVisible(false);
+                        trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                    }*/
                 }
+
             }
             return false;
         });
 
         getmMap().setOnMapClickListener(latLng -> {
-            if(fillPol != null) {
+            for(Pair<User, Pair<Float, Polygon>> trader : listTrader){
+                if(trader.getFirst().getDelimited_area() != null ){
+                    trader.getSecond().getSecond().setVisible(false);
+                    trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                }
+            }
+            /*if(fillPol != null) {
                 Log.e(TAG, "TRASPARENTEEEEEE");
+                fillPol.setVisible(false);
                 fillPol.setFillColor(android.R.color.transparent);
                 fillPol = null;
-            }
+            }*/
         });
     }
 
@@ -231,21 +244,25 @@ public class MyMapClient extends MyMap {
                     latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
                 }
                 //Log.e(TAG,"stampo il poligono");
+
+
                 PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
                 Polygon polygon=getmMap().addPolygon(polygonOptions);
+                polygon.setVisible(false);
                 float [] col = new float[] { trader.getSecond().getFirst(), 1.0f, 1.0f };
                 Log.e(TAG, trader.getSecond().getFirst() + "         " + col[0]);
                 polygon.setStrokeColor(Color.HSVToColor(col));
                 polygon.setStrokeWidth(5.0f);
                 //listTraderPolygon.add(new Pair<>(trader.first, polygon));
                 trader.getSecond().setSecond(polygon);
+            }
 
-                if(UserClient.getRun()!=null){
-                    mNotifyDelimitedArea = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata","Attenzione!","Hai oltrepassato l'area limitata!", R.drawable.ic_not_permitted);
-                    mNotifySpeed = new MyNotify(context, "speedChannel", "Velocità elevata", "Avvisa l'utente della velocità troppo elevata","Attenzione!","Stai andando troppo veloce!", R.drawable.ic_not_permitted);
-                    createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
-                    timerDelimitedArea.start();
-                }
+
+            if(UserClient.getRun()!=null){
+                mNotifyDelimitedArea = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata","Attenzione!","Hai oltrepassato l'area limitata!", R.drawable.ic_not_permitted);
+                mNotifySpeed = new MyNotify(context, "speedChannel", "Velocità elevata", "Avvisa l'utente della velocità troppo elevata","Attenzione!","Stai andando troppo veloce!", R.drawable.ic_not_permitted);
+                createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
+                timerDelimitedArea.start();
             }
         }
     }
