@@ -310,6 +310,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             navigationView.getMenu().findItem(R.id.end_run).setVisible(true);
             navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
             navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+            navigationView.getMenu().findItem(R.id.logout_client).setVisible(false);
             Log.e(TAG, UserClient.getRun().toString());
         }
         else{

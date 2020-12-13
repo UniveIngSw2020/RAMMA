@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
+@Deprecated
 public class ClusterMarkers implements ClusterItem {
     private LatLng position;
     private String title;

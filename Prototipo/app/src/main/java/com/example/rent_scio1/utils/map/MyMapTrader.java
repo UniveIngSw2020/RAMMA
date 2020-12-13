@@ -53,7 +53,7 @@ public class MyMapTrader extends MyMap{
 
     private final Context context;
 
-    private ClusterManager<ClusterMarkers> clusterManager;
+    //private ClusterManager<ClusterMarkers> clusterManager;
 
 
     @Override
@@ -81,6 +81,7 @@ public class MyMapTrader extends MyMap{
         this.context = context;
     }
 
+    /*
     private void setUpClusterer() {
         // Position the map.
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
@@ -100,9 +101,9 @@ public class MyMapTrader extends MyMap{
         //addItems();
 
         searchCustomers();
-    }
+    }*/
 
-    private void addItems() {
+    //private void addItems() {
 
         // Set some lat/lng coordinates to start with.
         //double lat = 51.5145160;
@@ -116,7 +117,7 @@ public class MyMapTrader extends MyMap{
             ClusterMarkers offsetItem = new ClusterMarkers(lat, lng, "Title " + i, "Snippet " + i);
             clusterManager.addItem(offsetItem);
         }*/
-    }
+    //}
 
     private void searchCustomers(){
         FirebaseFirestore.getInstance().collection("run")
