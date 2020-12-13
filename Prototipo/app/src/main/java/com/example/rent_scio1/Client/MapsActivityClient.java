@@ -229,16 +229,53 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             @SuppressLint("DefaultLocale")
             @Override
             public void onTick(long millisUntilFinished) {
+
                 int minutes=(int) (millisUntilFinished / 1000) / 60;
                 int seconds=(int) (millisUntilFinished / 1000) % 60;
-                double speed=run.getSpeed();
+                float speed=(float)run.getSpeed();
 
-                timeText.setText(String.format("%d:%d", minutes, seconds));
-                speedText.setText(String.format("%f km/h",speed));
+                if(minutes>=60){
+                    int hours=minutes/60;
+                    minutes=minutes-(hours*60);
 
-                if(minutes<10){
-                    timeText.setTextColor(Color.YELLOW);
+                    String hoursText=""+hours;
+                    if(hours<10){
+
+                        hoursText="0"+hoursText;
+                    }
+
+
+                    String minutesText=""+minutes;
+                    if(minutes<10){
+
+                        minutesText="0"+minutesText;
+                    }
+
+                    timeText.setText(String.format("%s:%s:%d",hoursText, minutesText, seconds));
                 }
+                else{
+
+                    String minutesText=""+minutes;
+                    if(minutes<10){
+
+                        minutesText="0"+minutesText;
+                    }
+
+                    timeText.setText(String.format("%s:%d", minutesText, seconds));
+
+                    if(minutes<10){
+                        timeText.setTextColor(Color.YELLOW);
+                    }
+
+                    if(minutes<5){
+                        timeText.setTextColor(Color.RED);
+                    }
+                }
+
+
+                speedText.setText(speed+" km/h");
+
+
             }
 
             @SuppressLint("SetTextI18n")

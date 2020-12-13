@@ -164,7 +164,36 @@ public class MyMapTrader extends MyMap{
                                                 public void onTick(long millisUntilFinished) {
                                                     Integer minutes=(int) (millisUntilFinished / 1000) / 60;
                                                     Integer seconds=(int) (millisUntilFinished / 1000) % 60;
-                                                    costumer.setSnippet( run.getSpeed()+" "+minutes+":"+seconds );
+
+
+                                                    if(minutes>=60){
+                                                        int hours=minutes/60;
+                                                        minutes=minutes-(hours*60);
+
+                                                        String hoursText=""+hours;
+                                                        if(hours<10){
+
+                                                            hoursText="0"+hoursText;
+                                                        }
+
+                                                        String minutesText=""+minutes;
+                                                        if(minutes<10){
+
+                                                            minutesText="0"+minutesText;
+                                                        }
+
+                                                        costumer.setSnippet( ((float)run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
+                                                    }
+                                                    else{
+
+                                                        String minutesText=""+minutes;
+                                                        if(minutes<10){
+
+                                                            minutesText="0"+minutesText;
+                                                        }
+
+                                                        costumer.setSnippet(((float)run.getSpeed())+" "+minutesText+":"+seconds );
+                                                    }
 
                                                     if(costumer.isInfoWindowShown())
                                                         costumer.showInfoWindow();
