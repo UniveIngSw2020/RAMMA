@@ -144,9 +144,13 @@ public class MyMapClient extends MyMap {
         getmMap().setOnMarkerClickListener(marker -> {
             marker.showInfoWindow();
             Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
+
+
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader){
                 if(trader.getSecond().getSecond() != null && marker.getPosition().equals(new LatLng(trader.getFirst().getTraderposition().getLatitude(), trader.getFirst().getTraderposition().getLongitude()))){
-                    trader.getSecond().getSecond().setFillColor(Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.2f, 1.0f }));
+
+                    int first =Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.2f, 1.0f });
+                    trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(first), Color.green(first), Color.blue(first)));
                     fillPol = trader.getSecond().getSecond();
                     return true;
                 }
@@ -232,6 +236,7 @@ public class MyMapClient extends MyMap {
                 float [] col = new float[] { trader.getSecond().getFirst(), 1.0f, 1.0f };
                 Log.e(TAG, trader.getSecond().getFirst() + "         " + col[0]);
                 polygon.setStrokeColor(Color.HSVToColor(col));
+                polygon.setStrokeWidth(5.0f);
                 //listTraderPolygon.add(new Pair<>(trader.first, polygon));
                 trader.getSecond().setSecond(polygon);
 
