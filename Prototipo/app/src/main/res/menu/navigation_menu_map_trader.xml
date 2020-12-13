@@ -18,6 +18,10 @@
             android:title="@string/corse_attive"
             android:icon="@drawable/ic_round_format_list_bulleted_24"/>
 
+        <item android:id="@+id/impostazioni_trader"
+            android:title="@string/impostazioni"
+            android:icon="@drawable/ic_settings_trader"/>
+
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_logout_map_trader"

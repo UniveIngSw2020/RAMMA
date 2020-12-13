@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Map<String, Object> user = new HashMap<>();
 
     //widgets
-    private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mDate, mPiva, mShopname;
+    private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mShopname;
     private CheckBox mTrader/*, mPositionTrader*/;
     //private ProgressBar progressBar;
 
@@ -72,8 +72,6 @@ public class RegisterActivity extends AppCompatActivity {
         mConfirmPasswod = findViewById(R.id.passwordregister_confirm);
         mPhone = findViewById(R.id.phone_register);
         //progressBar = findViewById(R.id.progressBarregister);
-        mDate = findViewById(R.id.dateBorn);
-        mPiva = findViewById(R.id.piva);
         mTrader = findViewById(R.id.check_Trader);
         mShopname = findViewById(R.id.shopName);
         //mPositionTrader = findViewById(R.id.checkPositionTrader);
@@ -108,12 +106,10 @@ public class RegisterActivity extends AppCompatActivity {
         mTrader.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (mTrader.isChecked()) {
 
-                mPiva.setVisibility(View.VISIBLE);
                 //mPositionTrader.setVisibility(View.VISIBLE);
                 mShopname.setVisibility(View.VISIBLE);
             } else {
                 mShopname.setVisibility(View.INVISIBLE);
-                mPiva.setVisibility(View.INVISIBLE);
                 //mPositionTrader.setVisibility(View.INVISIBLE);
             }
         });
@@ -134,10 +130,6 @@ public class RegisterActivity extends AppCompatActivity {
             mSourname.setError("Cognome Richiesto!");
             flag = false;
         }
-        if (TextUtils.isEmpty(mDate.getText().toString().trim())) {
-            mDate.setError("Data di Nascita  Richiesto!");
-            flag = false;
-        }
         if (TextUtils.isEmpty(mEmail.getText().toString().trim())) {
             mEmail.setError("Email Richeista!");
             flag = false;
@@ -148,10 +140,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (mTrader.isChecked()) {
-            if (TextUtils.isEmpty(mPiva.getText().toString().trim())) {
-                mPiva.setError("Partita IVA Richesta!");
-                flag = false;
-            }
             /*if (!mPositionTrader.isChecked()) {
                 mPositionTrader.setError("Posizione Richesta!");
                 flag = false;
@@ -164,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (!mPassword.getText().toString().trim().equals(mConfirmPasswod.getText().toString().trim())) {
-            mConfirmPasswod.setError("Entrambe le Passowrd devono essere Uguali!");
+            mConfirmPasswod.setError("Entrambe le Passowrd devono essere uguali!");
             flag = false;
         }
         return flag;
@@ -196,9 +184,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("name", mName.getText().toString().trim());
         user.put("sourname", mSourname.getText().toString().trim());
         user.put("email", mEmail.getText().toString().trim());
-        user.put("born", mDate.getText().toString().trim());
         user.put("phone", mPhone.getText().toString().trim());
-        user.put("piva", mPiva.getText().toString().trim());
         user.put("trader", mTrader.isChecked());
         user.put("shopname", mShopname.getText().toString().trim());
 
@@ -219,7 +205,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         finishAffinity();
 
-        UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSourname.getText().toString().trim(),mEmail.getText().toString().trim(),mDate.getText().toString().trim(),mPhone.getText().toString().trim(),mPiva.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null));
+        UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSourname.getText().toString().trim(),mEmail.getText().toString().trim(),mPhone.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null));
 
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));

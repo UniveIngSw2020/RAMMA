@@ -126,5 +126,9 @@
     <string name="velocit_massima">Velocità massima</string>
     <string name="non_mi_ricordo">Non mi ricordo</string>
     <string name="velocit_attuale">Velocità attuale</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="impostazioni">Impostazioni</string>
 
 </resources>
