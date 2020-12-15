@@ -15,12 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.services.MyFirebaseMessagingServices;
 import com.example.rent_scio1.utils.MyNotify;
-import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
+import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -193,8 +194,12 @@ public class MyMapClient extends MyMap {
                     mNotifySpeed = new MyNotify(context, "speedChannel", "Velocità elevata", "Avvisa l'utente della velocità troppo elevata","Attenzione!","Stai andando troppo veloce!", R.drawable.ic_not_permitted);
                     createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
                     timerDelimitedArea.start();
+
+                    MyFirebaseMessagingServices.sendNotification(context, trader.getTokens().get(0), "Ciao fra", "stustustustu"); //TODO SCORRERE TUTTI I TOKEN
+
                 }
             }
+
         }
     }
 

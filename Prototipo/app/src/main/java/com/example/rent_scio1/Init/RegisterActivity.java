@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -219,7 +220,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         finishAffinity();
 
-        UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSourname.getText().toString().trim(),mEmail.getText().toString().trim(),mDate.getText().toString().trim(),mPhone.getText().toString().trim(),mPiva.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null));
+        UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSourname.getText().toString().trim(),mEmail.getText().toString().trim(),mDate.getText().toString().trim(),mPhone.getText().toString().trim(),mPiva.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null, null));
 
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));

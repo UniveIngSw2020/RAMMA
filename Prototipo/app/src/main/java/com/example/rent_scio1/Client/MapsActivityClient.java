@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +17,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -34,28 +31,22 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.rent_scio1.Init.RegisterActivity;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.Trader.VehicleListActivityTrader;
+import com.example.rent_scio1.services.MyFirebaseMessagingServices;
 import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.Run;
-import com.example.rent_scio1.utils.Vehicle;
-import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.map.MyMapClient;
+import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -134,10 +125,12 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         });
 
         mapFragment.getMapAsync(myMapClient);
-
+        startService(new Intent(MapsActivityClient.this, MyFirebaseMessagingServices.class));
         /*if(UserClient.getRun() != null){
             notification_delarea = createNotificationChannel("delimitedAreaChannel", getString(R.string.delimitedAreaChannel), getString(R.string.delimitedAreaChannelD), R.drawable.ic_not_permitted);
         }*/
+
+        
     }
 
     @Override

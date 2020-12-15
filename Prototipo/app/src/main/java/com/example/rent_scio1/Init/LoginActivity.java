@@ -15,10 +15,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import com.example.rent_scio1.Client.MapsActivityClient;
-import com.example.rent_scio1.Client.ScannedBarcodeActivity;
-import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.Trader.SetPositionActivityTrader;
 import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.Run;
@@ -130,35 +130,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         User user1 = task.getResult().toObject(User.class);
                         UserClient.setUser(user1);
                         UserClient.setRun(null);
-                        db.collection("run").whereEqualTo("user", user1.getUser_id()).get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        for(DocumentSnapshot d : queryDocumentSnapshots.getDocuments()){
-                                            Log.e(TAG, "C'è UNA CORSA SOLA SPERO");
-                                            UserClient.setRun(d.toObject(Run.class)); // TODO PRENDERE LA CORSA SE C'E
-                                            startLocationService(true);
+                        if(user1 != null) {
+                            db.collection("run").whereEqualTo("user", user1.getUser_id()).get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for (DocumentSnapshot d : queryDocumentSnapshots.getDocuments()) {
+                                                Log.e(TAG, "C'è UNA CORSA SOLA SPERO");
+                                                UserClient.setRun(d.toObject(Run.class)); // TODO PRENDERE LA CORSA SE C'E
+                                                startLocationService(true);
+                                            }
                                         }
-                                    }
-                                })
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                                        if (user1 != null) {
-                                            if(user1.getTrader()){
-                                                if(user1.getTraderposition()==null)
-                                                    startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
-                                                else
-                                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                            }else
-                                                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                                            if (user1 != null) {
+                                                if (user1.getTrader()) {
+                                                    if (user1.getTraderposition() == null)
+                                                        startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
+                                                    else
+                                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                                } else
+                                                    startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
 
-                                            finishAffinity();
+                                                finishAffinity();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                        }else{
+                            Log.e(TAG, "L'account è stato eliminato per qualche ragione");      //SUPPONGO CHE SIA COSì :)
+                        }
                     }
                 });
 

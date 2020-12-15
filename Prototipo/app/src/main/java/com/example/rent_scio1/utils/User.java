@@ -2,7 +2,6 @@ package com.example.rent_scio1.utils;
 
 
 import com.google.firebase.firestore.GeoPoint;
-import com.google.type.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +20,12 @@ public class User {
     private GeoPoint traderposition;
     private List<GeoPoint> delimited_area=null;
 
+    private List<String> tokens;
+
     public User(){}
 
 
-    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, String shopname, GeoPoint traderposition, List<GeoPoint> delimited_area) {
+    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, String shopname, GeoPoint traderposition, List<GeoPoint> delimited_area, List<String> tokens) {
 
         this.user_id = user_id;
         this.name = name;
@@ -36,7 +37,8 @@ public class User {
         this.trader = trader;
         this.shopname = shopname;
         this.traderposition = traderposition;
-        this.delimited_area=delimited_area;
+        this.delimited_area = delimited_area;
+        this.tokens = tokens;
     }
 
     public User(User o){
@@ -50,7 +52,8 @@ public class User {
         this.shopname = o.shopname;
         this.piva = o.piva;
         this.traderposition = o.traderposition;
-        this.delimited_area=o.delimited_area;
+        this.delimited_area = o.delimited_area;
+        this.tokens = o.tokens;
     }
 
     public String getUser_id() {
@@ -133,6 +136,29 @@ public class User {
         this.shopname = shopname;
     }
 
+    public void setTokens(List<String> tokens){
+        this.tokens = tokens;
+    }
+
+    public List<String> getTokens(){
+        return this.tokens;
+    }
+
+    public boolean addToken(String s){
+        if(this.tokens == null) this.tokens = new ArrayList<>();
+        if(!this.tokens.contains(s)) return this.tokens.add(s);
+        return false;
+    }
+
+    public List<GeoPoint> getDelimited_area() {
+        return delimited_area;
+    }
+
+    public void setDelimited_area(List<GeoPoint> delimited_area) {
+        this.delimited_area = delimited_area;
+    }
+
+
     @Override
     public String toString() {
         return "User{" +
@@ -149,12 +175,4 @@ public class User {
                 '}';
     }
 
-    public List<GeoPoint> getDelimited_area() {
-        return delimited_area;
-    }
-
-    public void setDelimited_area(List<GeoPoint> delimited_area) {
-
-        this.delimited_area = delimited_area;
-    }
 }

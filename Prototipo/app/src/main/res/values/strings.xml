@@ -127,4 +127,8 @@
     <string name="non_mi_ricordo">Non mi ricordo</string>
     <string name="velocit_attuale">Velocità attuale</string>
 
+    <!-- PROVO -->
+    <string name="server_key" translatable="false">AAAABf5BCzc:AAAABf5BCzc:APA91bF5G0ERO7Rdg6NYLSQ6ynFlAEhjNboCgSbraP9L85FdO9M62467gaWTLfmvrSggrcVEdKeOLnzGKtaZMgRrfnTPgc9eVSICMDRJLiZNAXFnCOYTOMg7rRqkru5yFwMV3KcDE6Lr</string>
+
+
 </resources>
