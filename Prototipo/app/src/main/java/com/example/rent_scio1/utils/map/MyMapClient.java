@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.services.MyFirebaseMessagingServices;
 import com.example.rent_scio1.utils.MyNotify;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
@@ -195,8 +194,6 @@ public class MyMapClient extends MyMap {
                     createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
                     timerDelimitedArea.start();
 
-                    MyFirebaseMessagingServices.sendNotification(context, trader.getTokens().get(0), "Ciao fra", "stustustustu"); //TODO SCORRERE TUTTI I TOKEN
-
                 }
             }
 
@@ -249,14 +246,16 @@ public class MyMapClient extends MyMap {
                         //NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
                         // notificationId is a unique int for each notification that you must define
-                        mNotifyDelimitedArea.getNotificationManager().notify(delimitedAreaNotificationID, dilimitedAreaNotification);
+                        //MyNotify notifyTrader = new MyNotify(context, "warning", "Ciao fra", "prova", "Ciao fra", "stustustustu", R.drawable.ic_not_permitted);
+
+                        //mNotifyDelimitedArea.getNotificationManager().notify(delimitedAreaNotificationID, dilimitedAreaNotification);
                     }
 
                     //notifica di velocità
                     //bisogna fare una query per prendere la velocità del veicolo
                     if(run.getSpeed()>vehicleRun.getMaxSpeedKMH()){
                         Log.e(TAG,"ENTRATO QUA: notifica velocità");
-                        mNotifySpeed.getNotificationManager().notify(speedNotificationID,speedNotification);
+                        //mNotifySpeed.getNotificationManager().notify(speedNotificationID,speedNotification);
                     }
                 }
 

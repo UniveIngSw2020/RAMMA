@@ -27,6 +27,7 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
@@ -151,8 +152,8 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                     stopService(new Intent(getApplicationContext(), MyLocationService.class));
 
                                     //TODO POI TOLGO ANCHE QUESTO LO GIURO
+                                    unlockVehiclebyID(UserClient.getRun().getVehicle());
                                     deleteRun(rawValue);
-
                                     //startActivity(intent);
                                 }else{
                                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
@@ -167,6 +168,13 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
                 }
             }
+        });
+    }
+
+    private void unlockVehiclebyID(String id){
+        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
+        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
+            Log.d(TAG, "VEICOLO LIBERATO");
         });
     }
 
@@ -239,6 +247,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         UserClient.setRun(null);
+                        UserClient.setTrader(null);
                         Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);

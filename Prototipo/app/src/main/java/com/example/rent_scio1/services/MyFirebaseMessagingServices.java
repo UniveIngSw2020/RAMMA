@@ -1,12 +1,26 @@
 package com.example.rent_scio1.services;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.utils.RequestQueueSingleton;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.firestore.DocumentReference;
@@ -20,10 +34,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     private final String TAG = "MyFirebaseMessagingServices";
-
+    private final String ADMIN_CHANNEL_ID ="admin_channel";
 //    private String ADMIN_CHANNEL_ID = "admin_channel";
 
 
@@ -47,7 +62,65 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.e(TAG, "caspiterina è arrivato un messaggio");
-        super.onMessageReceived(remoteMessage);
+//        if(UserClient. getUser() != null) {
+//            String title = remoteMessage.getData().get("title");
+//            String type = remoteMessage.getData().get("type");
+//            String msg = remoteMessage.getData().get("message");
+//            int id = Integer.parseInt(remoteMessage.getData().get("id"));
+//            Log.e(TAG, "caspiterina è arrivato un messaggio" + title + " " + type + " " + msg + " " + id);
+//            MyNotify notification = new MyNotify(MapsActivityTrader.thisContext, type, title, "prova", title, msg, R.drawable.ic_not_permitted);
+//            Log.e(TAG, "" + notification.getNotify());
+//            notification.getNotificationManager().notify(id, notification.getNotify());
+//        }
+        final Intent intent = new Intent(this, MapsActivityTrader.class);
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        int notificationID = new Random().nextInt(3000);
+
+      /*
+        Apps targeting SDK 26 or above (Android O) must implement notification channels and add its notifications
+        to at least one of them. Therefore, confirm if version is Oreo or higher, then setup notification channel
+      */
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            setupChannels(notificationManager);
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.ic_not_permitted);
+
+        Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_not_permitted)
+                .setLargeIcon(largeIcon)
+                .setContentTitle(remoteMessage.getData().get("title"))
+                .setContentText(remoteMessage.getData().get("message"))
+                .setAutoCancel(true)
+                .setSound(notificationSoundUri)
+                .setContentIntent(pendingIntent);
+
+        //Set notification color to match your app color template
+        //notificationBuilder.setColor(Color.rgb(1,1,1));
+        notificationManager.notify(notificationID, notificationBuilder.build());
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void setupChannels(NotificationManager notificationManager){
+        CharSequence adminChannelName = "New notification";
+        String adminChannelDescription = "Device to devie notification";
+
+        NotificationChannel adminChannel;
+        adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);
+        adminChannel.setDescription(adminChannelDescription);
+        adminChannel.enableLights(true);
+        adminChannel.setLightColor(Color.RED);
+        adminChannel.enableVibration(true);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(adminChannel);
+        }
     }
 
     @Override
@@ -56,7 +129,7 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     }
 
     private void sendRegistrationToServer(String refreshedToken) {
-        if(UserClient.getUser().addToken(refreshedToken)) {
+        if(UserClient.getUser() != null && UserClient.getUser().addToken(refreshedToken)) {
            // FirebaseMessaging.getInstance().subscribeToTopic(refreshedToken); // forse è brutto, sarebbe meglio l'id dell'utente
             DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
             mDatabase.update("tokens", UserClient.getUser().getTokens()).addOnSuccessListener(aVoid -> Log.d(TAG, "TOKEN AGGIUNTO"));
@@ -95,17 +168,6 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
         };
 
         RequestQueueSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
-//        // See documentation on defining a message payload.
-//        RemoteMessage message = new RemoteMessage.Builder(destinationToken+"@gcm.googleapis.com")
-//                .addData(msg1, msg2)
-//                .build();
-//
-//        // Send a message to the devices subscribed to the provided topic.
-//
-//        FirebaseMessaging.getInstance().send(message);
-//        // Response is a message ID string.
-//        Log.e("SEND NOTIFICATION", "TI PREGO FUNZIONA anche se non so come vedere che funziona :/");
-//        // [END send_to_topic]
 
     }
 

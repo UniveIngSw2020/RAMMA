@@ -1,6 +1,7 @@
 package com.example.rent_scio1.utils;
 
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -154,6 +155,13 @@ public class User {
         return delimited_area;
     }
 
+    public List<LatLng> getDelimited_areaLatLng(){
+        List<LatLng> latLngs = new ArrayList<>();
+        for (GeoPoint a: getDelimited_area()) {
+            latLngs.add( new LatLng(a.getLatitude(),a.getLongitude()));
+        }
+        return latLngs;
+    }
     public void setDelimited_area(List<GeoPoint> delimited_area) {
         this.delimited_area = delimited_area;
     }

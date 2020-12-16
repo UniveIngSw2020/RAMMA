@@ -19,8 +19,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.utils.Run;
+import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
-import com.example.rent_scio1.utils.map.MyMapClient;
+import com.example.rent_scio1.utils.Vehicle;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,8 +30,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.maps.android.PolyUtil;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class MyLocationService extends Service {
 
@@ -65,7 +69,15 @@ public class MyLocationService extends Service {
             double speed= mLastLocation.getSpeed()*3.6;/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
 
             updateUserLocation(location, speed);
-//            stopService();
+
+            checkAreaLimit(location);
+            checkSpeedLimit(speed);
+
+//            if(speed > UserClient.getRun)
+//            if(UserClient.getTrader() != null){
+//                for(String token : UserClient.getTrader().getTokens())
+//                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Il Cliente"+ UserClient.getUser().getName() + " fa il furbo e scappa");
+//            }
         }
 
         private void updateUserLocation(Location location, double speed){
@@ -80,6 +92,37 @@ public class MyLocationService extends Service {
                 mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si"));
                 mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si al quadrato"));
             }
+        }
+
+        private void checkAreaLimit(@NonNull Location location){
+            LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+
+            if(UserClient.getTrader() != null && UserClient.getTrader().getDelimited_area() != null && !PolyUtil.containsLocation(position, UserClient.getTrader().getDelimited_areaLatLng(), true)) {
+                Log.e(TAG,"ENTRATO QUA: notifica area limitata");
+
+                //TODO QUESTO CICLO POTREBBE SOSTITUIRE TUTTO IL MyNotify
+                for (String token : UserClient.getUser().getTokens()) // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
+                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "sei fuori dall'area consentita");
+
+                for (String token : UserClient.getTrader().getTokens())
+                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Il Cliente" + UserClient.getUser().getName() + " fa il furbo e scappa");
+
+            }
+        }
+
+        private void checkSpeedLimit(double speed){
+            db.collection("vehicles").document(UserClient.getRun().getVehicle()).get().addOnSuccessListener(documentSnapshot -> {
+                Log.e(TAG,"ENTRATO QUA: notifica velocità");
+                if(speed > Objects.requireNonNull(documentSnapshot.toObject(Vehicle.class)).getMaxSpeedKMH()) {
+                    for (String token : UserClient.getUser().getTokens()) // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
+                        MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Vai piano per piacere");
+
+                    if (UserClient.getTrader() != null) {
+                        for (String token : UserClient.getTrader().getTokens())
+                            MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Il Cliente" + UserClient.getUser().getName() + " sta correndo come un pazzo");
+                    }
+                }
+            });
         }
 //        private void stopService(){
 //            if(UserClient.getUser() == null || UserClient.getRun() == null){
@@ -129,10 +172,21 @@ public class MyLocationService extends Service {
             Log.e(TAG, "onStartCommand");
 
         }
+
+        if(UserClient.getTrader() == null)
+            storeTraderInfo(UserClient.getRun().getTrader());
+
         super.onStartCommand(intent, flags, startId);
 
         return START_STICKY;
 
+    }
+
+    private void storeTraderInfo(String id){
+        db.collection("users").document(id).get().addOnSuccessListener(documentSnapshot -> {
+            Log.d(TAG, "Trader salvato in locale");
+            UserClient.setTrader(documentSnapshot.toObject(User.class));
+        });
     }
 
     private void deleteRun(String PK_run){

@@ -1,5 +1,6 @@
 package com.example.rent_scio1.Trader;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,7 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyFirebaseMessagingServices;
@@ -34,7 +34,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
     //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
     //private Intent serviceIntent;
-
+    public static Context thisContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +47,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapDelimiter);
         mapFragment.getMapAsync(new MyMapTrader(this));
-
+        thisContext = MapsActivityTrader.this;
         startService(new Intent(MapsActivityTrader.this, MyFirebaseMessagingServices.class));
         initViews();
     }
