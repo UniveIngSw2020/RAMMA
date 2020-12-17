@@ -11,11 +11,9 @@ public class User {
 
     private String user_id;
     private String name;
-    private String sourname;
+    private String surname;
     private String email;
-    private String born;
     private String phone;
-    private String piva;
     private Boolean trader;
     private String shopname;
     private GeoPoint traderposition;
@@ -26,15 +24,13 @@ public class User {
     public User(){}
 
 
-    public User(String user_id, String name, String sourname, String email, String date, String phone, String piva, Boolean trader, String shopname, GeoPoint traderposition, List<GeoPoint> delimited_area, List<String> tokens) {
+    public User(String user_id, String name, String sourname, String email, String phone, Boolean trader, String shopname, GeoPoint traderposition, List<GeoPoint> delimited_area, List<String> tokens) {
 
         this.user_id = user_id;
         this.name = name;
-        this.sourname = sourname;
+        this.surname = sourname;
         this.email = email;
-        this.born = date;
         this.phone = phone;
-        this.piva = piva;
         this.trader = trader;
         this.shopname = shopname;
         this.traderposition = traderposition;
@@ -45,13 +41,11 @@ public class User {
     public User(User o){
         this.user_id = o.user_id;
         this.name = o.name;
-        this.sourname = o.sourname;
+        this.surname = o.surname;
         this.email = o.email;
-        this.born = o.born;
         this.phone = o.phone;
         this.trader = o.trader;
         this.shopname = o.shopname;
-        this.piva = o.piva;
         this.traderposition = o.traderposition;
         this.delimited_area = o.delimited_area;
         this.tokens = o.tokens;
@@ -74,11 +68,11 @@ public class User {
     }
 
     public String getSourname() {
-        return sourname;
+        return surname;
     }
 
     public void setSourname(String sourname) {
-        this.sourname = sourname;
+        this.surname = sourname;
     }
 
     public String getEmail() {
@@ -97,24 +91,8 @@ public class User {
         this.phone = phone;
     }
 
-    public String getPiva() {
-        return piva;
-    }
-
-    public void setPiva(String piva) {
-        this.piva = piva;
-    }
-
     public void setTrader(Boolean trader) {
         this.trader = trader;
-    }
-
-    public String getBorn() {
-        return born;
-    }
-
-    public void setBorn(String born) {
-        this.born = born;
     }
 
     public GeoPoint getTraderposition() {
@@ -172,11 +150,9 @@ public class User {
         return "User{" +
                 "user_id='" + user_id + '\'' +
                 ", name='" + name + '\'' +
-                ", sourname='" + sourname + '\'' +
+                ", sourname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", born='" + born + '\'' +
                 ", phone='" + phone + '\'' +
-                ", piva='" + piva + '\'' +
                 ", trader=" + trader +
                 ", shopname='" + shopname + '\'' +
                 ", traderposition=" + traderposition + '\'' +

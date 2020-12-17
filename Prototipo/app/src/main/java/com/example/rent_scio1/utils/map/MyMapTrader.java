@@ -52,9 +52,8 @@ public class MyMapTrader extends MyMap{
     private final HashMap<String, Marker> listMarker = new HashMap<>();
 
     private final Context context;
-    private final String infoWindowText="Velocità attuale:%f\n" + "Tempo rimasto:%d:%d\n";
 
-    private ClusterManager<ClusterMarkers> clusterManager;
+    //private ClusterManager<ClusterMarkers> clusterManager;
 
 
     @Override
@@ -82,6 +81,7 @@ public class MyMapTrader extends MyMap{
         this.context = context;
     }
 
+    /*
     private void setUpClusterer() {
         // Position the map.
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
@@ -101,9 +101,9 @@ public class MyMapTrader extends MyMap{
         //addItems();
 
         searchCustomers();
-    }
+    }*/
 
-    private void addItems() {
+    //private void addItems() {
 
         // Set some lat/lng coordinates to start with.
         //double lat = 51.5145160;
@@ -117,7 +117,7 @@ public class MyMapTrader extends MyMap{
             ClusterMarkers offsetItem = new ClusterMarkers(lat, lng, "Title " + i, "Snippet " + i);
             clusterManager.addItem(offsetItem);
         }*/
-    }
+    //}
 
     private void searchCustomers(){
         FirebaseFirestore.getInstance().collection("run")
@@ -155,15 +155,45 @@ public class MyMapTrader extends MyMap{
                                                     .title(user.getName() + " " + user.getSourname())
                                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1)));
 
-                                            long time=dc.getDocument().toObject(Run.class).getStartTime() + dc.getDocument().toObject(Run.class).getDuration() - Calendar.getInstance().getTime().getTime();
+                                            Run run=dc.getDocument().toObject(Run.class);
+                                            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
                                             new CountDownTimer(time,1000){
 
                                                 @Override
                                                 public void onTick(long millisUntilFinished) {
-                                                    int minutes=(int) (millisUntilFinished / 1000) / 60;
-                                                    int seconds=(int) (millisUntilFinished / 1000) % 60;
-                                                    costumer.setSnippet(String.format(infoWindowText,dc.getDocument().toObject(Run.class).getSpeed(),minutes,seconds));
+                                                    Integer minutes=(int) (millisUntilFinished / 1000) / 60;
+                                                    Integer seconds=(int) (millisUntilFinished / 1000) % 60;
+
+
+                                                    if(minutes>=60){
+                                                        int hours=minutes/60;
+                                                        minutes=minutes-(hours*60);
+
+                                                        String hoursText=""+hours;
+                                                        if(hours<10){
+
+                                                            hoursText="0"+hoursText;
+                                                        }
+
+                                                        String minutesText=""+minutes;
+                                                        if(minutes<10){
+
+                                                            minutesText="0"+minutesText;
+                                                        }
+
+                                                        costumer.setSnippet( ((float)run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
+                                                    }
+                                                    else{
+
+                                                        String minutesText=""+minutes;
+                                                        if(minutes<10){
+
+                                                            minutesText="0"+minutesText;
+                                                        }
+
+                                                        costumer.setSnippet(((float)run.getSpeed())+" "+minutesText+":"+seconds );
+                                                    }
 
                                                     if(costumer.isInfoWindowShown())
                                                         costumer.showInfoWindow();
@@ -173,7 +203,7 @@ public class MyMapTrader extends MyMap{
                                                 public void onFinish() {
                                                     int minutes=0;
                                                     int seconds=0;
-                                                    costumer.setSnippet(String.format("Velocità attuale:%f\\n\" + \"Tempo rimasto: TERMINATO\\n",dc.getDocument().toObject(Run.class).getSpeed(),minutes,seconds));
+                                                    costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
 
                                                     if(costumer.isInfoWindowShown())
                                                         costumer.showInfoWindow();
@@ -299,8 +329,7 @@ public class MyMapTrader extends MyMap{
 
         Marker traderMarker = googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mTrader.getTraderposition().getLatitude(), mTrader.getTraderposition().getLongitude()))
-                .title("Tu sei qui!")
-                .snippet("Posizione del negozio"));
+                .title("Tu sei qui!"));
     }
 
     private void areaLimitata(){

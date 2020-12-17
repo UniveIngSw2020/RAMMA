@@ -7,15 +7,20 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.MyNotify;
+import com.example.rent_scio1.utils.Pair;
+import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -26,8 +31,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -41,13 +48,16 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class MyMapClient extends MyMap {
 
-    private ArrayList<User> listTrader = new ArrayList<>();
+    //private ArrayList<User> listTrader = new ArrayList<>();
 
-    private Vehicle vehicleRun;
+
 
     private static final String TAG = "MyMapClient";
 
@@ -55,6 +65,10 @@ public class MyMapClient extends MyMap {
 
     private MyNotify mNotifyDelimitedArea;
     private MyNotify mNotifySpeed;
+
+    private ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader = new ArrayList<>();
+    private Vehicle vehicleRun;
+    private Polygon fillPol = null;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private static CountDownTimer timerDelimitedArea;
@@ -69,12 +83,14 @@ public class MyMapClient extends MyMap {
         super();
     }
 
-    public MyMapClient(AppCompatActivity context, LocationManager manager, DialogInterface.OnClickListener listener) {
+    public MyMapClient(AppCompatActivity context, LocationManager manager, DialogInterface.OnClickListener listener, ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader, Vehicle vehicleRun) {
         super();
         this.context = context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         this.manager = manager;
         this.listener = listener;
+        this.listTrader = listTrader;
+        this.vehicleRun = vehicleRun;
     }
 
     /*
@@ -98,6 +114,8 @@ public class MyMapClient extends MyMap {
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         //enableMyLocation();
+        Log.e(TAG, "MAPPA PRONTA");
+
 
         //passo una lambda nulla
         MyPermission permission = new MyPermission(context, context, location -> {
@@ -121,13 +139,51 @@ public class MyMapClient extends MyMap {
         }
 
         location();
-        setMapDetails();
+        //setMapDetails();
+        setMarkerDelimitedTraderNotify();
 
+        getmMap().setOnMarkerClickListener(marker -> {
+            marker.showInfoWindow();
+            Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
+
+
+            for(Pair<User, Pair<Float, Polygon>> trader: listTrader){
+                if(trader.getFirst().getDelimited_area() != null && marker.getPosition().equals(new LatLng(trader.getFirst().getTraderposition().getLatitude(), trader.getFirst().getTraderposition().getLongitude()))){
+                    int col = Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.2f, 1.0f });
+                    trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
+                    trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
+
+                    //fillPol = trader.getSecond().getSecond();
+                    return true;
+                    /*else{
+                        trader.getSecond().getSecond().setVisible(false);
+                        trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                    }*/
+                }
+
+            }
+            return false;
+        });
+
+        getmMap().setOnMapClickListener(latLng -> {
+            for(Pair<User, Pair<Float, Polygon>> trader : listTrader){
+                if(trader.getFirst().getDelimited_area() != null ){
+                    trader.getSecond().getSecond().setVisible(false);
+                    trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                }
+            }
+            /*if(fillPol != null) {
+                Log.e(TAG, "TRASPARENTEEEEEE");
+                fillPol.setVisible(false);
+                fillPol.setFillColor(android.R.color.transparent);
+                fillPol = null;
+            }*/
+        });
     }
 
 
 
-    private void setMapDetails(){
+    /*private void setMapDetails(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Query getTrader;
@@ -163,38 +219,51 @@ public class MyMapClient extends MyMap {
             }
 
         });
-    }
+    }*/
 
 
     private void setMarkerDelimitedTraderNotify(){
-        for (User trader : listTrader) {
+        Log.e(TAG, "setMarkerDelimitedTraderNotify " + listTrader.size());
+        for (Pair<User, Pair<Float, Polygon>> trader : listTrader) {
+            Log.e(TAG, "                    " + trader.getFirst().toString());
+            //Random rnd = new Random();
+            //int col = rnd.nextInt(360);
             //Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
-            if (trader.getTraderposition() != null) {
+            if (trader.getFirst().getTraderposition() != null) {
                 getmMap().addMarker(new MarkerOptions()
-                        .position(new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()))
-                        .title(trader.getShopname())
-                        .snippet("Negozio di: " + trader.getSourname() + " " + trader.getName()));
+                        .position(new LatLng(trader.getFirst().getTraderposition().getLatitude(), trader.getFirst().getTraderposition().getLongitude()))
+                        .title(trader.getFirst().getShopname())
+                        .icon(BitmapDescriptorFactory.defaultMarker(trader.getSecond().getFirst()))
+                        .snippet("Negozio di: " + trader.getFirst().getSourname() + " " + trader.getFirst().getName()));
             }
 
             List<LatLng> latLngs = new ArrayList<>();
-            if(trader.getDelimited_area() != null){
+            if(trader.getFirst().getDelimited_area() != null){
                 //Log.e(TAG, trader.getDelimited_area().toString());
-                for (GeoPoint a: trader.getDelimited_area()) {
+                for (GeoPoint a: trader.getFirst().getDelimited_area()) {
                     //Log.e(TAG,"Sto creando la lista di latlang");
                     latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
                 }
                 //Log.e(TAG,"stampo il poligono");
+
+
                 PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
                 Polygon polygon=getmMap().addPolygon(polygonOptions);
-                polygon.setStrokeColor(Color.BLACK);
+                polygon.setVisible(false);
+                float [] col = new float[] { trader.getSecond().getFirst(), 1.0f, 1.0f };
+                Log.e(TAG, trader.getSecond().getFirst() + "         " + col[0]);
+                polygon.setStrokeColor(Color.HSVToColor(col));
+                polygon.setStrokeWidth(5.0f);
+                //listTraderPolygon.add(new Pair<>(trader.first, polygon));
+                trader.getSecond().setSecond(polygon);
+            }
 
-                if(UserClient.getRun()!=null){
-                    mNotifyDelimitedArea = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata","Attenzione!","Hai oltrepassato l'area limitata!", R.drawable.ic_not_permitted);
-                    mNotifySpeed = new MyNotify(context, "speedChannel", "Velocità elevata", "Avvisa l'utente della velocità troppo elevata","Attenzione!","Stai andando troppo veloce!", R.drawable.ic_not_permitted);
-                    createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
-                    timerDelimitedArea.start();
 
-                }
+            if(UserClient.getRun()!=null){
+                mNotifyDelimitedArea = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata","Attenzione!","Hai oltrepassato l'area limitata!", R.drawable.ic_not_permitted);
+                mNotifySpeed = new MyNotify(context, "speedChannel", "Velocità elevata", "Avvisa l'utente della velocità troppo elevata","Attenzione!","Stai andando troppo veloce!", R.drawable.ic_not_permitted);
+                createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
+                timerDelimitedArea.start();
             }
 
         }
@@ -230,12 +299,12 @@ public class MyMapClient extends MyMap {
             @Override
             public void onTick(long millisUntilFinished) {
 
-                if(run != null && run.getGeoPoint() != null && listTrader.get(0).getDelimited_area() != null){
+                if(run != null && run.getGeoPoint() != null && listTrader.get(0).getFirst().getDelimited_area() != null){
 
                     LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
 
                     List<LatLng> latLngs = new ArrayList<>();
-                    for (GeoPoint a: listTrader.get(0).getDelimited_area()) {
+                    for (GeoPoint a: listTrader.get(0).getFirst().getDelimited_area()) {
                         latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
                     }
 
@@ -352,4 +421,14 @@ public class MyMapClient extends MyMap {
     }
 
 
+    /*@Override
+    public boolean onMarkerClick(Marker marker) {
+        Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
+        for(Pair<User, Pair<Float, Polygon>> trader: listTrader){
+            if(marker.getPosition().equals(trader.getFirst().getTraderposition())){
+                trader.getSecond().getSecond().setFillColor(Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.3f, 1.0f }));
+            }
+        }
+        return true;
+    }*/
 }

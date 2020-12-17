@@ -131,6 +131,9 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
             case R.id.tabella_corse:
                 startActivity(new Intent(getApplicationContext(), RunTableTrader.class));
                 break;
+            case R.id.impostazioni_trader:
+                startActivity(new Intent(getApplicationContext(), SettingsTrader.class));
+                break;
         }
         return true;
     }

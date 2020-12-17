@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,12 +37,17 @@ import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyFirebaseMessagingServices;
 import com.example.rent_scio1.services.MyLocationService;
+import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.map.MyMapClient;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -48,6 +55,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -80,40 +90,37 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
     private ScannedBarcodeActivity.Action LastAction;
 
+
+    private ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader = new ArrayList<>();
+    private Vehicle v = null;
+
     //Polygon delimitedArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_client);
+
         mAuth = FirebaseAuth.getInstance();
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
 
         createTable();
 
+        getListTrader();
+
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.e(TAG, "sono nel resume ");
         //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //mStore = FirebaseFirestore.getInstance();
         serviceIntent = new Intent(this, MyLocationService.class);
         //getCameraPermission();
         initViews();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
-        /*Query query;
-        if(UserClient.getRun() == null)
-            query = mStore.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
-        else
-            query = mStore.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
-        query.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-
-            }
-        });*/
         // myMapClient = new MyMapClient(this.getApplicationContext());
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         assert mapFragment != null;
@@ -167,6 +174,59 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
     }
 
+
+    private void getListTrader(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query getTrader;
+
+        if(UserClient.getRun() != null){
+            getTrader = db.collection("users").whereEqualTo("user_id", UserClient.getRun().getTrader());
+        }else{
+            getTrader = db.collection("users").whereEqualTo("trader", true);
+        }
+
+
+        getTrader.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                User u=new User(document.toObject(User.class));
+                if(u.getTraderposition()!=null){
+                    Random rnd = new Random();
+                    listTrader.add(new Pair<>(u, new Pair<>((float) rnd.nextInt(360), null)));
+                }
+
+            }
+
+            if(UserClient.getRun() != null){
+                Query getVehicle= db.collection("vehicles").whereEqualTo("user_id", UserClient.getRun().getVehicle());
+
+                getVehicle.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        v = new Vehicle(document.toObject(Vehicle.class));
+                    }
+                    openMap();
+                });
+            }else{
+                openMap();
+            }
+        });
+    }
+
+    private void openMap(){
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapDelimiter);
+
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        assert mapFragment != null;
+
+        myMapClient=new MyMapClient(MapsActivityClient.this,manager,(dialog, which) -> {
+
+            Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivityForResult(enableGpsIntent, MyPermission.PERMISSIONS_REQUEST_ENABLE_GPS);
+        }, listTrader, v);
+        Log.e(TAG, "aziono la mappa ");
+        mapFragment.getMapAsync(myMapClient);
+    }
+
+
     private void updateTime(TextView timeText,TextView speedText, Run run){
 
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
@@ -175,16 +235,53 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             @SuppressLint("DefaultLocale")
             @Override
             public void onTick(long millisUntilFinished) {
+
                 int minutes=(int) (millisUntilFinished / 1000) / 60;
                 int seconds=(int) (millisUntilFinished / 1000) % 60;
-                double speed=run.getSpeed();
+                float speed=(float)run.getSpeed();
 
-                timeText.setText(String.format("%d:%d", minutes, seconds));
-                speedText.setText(String.format("%f km/h",speed));
+                if(minutes>=60){
+                    int hours=minutes/60;
+                    minutes=minutes-(hours*60);
 
-                if(minutes<10){
-                    timeText.setTextColor(Color.YELLOW);
+                    String hoursText=""+hours;
+                    if(hours<10){
+
+                        hoursText="0"+hoursText;
+                    }
+
+
+                    String minutesText=""+minutes;
+                    if(minutes<10){
+
+                        minutesText="0"+minutesText;
+                    }
+
+                    timeText.setText(String.format("%s:%s:%d",hoursText, minutesText, seconds));
                 }
+                else{
+
+                    String minutesText=""+minutes;
+                    if(minutes<10){
+
+                        minutesText="0"+minutesText;
+                    }
+
+                    timeText.setText(String.format("%s:%d", minutesText, seconds));
+
+                    if(minutes<10){
+                        timeText.setTextColor(Color.YELLOW);
+                    }
+
+                    if(minutes<5){
+                        timeText.setTextColor(Color.RED);
+                    }
+                }
+
+
+                speedText.setText(speed+" km/h");
+
+
             }
 
             @SuppressLint("SetTextI18n")
@@ -256,6 +353,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             navigationView.getMenu().findItem(R.id.end_run).setVisible(true);
             navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(true);
             navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+            navigationView.getMenu().findItem(R.id.logout_client).setVisible(false);
             Log.e(TAG, UserClient.getRun().toString());
         }
         else{

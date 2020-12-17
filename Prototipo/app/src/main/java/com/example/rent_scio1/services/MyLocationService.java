@@ -230,12 +230,6 @@ public class MyLocationService extends Service {
         mDatabase.update("rented", true).addOnSuccessListener(aVoid -> Log.d(TAG, "VEICOLO OCCUPATO"));
     }
 
-    private void unlockVehiclebyID(String id){
-        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
-        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
-            Log.d(TAG, "VEICOLO LIBERATO");
-        });
-    }
 
     private void addRunIntoDB(final Run run){
         try{

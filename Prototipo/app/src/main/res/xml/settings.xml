@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout="@style/PreferencesTheme">
+
+    <PreferenceCategory
+        android:title="Informazioni personali"
+
+        android:key="ciao">
+
+        <Preference
+            android:title="Cambia Nome e Cognome"
+            android:icon="@drawable/ic_user"
+            android:key="change_name_surname"/>
+
+        <Preference
+            android:title="Cambia Email"
+            android:summary="Manterrai il tuo account, ma con una nuova mail."
+            android:icon="@drawable/ic_email"
+            android:key="change_email"/>
+
+        <Preference
+            android:title="Cambia Password"
+            android:summary="La password deve contenere almeno 6 caratteri."
+            android:icon="@drawable/ic_password"
+            android:key="change_pw"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Negozio"
+        android:key="app_sett">
+
+        <Preference
+            android:title="Cambia nome del Negozio"
+            android:icon="@drawable/ic_baseline_store_24"
+            android:key="change_shop_name"/>
+
+        <Preference
+            android:title="Cambia posizione del Negozio"
+            android:icon="@drawable/ic_change_location"
+            android:key="change_shop_position"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

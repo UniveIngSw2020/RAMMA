@@ -227,6 +227,13 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         initialiseDetectorsAndSources();
     }
 
+    private void unlockVehiclebyID(String id){
+        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
+        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
+            Log.d(TAG, "VEICOLO LIBERATO");
+        });
+    }
+
     //TODO POI LO TOLGO LO GIURO
     private void deleteRun(String PK_run){
         FirebaseFirestore.getInstance().collection("run").document(PK_run)

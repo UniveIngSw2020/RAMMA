@@ -56,4 +56,9 @@
         <item name="fontFamily">@font/comfortaa_regular</item>
         <item name="android:textColor">@color/text</item>
     </style>
+
+
+    <style name="PreferencesTheme">
+        <item name="android:background">@color/back</item>
+    </style>
 </resources>
