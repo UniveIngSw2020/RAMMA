@@ -101,11 +101,17 @@ public class MyLocationService extends Service {
                 Log.e(TAG,"ENTRATO QUA: notifica area limitata");
 
                 //TODO QUESTO CICLO POTREBBE SOSTITUIRE TUTTO IL MyNotify
-                for (String token : UserClient.getUser().getTokens()) // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
-                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "sei fuori dall'area consentita");
+                for (String token : UserClient.getUser().getTokens()){
+                    Log.e(TAG, "messaggio per il cliente");
+                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "sei fuori dall'area consentita"); // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
+                }
 
-                for (String token : UserClient.getTrader().getTokens())
+
+                for (String token : UserClient.getTrader().getTokens()){
+                    Log.e(TAG, "messaggio per il trader");
                     MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Il Cliente" + UserClient.getUser().getName() + " fa il furbo e scappa");
+                }
+
 
             }
         }

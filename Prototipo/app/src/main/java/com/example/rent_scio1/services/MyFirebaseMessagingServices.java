@@ -139,7 +139,7 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     public static void sendNotification(Context context, String destinationTopic, String title, String msg) {
         final String TAG = "sendNotification";
         final String FCM_API = "https://fcm.googleapis.com/fcm/send";
-        String topic = "/topics/"+destinationTopic;
+
         JSONObject notification = new JSONObject();
         JSONObject notificationBody = new JSONObject();
 
