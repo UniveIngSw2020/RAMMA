@@ -7,20 +7,16 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.MyNotify;
 import com.example.rent_scio1.utils.Pair;
-import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -34,24 +30,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class MyMapClient extends MyMap {
 
@@ -262,8 +250,8 @@ public class MyMapClient extends MyMap {
             if(UserClient.getRun()!=null){
                 mNotifyDelimitedArea = new MyNotify(context, "delimitedAreaChannel", "Uscita dall'area limitata", "Avvisa l'utente dell'uscita dall'area limitata","Attenzione!","Hai oltrepassato l'area limitata!", R.drawable.ic_not_permitted);
                 mNotifySpeed = new MyNotify(context, "speedChannel", "Velocità elevata", "Avvisa l'utente della velocità troppo elevata","Attenzione!","Stai andando troppo veloce!", R.drawable.ic_not_permitted);
-                createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
-                timerDelimitedArea.start();
+                //createNotification(UserClient.getRun(), mNotifyDelimitedArea.getNotify(),mNotifySpeed.getNotify());
+                //timerDelimitedArea.start();
             }
 
         }
@@ -295,47 +283,47 @@ public class MyMapClient extends MyMap {
         // nel caso peggiore il cliente non uscirà mai da questa schermata e dovrò aggiornare ogni minuto della corsa.
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
-        timerDelimitedArea = new CountDownTimer(time,10000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-                if(run != null && run.getGeoPoint() != null && listTrader.get(0).getFirst().getDelimited_area() != null){
-
-                    LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
-
-                    List<LatLng> latLngs = new ArrayList<>();
-                    for (GeoPoint a: listTrader.get(0).getFirst().getDelimited_area()) {
-                        latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
-                    }
-
-                    Log.e(TAG,"ENTRATO QUA: pre notifica");
-
-                    if(!PolyUtil.containsLocation(position, latLngs,true)){
-
-                        //NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-                        // notificationId is a unique int for each notification that you must define
-                        //MyNotify notifyTrader = new MyNotify(context, "warning", "Ciao fra", "prova", "Ciao fra", "stustustustu", R.drawable.ic_not_permitted);
-
-                        //mNotifyDelimitedArea.getNotificationManager().notify(delimitedAreaNotificationID, dilimitedAreaNotification);
-                    }
-
-                    //notifica di velocità
-                    //bisogna fare una query per prendere la velocità del veicolo
-                    if(run.getSpeed()>vehicleRun.getMaxSpeedKMH()){
-                        Log.e(TAG,"ENTRATO QUA: notifica velocità");
-                        //mNotifySpeed.getNotificationManager().notify(speedNotificationID,speedNotification);
-                    }
-                }
-
-                Log.e(TAG,"TICK TIMER");
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        };
+//        timerDelimitedArea = new CountDownTimer(time,10000) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//
+//                if(run != null && run.getGeoPoint() != null && listTrader.get(0).getFirst().getDelimited_area() != null){
+//
+//                    LatLng position=new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude());
+//
+//                    List<LatLng> latLngs = new ArrayList<>();
+//                    for (GeoPoint a: listTrader.get(0).getFirst().getDelimited_area()) {
+//                        latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+//                    }
+//
+//                    Log.e(TAG,"ENTRATO QUA: pre notifica");
+//
+//                    if(!PolyUtil.containsLocation(position, latLngs,true)){
+//
+//                        //NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+//
+//                        // notificationId is a unique int for each notification that you must define
+//                        //MyNotify notifyTrader = new MyNotify(context, "warning", "Ciao fra", "prova", "Ciao fra", "stustustustu", R.drawable.ic_not_permitted);
+//
+//                        //mNotifyDelimitedArea.getNotificationManager().notify(delimitedAreaNotificationID, dilimitedAreaNotification);
+//                    }
+//
+//                    //notifica di velocità
+//                    //bisogna fare una query per prendere la velocità del veicolo
+//                    if(run.getSpeed()>vehicleRun.getMaxSpeedKMH()){
+//                        Log.e(TAG,"ENTRATO QUA: notifica velocità");
+//                        //mNotifySpeed.getNotificationManager().notify(speedNotificationID,speedNotification);
+//                    }
+//                }
+//
+//                Log.e(TAG,"TICK TIMER");
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//
+//            }
+//        };
 
     }
 
