@@ -171,13 +171,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         });
     }
 
-    private void unlockVehiclebyID(String id){
-        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
-        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
-            Log.d(TAG, "VEICOLO LIBERATO");
-        });
-    }
-
     private boolean isLocationServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -233,6 +226,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
             Log.d(TAG, "VEICOLO LIBERATO");
         });
     }
+
 
     //TODO POI LO TOLGO LO GIURO
     private void deleteRun(String PK_run){

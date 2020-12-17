@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -24,7 +23,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -41,22 +39,19 @@ import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.example.rent_scio1.utils.Vehicle;
 import com.example.rent_scio1.utils.map.MyMapClient;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -120,24 +115,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         serviceIntent = new Intent(this, MyLocationService.class);
         //getCameraPermission();
         initViews();
-
-        // myMapClient = new MyMapClient(this.getApplicationContext());
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        assert mapFragment != null;
-
-        myMapClient=new MyMapClient(MapsActivityClient.this,manager,(dialog, which) -> {
-
-            Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivityForResult(enableGpsIntent, MyPermission.PERMISSIONS_REQUEST_ENABLE_GPS);
-        });
-
-        mapFragment.getMapAsync(myMapClient);
         startService(new Intent(MapsActivityClient.this, MyFirebaseMessagingServices.class));
-        /*if(UserClient.getRun() != null){
-            notification_delarea = createNotificationChannel("delimitedAreaChannel", getString(R.string.delimitedAreaChannel), getString(R.string.delimitedAreaChannelD), R.drawable.ic_not_permitted);
-        }*/
 
-        
     }
 
     @Override
