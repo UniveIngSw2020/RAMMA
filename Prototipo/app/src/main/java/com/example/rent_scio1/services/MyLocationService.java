@@ -47,7 +47,8 @@ public class MyLocationService extends Service {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private boolean runAlreadyInsert = false;
-
+    private  long lastNotificationArea;
+    private  long lastNotificationSpeed;
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
         //in teoria non serve ma bisogna fare una prova
@@ -69,10 +70,16 @@ public class MyLocationService extends Service {
             double speed= mLastLocation.getSpeed()*3.6;/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
 
             updateUserLocation(location, speed);
+            Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
+            if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 30000){
+                lastNotificationArea = Calendar.getInstance().getTime().getTime();
+                checkAreaLimit(location);
+            }
 
-            checkAreaLimit(location);
-            checkSpeedLimit(speed);
-
+            if(Calendar.getInstance().getTime().getTime() - lastNotificationSpeed > 30000) {
+                lastNotificationSpeed = Calendar.getInstance().getTime().getTime();
+                checkSpeedLimit(speed);
+            }
 //            if(speed > UserClient.getRun)
 //            if(UserClient.getTrader() != null){
 //                for(String token : UserClient.getTrader().getTokens())
@@ -178,7 +185,8 @@ public class MyLocationService extends Service {
             Log.e(TAG, "onStartCommand");
 
         }
-
+        lastNotificationArea = Calendar.getInstance().getTime().getTime();
+        lastNotificationSpeed = Calendar.getInstance().getTime().getTime();
         if(UserClient.getTrader() == null)
             storeTraderInfo(UserClient.getRun().getTrader());
 
