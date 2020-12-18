@@ -5,12 +5,7 @@
         <item android:id="@+id/nuova_corsa_client"
             android:title="@string/nuova_corsa"
             android:icon="@drawable/ic_add_client"/>
-        <item android:id="@+id/logout_client"
-            android:title="@string/logout"
-            android:icon="@drawable/ic_logout_client"/>
-    </group>
 
-    <group>
         <item android:id="@+id/Assistenza"
             android:title="@string/assistenza"
             android:icon="@drawable/ic_assistenza" />
@@ -21,7 +16,15 @@
 
         <item
             android:id="@+id/end_run"
-            android:title="Termina corsa"
+            android:title="@string/termina_corsa"
             android:icon="@drawable/ic_stop_trade"/>
+
+        <item android:id="@+id/impostazioni_client"
+            android:title="@string/impostazioni"
+            android:icon="@drawable/ic_settings_trader"/>
+
+        <item android:id="@+id/logout_client"
+            android:title="@string/logout"
+            android:icon="@drawable/ic_logout_client"/>
     </group>
 </menu>

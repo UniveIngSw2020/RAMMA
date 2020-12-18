@@ -38,8 +38,9 @@
         </service>
 
         <activity android:name=".Client.SettingsCustomer"
-            android:theme="@style/PreferencesTheme"/>
-        <activity android:name=".Trader.SettingsTrader" />
+            android:parentActivityName=".Client.MapsActivityClient"/>
+        <activity android:name=".Trader.SettingsTrader"
+            android:parentActivityName=".Trader.MapsActivityTrader"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

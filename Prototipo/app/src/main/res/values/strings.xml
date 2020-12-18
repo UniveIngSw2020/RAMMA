@@ -130,6 +130,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="impostazioni">Impostazioni</string>
+    <string name="termina_corsa">Termina corsa</string>
 
     <!-- PROVO -->
     <string name="server_key" translatable="false">AAAABf5BCzc:AAAABf5BCzc:APA91bF5G0ERO7Rdg6NYLSQ6ynFlAEhjNboCgSbraP9L85FdO9M62467gaWTLfmvrSggrcVEdKeOLnzGKtaZMgRrfnTPgc9eVSICMDRJLiZNAXFnCOYTOMg7rRqkru5yFwMV3KcDE6Lr</string>

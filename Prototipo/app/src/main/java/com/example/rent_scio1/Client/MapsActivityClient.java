@@ -468,6 +468,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 }
 
                 break;
+
+            case R.id.impostazioni_client:
+                startActivity(new Intent(getApplicationContext(), SettingsCustomer.class));
+                break;
         }
         return true;
     }
