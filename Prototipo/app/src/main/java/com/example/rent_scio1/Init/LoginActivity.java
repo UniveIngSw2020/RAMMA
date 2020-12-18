@@ -78,11 +78,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     private void showDialog(){
-        mProgressBar.setVisibility(View.VISIBLE);
-
+        mEmail.setVisibility(View.VISIBLE);
+        mPassword.setVisibility(View.VISIBLE);
+        findViewById(R.id.confirmlogin_btn).setVisibility(View.VISIBLE);
+        findViewById(R.id.textViewLogin).setVisibility(View.VISIBLE);
     }
 
     private void hideDialog(){
+        mEmail.setVisibility(View.INVISIBLE);
+        mPassword.setVisibility(View.INVISIBLE);
+        findViewById(R.id.confirmlogin_btn).setVisibility(View.INVISIBLE);
+        findViewById(R.id.textViewLogin).setVisibility(View.INVISIBLE);
+        findViewById(R.id.progressBarLoadLogin).setVisibility(View.INVISIBLE);
         if(mProgressBar.getVisibility() == View.VISIBLE){
             mProgressBar.setVisibility(View.INVISIBLE);
         }
@@ -94,6 +101,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user != null) {
+                if(mProgressBar.getVisibility() == View.INVISIBLE){
+                    findViewById(R.id.progressBarLoadLogin).setVisibility(View.VISIBLE);
+                }
+
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -145,9 +156,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            Toast.makeText(LoginActivity.this, "Authenticated with: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(LoginActivity.this, "Autenticato come: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
                                             if (user1 != null) {
+
+
                                                 if (user1.getTrader()) {
                                                     if (user1.getTraderposition() == null)
                                                         startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
@@ -156,6 +169,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 } else
                                                     startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
 
+                                                hideDialog();
                                                 finishAffinity();
                                             }
                                         }
@@ -173,6 +187,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
+                showDialog();
             }
             // ...
         };
@@ -229,23 +244,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 && !isEmpty(mPassword.getText().toString().trim())){
             Log.d(TAG, "onClick: attempting to authenticate.");
 
-            showDialog();
+            mProgressBar.setVisibility(View.VISIBLE);
+            findViewById(R.id.progressBarLoadLogin).setVisibility(View.INVISIBLE);
 
             FirebaseAuth.getInstance().signInWithEmailAndPassword(mEmail.getText().toString().trim(),
                     mPassword.getText().toString().trim())
-                    .addOnCompleteListener(task -> hideDialog()).addOnFailureListener(e -> {
-                        Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
-                        hideDialog();
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(LoginActivity.this, "Autenticazione Fallita!", Toast.LENGTH_SHORT).show();
+                        showDialog();
+                        if(mProgressBar.getVisibility() == View.VISIBLE){
+                            mProgressBar.setVisibility(View.INVISIBLE);
+                        }
                     });
         }else{
             check();
-            Toast.makeText(LoginActivity.this, "You didn't fill in all the fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Non hai completato i campi!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void check (){
-        if(TextUtils.isEmpty(mEmail.getText().toString().trim())){ mEmail.setError("Email is Required!"); }
-        if(TextUtils.isEmpty(mPassword.getText().toString().trim())){ mPassword.setError("Password is Required!"); }
+        if(TextUtils.isEmpty(mEmail.getText().toString().trim())){ mEmail.setError("Email Richiesta!"); }
+        if(TextUtils.isEmpty(mPassword.getText().toString().trim())){ mPassword.setError("Password Richiesta"); }
     }
 
 
