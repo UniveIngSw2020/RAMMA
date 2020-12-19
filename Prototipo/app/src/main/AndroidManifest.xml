@@ -26,7 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RentScio1">
 
-        <activity android:name=".utils.SettingsActivityTextView" />
+        <activity android:name=".utils.Settings.SettingsActivityTextView" />
 
         <service
             android:name=".services.MyFirebaseMessagingServices"

@@ -1,4 +1,4 @@
-package com.example.rent_scio1.utils;
+package com.example.rent_scio1.utils.Settings;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;

@@ -1,11 +1,10 @@
-package com.example.rent_scio1.utils;
+package com.example.rent_scio1.utils.Settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,8 +12,8 @@ import android.widget.TextView;
 import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.SettingsTrader;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.rent_scio1.utils.User;
+import com.example.rent_scio1.utils.UserClient;
 
 public class SettingsActivityTextView extends AppCompatActivity {
 
@@ -23,7 +22,7 @@ public class SettingsActivityTextView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_text_view);
 
-        User user=UserClient.getUser();
+        User user= UserClient.getUser();
 
         //prendo dell'intent cosa devo fare
         String type=getIntent().getStringExtra("type");
