@@ -85,7 +85,7 @@ public class SettingsCustomer extends AppCompatActivity {
                         break;
                     /*CAMBIO AVATAR*/
                     case 6:
-                        Toast.makeText(getApplicationContext(), "Cambia avatar selezionato", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(getApplicationContext(),SetAvatarActivity.class));
                         break;
 
                     default:
