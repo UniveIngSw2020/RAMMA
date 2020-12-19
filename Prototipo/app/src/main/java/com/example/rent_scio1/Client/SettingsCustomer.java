@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.utils.SettingsActivityTextView;
+import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
 
 public class SettingsCustomer extends AppCompatActivity {
 
