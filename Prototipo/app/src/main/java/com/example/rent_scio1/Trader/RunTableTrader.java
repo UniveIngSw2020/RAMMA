@@ -93,10 +93,10 @@ public class RunTableTrader extends AppCompatActivity {
 
                     User u=new User(document.toObject(User.class));
 
-                    String customer=u.getName()+" "+u.getSourname();
+                    String customer=u.getName()+" "+u.getSurname();
 
                     if(customer.length()>8){
-                        customer=u.getName()+"\n"+u.getSourname();
+                        customer=u.getName()+"\n"+u.getSurname();
                     }
 
                     queryVehicle(run,customer);

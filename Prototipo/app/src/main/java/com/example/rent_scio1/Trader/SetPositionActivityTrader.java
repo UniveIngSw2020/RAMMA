@@ -6,9 +6,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,9 +31,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.maps.android.PolyUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetPositionActivityTrader extends AppCompatActivity implements OnMapReadyCallback,GoogleMap.OnMarkerDragListener {
 
@@ -112,14 +121,51 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
 
             case R.id.confirm_position:
 
-                UserClient.getUser().setTraderposition(new GeoPoint(shop.getPosition().latitude, shop.getPosition().longitude));
+                User user=UserClient.getUser();
 
-                DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
-                mDatabase.update("traderposition", UserClient.getUser().getTraderposition())
-                        .addOnSuccessListener(aVoid -> {
-                            startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                            Log.d(TAG, "POSIZIONE TRADER AGGIORNATA");
-                        });
+                GeoPoint newPosition=new GeoPoint(shop.getPosition().latitude, shop.getPosition().longitude);
+
+                if(user.getDelimited_area()==null || PolyUtil.containsLocation(new LatLng(newPosition.getLatitude(),newPosition.getLongitude()),user.getDelimited_areaLatLng(),true) ){
+
+                    UserClient.getUser().setTraderPosition(newPosition);
+
+
+                    DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
+                    mDatabase.update("traderPosition", UserClient.getUser().getTraderPosition())
+                            .addOnSuccessListener(aVoid -> {
+                                startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                Log.d(TAG, "POSIZIONE TRADER AGGIORNATA");
+                            });
+                }
+                else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SetPositionActivityTrader.this);
+                    builder.setTitle("Attenzione");
+                    builder.setMessage("Il posizionamento selezionato comporterà l'eliminazione dell'area limitata.\n Vuoi procedere comunque?");
+
+                    //builder.setIcon(R.drawable.ic_launcher);
+                    builder.setPositiveButton("Sì", (dialog, id) -> {
+
+                        UserClient.getUser().setTraderPosition(newPosition);
+
+
+                        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
+                        mDatabase.update("traderPosition", UserClient.getUser().getTraderPosition())
+                                .addOnSuccessListener(aVoid -> {
+                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                    Log.d(TAG, "POSIZIONE TRADER AGGIORNATA");
+                                });
+
+                        mDatabase.update("delimited_area", null);
+                        mDatabase.update("delimited_areaLatLng", null);
+                        UserClient.getUser().setDelimited_area(null);
+
+                    });
+                    builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+
                 break;
 
             default:
@@ -142,6 +188,19 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerDragListener(this);
+
+        User user=UserClient.getUser();
+
+        if( user.getTraderPosition()!=null ){
+
+            shop=mMap.addMarker(new MarkerOptions().position(new LatLng(user.getTraderPosition().getLatitude(),user.getTraderPosition().getLongitude())));
+            shop.setDraggable(true);
+            setCameraView(null, shop.getPosition());
+            areaLimitata();
+        }
+
+
 
         mMap.setOnMapClickListener(latLng -> {
             mMap.clear();
@@ -178,6 +237,8 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
                 Log.i(TAG, "An error occurred : " + status);
             }
         });*/
+
+
     }
 
     @Override
@@ -193,6 +254,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
     @Override
     public void onMarkerDragEnd(Marker marker) {
         shop=marker;
+        toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
     }
 
     @Override
@@ -224,13 +286,13 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
         try {
 
             if(location!=null){
-                double bottomBundary = location.getLatitude() - .01;
+                double bottomBoundary = location.getLatitude() - .01;
                 double leftBoundary = location.getLongitude() - .01;
                 double topBoundary = location.getLatitude() + .01;
                 double rightBoundary = location.getLongitude() + .01;
 
                 LatLngBounds mMapBoundary = new LatLngBounds(
-                        new LatLng(bottomBundary, leftBoundary),
+                        new LatLng(bottomBoundary, leftBoundary),
                         new LatLng(topBoundary, rightBoundary)
                 );
 
@@ -238,13 +300,13 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             }
 
             if(latLng!=null){
-                double bottomBundary = latLng.latitude - .01;
+                double bottomBoundary = latLng.latitude - .01;
                 double leftBoundary = latLng.longitude - .01;
                 double topBoundary = latLng.latitude + .01;
                 double rightBoundary = latLng.longitude + .01;
 
                 LatLngBounds mMapBoundary = new LatLngBounds(
-                        new LatLng(bottomBundary, leftBoundary),
+                        new LatLng(bottomBoundary, leftBoundary),
                         new LatLng(topBoundary, rightBoundary)
                 );
 
@@ -252,6 +314,21 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             }
 
         } catch (Exception e) {
+        }
+    }
+
+    private void areaLimitata(){
+        if(UserClient.getUser()!=null && UserClient.getUser().getDelimited_area()!=null){
+            List<LatLng> latLngs = new ArrayList<>();
+
+            List<GeoPoint> geoPoints = UserClient.getUser().getDelimited_area();
+            for (GeoPoint a:geoPoints) {
+                latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+            }
+
+            PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
+            Polygon polygon=mMap.addPolygon(polygonOptions);
+            polygon.setStrokeColor(Color.BLACK);
         }
     }
 }

@@ -40,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Map<String, Object> user = new HashMap<>();
 
     //widgets
-    private EditText mName, mSourname, mEmail, mPassword, mConfirmPasswod, mPhone, mShopname;
+    private EditText mName, mSurname, mEmail, mPassword, mConfirmPasswod, mPhone, mShopname;
     private CheckBox mTrader/*, mPositionTrader*/;
     //private ProgressBar progressBar;
 
@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         //mi getto gli oggetti dall'xml
         mName = findViewById(R.id.name);
-        mSourname = findViewById(R.id.sourname);
+        mSurname = findViewById(R.id.surname);
         mEmail = findViewById(R.id.email_register);
         mPassword = findViewById(R.id.password_register);
         mConfirmPasswod = findViewById(R.id.passwordregister_confirm);
@@ -127,8 +127,8 @@ public class RegisterActivity extends AppCompatActivity {
             mName.setError("Nome Richeisto!");
             flag = false;
         }
-        if (TextUtils.isEmpty(mSourname.getText().toString().trim())) {
-            mSourname.setError("Cognome Richiesto!");
+        if (TextUtils.isEmpty(mSurname.getText().toString().trim())) {
+            mSurname.setError("Cognome Richiesto!");
             flag = false;
         }
         if (TextUtils.isEmpty(mEmail.getText().toString().trim())) {
@@ -183,15 +183,15 @@ public class RegisterActivity extends AppCompatActivity {
         //inserisci nell'oggetto user le informazioni
         user.put("user_id", FirebaseAuth.getInstance().getUid());
         user.put("name", mName.getText().toString().trim());
-        user.put("sourname", mSourname.getText().toString().trim());
+        user.put("surname", mSurname.getText().toString().trim());
         user.put("email", mEmail.getText().toString().trim());
         user.put("phone", mPhone.getText().toString().trim());
         user.put("trader", mTrader.isChecked());
-        user.put("shopname", mShopname.getText().toString().trim());
+        user.put("shopName", mShopname.getText().toString().trim());
 
         //oggetti che verranno settati durante l'utilizzo dell'app
         user.put("delimited_area", null );
-        user.put("traderposition",null);
+        user.put("traderPosition",null);
 
 
         //push dell'oggeto su db
@@ -200,13 +200,13 @@ public class RegisterActivity extends AppCompatActivity {
         DocumentReference documentReference = mStore.collection("users").document(userID);
 
         documentReference.set(user).addOnSuccessListener(aVoid -> Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + user))
-                .addOnFailureListener(e -> System.out.println("onFaiulure: "+ e.toString()));
+                .addOnFailureListener(e -> System.out.println("onFailure: "+ e.toString()));
 
         Toast.makeText(RegisterActivity.this, "User, Created!", Toast.LENGTH_SHORT).show();
 
         finishAffinity();
 
-        UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSourname.getText().toString().trim(),mEmail.getText().toString().trim(),mPhone.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null,  null));
+        UserClient.setUser(new User( FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(),mSurname.getText().toString().trim(),mEmail.getText().toString().trim(),mPhone.getText().toString().trim(), mTrader.isChecked(),mShopname.getText().toString().trim(),null, null,  null));
 
         if(Objects.equals(user.get("trader"), true)){
             startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));

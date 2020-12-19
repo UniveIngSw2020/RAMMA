@@ -150,9 +150,9 @@ public class MyMapTrader extends MyMap{
 
                                             Marker costumer=mMap.addMarker(new MarkerOptions()
                                                     .position( new LatLng(
-                                                            UserClient.getUser().getTraderposition().getLatitude(),
-                                                            UserClient.getUser().getTraderposition().getLongitude()))
-                                                    .title(user.getName() + " " + user.getSourname())
+                                                            UserClient.getUser().getTraderPosition().getLatitude(),
+                                                            UserClient.getUser().getTraderPosition().getLongitude()))
+                                                    .title(user.getName() + " " + user.getSurname())
                                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1)));
 
                                             Run run=dc.getDocument().toObject(Run.class);
@@ -315,20 +315,20 @@ public class MyMapTrader extends MyMap{
     }
 
     private void setCameraView(GoogleMap googleMap){
-        double bottomBundary = mTrader.getTraderposition().getLatitude() - .01;
-        double leftBoundary = mTrader.getTraderposition().getLongitude() - .01;
-        double topBoundary = mTrader.getTraderposition().getLatitude()  + .01;
-        double rightBoundary = mTrader.getTraderposition().getLongitude() + .01;
+        double bottomBoundary = mTrader.getTraderPosition().getLatitude() - .01;
+        double leftBoundary = mTrader.getTraderPosition().getLongitude() - .01;
+        double topBoundary = mTrader.getTraderPosition().getLatitude()  + .01;
+        double rightBoundary = mTrader.getTraderPosition().getLongitude() + .01;
 
         LatLngBounds mMapBoundary = new LatLngBounds(
-                new LatLng(bottomBundary, leftBoundary),
+                new LatLng(bottomBoundary, leftBoundary),
                 new LatLng(topBoundary, rightBoundary)
         );
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
 
         Marker traderMarker = googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(mTrader.getTraderposition().getLatitude(), mTrader.getTraderposition().getLongitude()))
+                .position(new LatLng(mTrader.getTraderPosition().getLatitude(), mTrader.getTraderPosition().getLongitude()))
                 .title("Tu sei qui!"));
     }
 

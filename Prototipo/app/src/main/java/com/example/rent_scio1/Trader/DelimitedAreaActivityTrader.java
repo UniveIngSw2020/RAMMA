@@ -193,7 +193,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     }
 
     private void addNegozio(){
-        GeoPoint traderpos=UserClient.getUser().getTraderposition();
+        GeoPoint traderpos=UserClient.getUser().getTraderPosition();
         trader=mMap.addMarker(new MarkerOptions().position(new LatLng(traderpos.getLatitude(),traderpos.getLongitude())));
         trader.setTitle("NEGOZIO");
     }
@@ -303,10 +303,10 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     }
 
     private void setCameraView(GoogleMap googleMap){
-        double bottomBundary = mTrader.getTraderposition().getLatitude() - .01;
-        double leftBoundary = mTrader.getTraderposition().getLongitude() - .01;
-        double topBoundary = mTrader.getTraderposition().getLatitude() + .01;
-        double rightBoundary = mTrader.getTraderposition().getLongitude() + .01;
+        double bottomBundary = mTrader.getTraderPosition().getLatitude() - .01;
+        double leftBoundary = mTrader.getTraderPosition().getLongitude() - .01;
+        double topBoundary = mTrader.getTraderPosition().getLatitude() + .01;
+        double rightBoundary = mTrader.getTraderPosition().getLongitude() + .01;
 
         LatLngBounds mMapBoundary = new LatLngBounds(
                 new LatLng(bottomBundary, leftBoundary),

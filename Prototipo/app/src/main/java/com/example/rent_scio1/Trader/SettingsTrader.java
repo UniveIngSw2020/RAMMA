@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -16,19 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.SettingsActivityTextView;
 
 public class SettingsTrader extends AppCompatActivity {
 
     private static final String TAG = "SettingsTrader";
+    private Intent intentTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_trader);
 
+        intentTextView=new Intent(getApplicationContext(), SettingsActivityTextView.class);
+
         initViews();
         createListView_Personal_Info();
-
         createListView_Shop_Info();
 
     }
@@ -51,34 +55,37 @@ public class SettingsTrader extends AppCompatActivity {
         listView.setAdapter(arrayAdapter);
         listView.addHeaderView(tv);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listView.setOnItemClickListener((parent, view, position, id) -> {
 
-                switch(position){
-                    /*CAMBIA NOME*/
-                    case 1:
-                        Toast.makeText(getApplicationContext(), "Cambia nome selezionato", Toast.LENGTH_LONG).show();
-                        break;
-                    /*CAMBIA COGNOME*/
-                    case 2:
-                        Toast.makeText(getApplicationContext(), "Cambia cognome selezionato", Toast.LENGTH_LONG).show();
-                        break;
-                    /*CAMBIA EMAIL*/
-                    case 3:
-                        Toast.makeText(getApplicationContext(), "Cambia email selezionato", Toast.LENGTH_LONG).show();
-                        break;
-                    /*CAMBIA PASSWORD*/
-                    case 4:
-                        Toast.makeText(getApplicationContext(), "Cambia password selezionato", Toast.LENGTH_LONG).show();
-                        break;
-                    /*CAMBIA TELEFONO*/
-                    case 5:
-                        Toast.makeText(getApplicationContext(), "Cambia numero telefono selezionato", Toast.LENGTH_LONG).show();
-                        break;
+            switch(position){
+                /*CAMBIA NOME*/
+                case 1:
+                    intentTextView.putExtra("type","name");
+                    intentTextView.putExtra("textType","Setta il tuo nome");
+                    startActivity(intentTextView);
+                    break;
+                /*CAMBIA COGNOME*/
+                case 2:
+                    intentTextView.putExtra("type","surname");
+                    intentTextView.putExtra("textType","Setta il tuo cognome");
+                    startActivity(intentTextView);
+                    break;
+                /*CAMBIA EMAIL*/
+                case 3:
+                    Toast.makeText(getApplicationContext(), "Cambia mail selezionato", Toast.LENGTH_LONG).show();
+                    break;
+                /*CAMBIA PASSWORD*/
+                case 4:
+                    Toast.makeText(getApplicationContext(), "Cambia password selezionato", Toast.LENGTH_LONG).show();
+                    break;
+                /*CAMBIA TELEFONO*/
+                case 5:
+                    intentTextView.putExtra("type","phone");
+                    intentTextView.putExtra("textType","Setta il tuo numero di telefono");
+                    startActivity(intentTextView);
+                    break;
 
-                    default:
-                }
+                default:
             }
         });
     }
@@ -101,22 +108,21 @@ public class SettingsTrader extends AppCompatActivity {
         listView.setAdapter(arrayAdapter);
         listView.addHeaderView(tv);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listView.setOnItemClickListener((parent, view, position, id) -> {
 
-                switch(position){
-                    /*CAMBIA NOME*/
-                    case 1:
-                        Toast.makeText(getApplicationContext(), "Cambia nome negozio selezionato", Toast.LENGTH_LONG).show();
-                        break;
-                    /*POSIZIONE NEGOZIO*/
-                    case 2:
-                        Toast.makeText(getApplicationContext(), "Cambia posizione negozio selezionato", Toast.LENGTH_LONG).show();
-                        break;
+            switch(position){
+                /*CAMBIA NOME*/
+                case 1:
+                    intentTextView.putExtra("type","shopName");
+                    intentTextView.putExtra("textType","Setta il nome del tuo negozio");
+                    startActivity(intentTextView);
+                    break;
+                /*POSIZIONE NEGOZIO*/
+                case 2:
+                    startActivity(new Intent(getApplicationContext(),SetPositionActivityTrader.class));
+                    break;
 
-                    default:
-                }
+                default:
             }
         });
     }

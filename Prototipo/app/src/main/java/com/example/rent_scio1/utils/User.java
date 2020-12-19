@@ -15,8 +15,8 @@ public class User {
     private String email;
     private String phone;
     private Boolean trader;
-    private String shopname;
-    private GeoPoint traderposition;
+    private String shopName;
+    private GeoPoint traderPosition;
     private List<GeoPoint> delimited_area=null;
 
     private List<String> tokens;
@@ -24,16 +24,16 @@ public class User {
     public User(){}
 
 
-    public User(String user_id, String name, String sourname, String email, String phone, Boolean trader, String shopname, GeoPoint traderposition, List<GeoPoint> delimited_area, List<String> tokens) {
+    public User(String user_id, String name, String surname, String email, String phone, Boolean trader, String shopName, GeoPoint traderPosition, List<GeoPoint> delimited_area, List<String> tokens) {
 
         this.user_id = user_id;
         this.name = name;
-        this.surname = sourname;
+        this.surname = surname;
         this.email = email;
         this.phone = phone;
         this.trader = trader;
-        this.shopname = shopname;
-        this.traderposition = traderposition;
+        this.shopName = shopName;
+        this.traderPosition = traderPosition;
         this.delimited_area = delimited_area;
         this.tokens = tokens;
     }
@@ -45,8 +45,8 @@ public class User {
         this.email = o.email;
         this.phone = o.phone;
         this.trader = o.trader;
-        this.shopname = o.shopname;
-        this.traderposition = o.traderposition;
+        this.shopName = o.shopName;
+        this.traderPosition = o.traderPosition;
         this.delimited_area = o.delimited_area;
         this.tokens = o.tokens;
     }
@@ -67,12 +67,12 @@ public class User {
         this.name = name;
     }
 
-    public String getSourname() {
+    public String getSurname() {
         return surname;
     }
 
-    public void setSourname(String sourname) {
-        this.surname = sourname;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getEmail() {
@@ -95,24 +95,24 @@ public class User {
         this.trader = trader;
     }
 
-    public GeoPoint getTraderposition() {
-        return traderposition;
+    public GeoPoint getTraderPosition() {
+        return traderPosition;
     }
 
-    public void setTraderposition(GeoPoint traderposition) {
-        this.traderposition = traderposition;
+    public void setTraderPosition(GeoPoint traderPosition) {
+        this.traderPosition = traderPosition;
     }
 
     public Boolean getTrader() {
         return trader;
     }
 
-    public String getShopname() {
-        return shopname;
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setShopname(String shopname) {
-        this.shopname = shopname;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
     public void setTokens(List<String> tokens){
@@ -134,12 +134,18 @@ public class User {
     }
 
     public List<LatLng> getDelimited_areaLatLng(){
-        List<LatLng> latLngs = new ArrayList<>();
-        for (GeoPoint a: getDelimited_area()) {
-            latLngs.add( new LatLng(a.getLatitude(),a.getLongitude()));
+        if(delimited_area!=null){
+            List<LatLng> latLngs = new ArrayList<>();
+            for (GeoPoint a: getDelimited_area()) {
+                latLngs.add( new LatLng(a.getLatitude(),a.getLongitude()));
+            }
+            return latLngs;
         }
-        return latLngs;
+        else{
+            return null;
+        }
     }
+
     public void setDelimited_area(List<GeoPoint> delimited_area) {
         this.delimited_area = delimited_area;
     }
@@ -150,12 +156,12 @@ public class User {
         return "User{" +
                 "user_id='" + user_id + '\'' +
                 ", name='" + name + '\'' +
-                ", sourname='" + surname + '\'' +
+                ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", trader=" + trader +
-                ", shopname='" + shopname + '\'' +
-                ", traderposition=" + traderposition + '\'' +
+                ", shopName='" + shopName + '\'' +
+                ", traderPosition=" + traderPosition + '\'' +
                 '}';
     }
 

@@ -86,7 +86,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                             switch (dc.getType()) { //dc.getType()
                                 case ADDED:
                                     Log.e(TAG, "SWITCH ADD");
-                                    //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE ECONDERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
+                                    //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE CONfERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
                                     if(code.split(" ").length==3 && dc.getDocument().toObject(Run.class).getVehicle().equals(code.split(" ")[1])){
                                         Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));

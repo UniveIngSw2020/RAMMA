@@ -136,7 +136,7 @@ public class MyMapClient extends MyMap {
 
 
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader){
-                if(trader.getFirst().getDelimited_area() != null && marker.getPosition().equals(new LatLng(trader.getFirst().getTraderposition().getLatitude(), trader.getFirst().getTraderposition().getLongitude()))){
+                if(trader.getFirst().getDelimited_area() != null && marker.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))){
                     int col = Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.2f, 1.0f });
                     trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
                     trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
@@ -217,12 +217,12 @@ public class MyMapClient extends MyMap {
             //Random rnd = new Random();
             //int col = rnd.nextInt(360);
             //Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
-            if (trader.getFirst().getTraderposition() != null) {
+            if (trader.getFirst().getTraderPosition() != null) {
                 getmMap().addMarker(new MarkerOptions()
-                        .position(new LatLng(trader.getFirst().getTraderposition().getLatitude(), trader.getFirst().getTraderposition().getLongitude()))
-                        .title(trader.getFirst().getShopname())
+                        .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
+                        .title(trader.getFirst().getShopName())
                         .icon(BitmapDescriptorFactory.defaultMarker(trader.getSecond().getFirst()))
-                        .snippet("Negozio di: " + trader.getFirst().getSourname() + " " + trader.getFirst().getName()));
+                        .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName()));
             }
 
             List<LatLng> latLngs = new ArrayList<>();

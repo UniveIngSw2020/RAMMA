@@ -61,7 +61,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/sourname"
+                android:id="@+id/surname"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_marginStart="50dp"
@@ -100,7 +100,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/password_register"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sourname" />
+                app:layout_constraintTop_toBottomOf="@+id/surname" />
 
             <EditText
                 android:id="@+id/name"
@@ -118,7 +118,7 @@
                 android:inputType="textPersonName"
                 android:textColor="@color/teal_200"
                 android:textColorHint="@color/text"
-                app:layout_constraintBottom_toTopOf="@+id/sourname"
+                app:layout_constraintBottom_toTopOf="@+id/surname"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/check_Trader" />

@@ -162,7 +162,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
                                                 if (user1.getTrader()) {
-                                                    if (user1.getTraderposition() == null)
+                                                    if (user1.getTraderPosition() == null)
                                                         startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
                                                     else
                                                         startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));

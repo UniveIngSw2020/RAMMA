@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -16,13 +17,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.SettingsActivityTextView;
 
 public class SettingsCustomer extends AppCompatActivity {
+
+    private Intent intentTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_customer);
+        intentTextView=new Intent(getApplicationContext(), SettingsActivityTextView.class);
 
         initViews();
         createListView_Personal_Info();
@@ -54,11 +59,15 @@ public class SettingsCustomer extends AppCompatActivity {
                 switch(position){
                     /*CAMBIA NOME*/
                     case 1:
-                        Toast.makeText(getApplicationContext(), "Cambia nome selezionato", Toast.LENGTH_LONG).show();
+                        intentTextView.putExtra("type","name");
+                        intentTextView.putExtra("textType","Setta il tuo nome");
+                        startActivity(intentTextView);
                         break;
                     /*CAMBIA COGNOME*/
                     case 2:
-                        Toast.makeText(getApplicationContext(), "Cambia cognome selezionato", Toast.LENGTH_LONG).show();
+                        intentTextView.putExtra("type","surname");
+                        intentTextView.putExtra("textType","Setta il tuo cognome");
+                        startActivity(intentTextView);
                         break;
                     /*CAMBIA EMAIL*/
                     case 3:
@@ -70,7 +79,9 @@ public class SettingsCustomer extends AppCompatActivity {
                         break;
                     /*CAMBIA TELEFONO*/
                     case 5:
-                        Toast.makeText(getApplicationContext(), "Cambia numero telefono selezionato", Toast.LENGTH_LONG).show();
+                        intentTextView.putExtra("type","phone");
+                        intentTextView.putExtra("textType","Setta il tuo numero di telefono");
+                        startActivity(intentTextView);
                         break;
                     /*CAMBIO AVATAR*/
                     case 6:

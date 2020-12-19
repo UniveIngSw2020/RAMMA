@@ -168,7 +168,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         getTrader.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                 User u=new User(document.toObject(User.class));
-                if(u.getTraderposition()!=null){
+                if(u.getTraderPosition()!=null){
                     Random rnd = new Random();
                     listTrader.add(new Pair<>(u, new Pair<>((float) rnd.nextInt(360), null)));
                 }
