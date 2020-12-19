@@ -1,5 +1,6 @@
 package com.example.rent_scio1.utils.Settings;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,6 +10,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,12 +25,20 @@ import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
 public class SettingsActivityTextView extends AppCompatActivity {
 
     private Intent intent;
+    private static final String TAG = "SettingsActivityTextView";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +88,23 @@ public class SettingsActivityTextView extends AppCompatActivity {
                 editText.setText(user.getShopName());
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
                 break;
+            case "email":
+                format = "Email";
+                editText.setText(user.getEmail());
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                break;
+            case "password":
+                format = "Password";
+                editText.setHint("Password");
+                editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                break;
         }
 
         //setto cosa deve fare il tasto conferma
         Button button=findViewById(R.id.settings_text_view_confirm);
         String finalFormat = format;
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), user.getUser_id()); // Current Login Credentials \\
         button.setOnClickListener(v -> {
             //cambio il dato dentro l'oggetto
             switch (type){
@@ -97,11 +120,61 @@ public class SettingsActivityTextView extends AppCompatActivity {
                 case "shopName":
                     user.setShopName(editText.getText().toString());
                     break;
+                case "email":
+
+                   // FirebaseAuth.getInstance().getCurrentUser().updateEmail(user.getEmail());
+
+
+                    // Get auth credentials from the user for re-authentication
+
+                    // Prompt the user to re-provide their sign-in credentials
+                    u.reauthenticate(credential)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d(TAG, "User re-authenticated.");
+                                    user.setEmail(editText.getText().toString());
+                                    u.updateEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d(TAG, "User email address updated.");
+                                                    }
+                                                }
+                                            });
+                                }
+                            });
+
+                    break;
+                case "password":
+                    //user.setUser_id(editText.getText().toString());
+                    //FirebaseAuth.getInstance().getCurrentUser().updatePassword(user.getEmail());
+
+                    u.reauthenticate(credential)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    u.updatePassword(editText.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.e(TAG, "Password updated");
+                                                user.setUser_id(FirebaseAuth.getInstance().getUid());
+                                            } else {
+                                                Log.e(TAG, "Error password not updated");
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+
+                    break;
             }
 
             //richiamo metodo che aggiorna il DB
             SettingsUtil.updateAttribute("users", user.getUser_id(), type, editText.getText().toString(), o -> {
-                Toast.makeText(getApplicationContext(), finalFormat + " cambiato correttamente.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), finalFormat + " cambiato/a correttamente.", Toast.LENGTH_LONG).show();
                 startActivity(intent);
 
             });

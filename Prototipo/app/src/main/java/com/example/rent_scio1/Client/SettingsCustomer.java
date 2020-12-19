@@ -29,7 +29,7 @@ public class SettingsCustomer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_customer);
-        intentTextView=new Intent(getApplicationContext(), SettingsActivityTextView.class);
+
 
         initViews();
         createListView_Personal_Info();
@@ -57,41 +57,47 @@ public class SettingsCustomer extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                intentTextView = new Intent(getApplicationContext(), SettingsActivityTextView.class);
                 switch(position){
                     /*CAMBIA NOME*/
                     case 1:
                         intentTextView.putExtra("type","name");
-                        intentTextView.putExtra("textType","Scrivi il tuo nome!");
-                        startActivity(intentTextView);
+                        intentTextView.putExtra("textType","Scrivi il tuo nome");
+                        //startActivity(intentTextView);
                         break;
                     /*CAMBIA COGNOME*/
                     case 2:
                         intentTextView.putExtra("type","surname");
-                        intentTextView.putExtra("textType","Scrivi il tuo cognome!");
-                        startActivity(intentTextView);
+                        intentTextView.putExtra("textType","Scrivi il tuo cognome");
+                        //startActivity(intentTextView);
                         break;
                     /*CAMBIA EMAIL*/
                     case 3:
-                        Toast.makeText(getApplicationContext(), "Cambia email selezionato", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Cambia email selezionato", Toast.LENGTH_LONG).show();
+                        intentTextView.putExtra("type","email");
+                        intentTextView.putExtra("textType","Scrivi la tua email");
+                        //startActivity(intentTextView);
                         break;
                     /*CAMBIA PASSWORD*/
                     case 4:
-                        Toast.makeText(getApplicationContext(), "Cambia password selezionato", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Cambia password selezionato", Toast.LENGTH_LONG).show();
+                        intentTextView.putExtra("type","password");
+                        intentTextView.putExtra("textType","Scrivi la tua password");
+                        //startActivity(intentTextView);
                         break;
                     /*CAMBIA TELEFONO*/
                     case 5:
                         intentTextView.putExtra("type","phone");
-                        intentTextView.putExtra("textType","Scrivi il tuo numero di telefono!");
-                        startActivity(intentTextView);
+                        intentTextView.putExtra("textType","Scrivi il tuo numero di telefono");
+                        //startActivity(intentTextView);
                         break;
                     /*CAMBIO AVATAR*/
                     case 6:
-                        startActivity(new Intent(getApplicationContext(),SetAvatarActivity.class));
+                        intentTextView = new Intent(getApplicationContext(),SetAvatarActivity.class);
                         break;
-
                     default:
                 }
+                startActivity(intentTextView);
             }
         });
     }
