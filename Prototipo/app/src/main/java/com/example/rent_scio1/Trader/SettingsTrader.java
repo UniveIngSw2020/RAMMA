@@ -60,13 +60,13 @@ public class SettingsTrader extends AppCompatActivity {
                 /*CAMBIA NOME*/
                 case 1:
                     intentTextView.putExtra("type","name");
-                    intentTextView.putExtra("textType","Setta il tuo nome");
+                    intentTextView.putExtra("textType","Scrivi il tuo nome!");
                     startActivity(intentTextView);
                     break;
                 /*CAMBIA COGNOME*/
                 case 2:
                     intentTextView.putExtra("type","surname");
-                    intentTextView.putExtra("textType","Setta il tuo cognome");
+                    intentTextView.putExtra("textType","Scrivi il tuo cognome!");
                     startActivity(intentTextView);
                     break;
                 /*CAMBIA EMAIL*/
@@ -80,7 +80,7 @@ public class SettingsTrader extends AppCompatActivity {
                 /*CAMBIA TELEFONO*/
                 case 5:
                     intentTextView.putExtra("type","phone");
-                    intentTextView.putExtra("textType","Setta il tuo numero di telefono");
+                    intentTextView.putExtra("textType","Scrivi il tuo numero di telefono!");
                     startActivity(intentTextView);
                     break;
 
@@ -113,7 +113,7 @@ public class SettingsTrader extends AppCompatActivity {
                 /*CAMBIA NOME*/
                 case 1:
                     intentTextView.putExtra("type","shopName");
-                    intentTextView.putExtra("textType","Setta il nome del tuo negozio");
+                    intentTextView.putExtra("textType","Scrivi il nome del tuo negozio!");
                     startActivity(intentTextView);
                     break;
                 /*POSIZIONE NEGOZIO*/

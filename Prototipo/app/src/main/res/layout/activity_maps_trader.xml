@@ -21,6 +21,10 @@
             android:layout_height="wrap_content"
             android:background="@color/text"
             android:id="@+id/toolbar_map_trader"
+            app:title="Mappa"
+            android:theme="@style/ToolbarTheme_inverted"
+            app:titleTextColor="@color/back"
+            app:subtitleTextAppearance="@style/Style_TextView"
             android:elevation="5dp" />
 
 
@@ -47,6 +51,7 @@
         android:layout_gravity="start"
         app:itemIconPadding="15dp"
         android:layout_marginStart="0dp"
+        app:itemTextColor="@color/back"
         app:itemTextAppearance="@style/Style_TextView"
         app:itemIconTint="@color/back"
         app:itemIconSize="25dp"

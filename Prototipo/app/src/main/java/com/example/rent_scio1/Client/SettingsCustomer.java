@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
 
+import java.util.Objects;
+
 public class SettingsCustomer extends AppCompatActivity {
 
     private Intent intentTextView;
@@ -60,13 +62,13 @@ public class SettingsCustomer extends AppCompatActivity {
                     /*CAMBIA NOME*/
                     case 1:
                         intentTextView.putExtra("type","name");
-                        intentTextView.putExtra("textType","Setta il tuo nome");
+                        intentTextView.putExtra("textType","Scrivi il tuo nome!");
                         startActivity(intentTextView);
                         break;
                     /*CAMBIA COGNOME*/
                     case 2:
                         intentTextView.putExtra("type","surname");
-                        intentTextView.putExtra("textType","Setta il tuo cognome");
+                        intentTextView.putExtra("textType","Scrivi il tuo cognome!");
                         startActivity(intentTextView);
                         break;
                     /*CAMBIA EMAIL*/
@@ -80,7 +82,7 @@ public class SettingsCustomer extends AppCompatActivity {
                     /*CAMBIA TELEFONO*/
                     case 5:
                         intentTextView.putExtra("type","phone");
-                        intentTextView.putExtra("textType","Setta il tuo numero di telefono");
+                        intentTextView.putExtra("textType","Scrivi il tuo numero di telefono!");
                         startActivity(intentTextView);
                         break;
                     /*CAMBIO AVATAR*/
@@ -97,7 +99,7 @@ public class SettingsCustomer extends AppCompatActivity {
     public void initViews(){
         Toolbar settings_toolbar = findViewById(R.id.toolbar_settings_customer);
         setSupportActionBar(settings_toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
