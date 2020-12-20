@@ -3,10 +3,13 @@ package com.example.rent_scio1.utils.Settings;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -42,6 +45,16 @@ public class SetAvatarActivity extends AppCompatActivity {
     Bitmap bitmapImage;
     ImageView imageView;
 
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
 
     private void loadPrev() throws IOException {
 
@@ -60,7 +73,12 @@ public class SetAvatarActivity extends AppCompatActivity {
             imageView.setImageBitmap(bitmapImage);
 
         }).addOnFailureListener(exception -> {
-            bitmapImage=BitmapFactory.decodeResource(getResources(), R.drawable.logo1);
+            if(UserClient.getUser().getTrader()){
+                bitmapImage=getBitmap(R.drawable.negozio_vettorizzato);
+            }
+            else{
+                bitmapImage=getBitmap(R.drawable.ic_logo_vettorizzato);
+            }
             imageView.setImageBitmap( bitmapImage );
         });
 
@@ -74,7 +92,7 @@ public class SetAvatarActivity extends AppCompatActivity {
 
         avatarRef.delete()
                 .addOnSuccessListener(aVoid -> Toast.makeText(getApplicationContext(),"avatar personalizzato eliminato",Toast.LENGTH_LONG).show())
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"impossibile eliminare avatar personalizzato",Toast.LENGTH_LONG).show());
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"Utilizzi già l'avatar di default",Toast.LENGTH_LONG).show());
 
     }
 
@@ -100,7 +118,13 @@ public class SetAvatarActivity extends AppCompatActivity {
         Button delete_avatar = findViewById(R.id.elimina_avatar);
         delete_avatar.setOnClickListener(v -> {
 
-            imageView.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.logo1));
+            if(UserClient.getUser().getTrader()){
+                imageView.setImageBitmap(getBitmap(R.drawable.negozio_vettorizzato));
+            }
+            else {
+                imageView.setImageBitmap(getBitmap(R.drawable.ic_logo_vettorizzato));
+            }
+
             bitmapImage=null;
             deletePrev();
 

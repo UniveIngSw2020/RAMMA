@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.Settings.SetAvatarActivity;
 import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
 
 public class SettingsTrader extends AppCompatActivity {
@@ -122,7 +123,8 @@ public class SettingsTrader extends AppCompatActivity {
                     break;
                 /*CAMBIO AVATAR NEGOZIO*/
                 case 3:
-                    /*TODO: CAMBIO AVATAR NEGOZIO.*/
+                    startActivity(new Intent(getApplicationContext(), SetAvatarActivity.class));
+                    break;
 
                 default:
             }
