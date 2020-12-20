@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.NewVehicleActivityTrader;
+import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.UserClient;
 
 
@@ -44,6 +45,7 @@ public class SetAvatarActivity extends AppCompatActivity {
     private static final int RESULT_LOAD_IMAGE = 1;
     Bitmap bitmapImage;
     ImageView imageView;
+    boolean isDefault=true;
 
     private Bitmap getBitmap(int drawableRes) {
         Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
@@ -71,8 +73,10 @@ public class SetAvatarActivity extends AppCompatActivity {
 
             bitmapImage = BitmapFactory.decodeFile(localFile.getPath());
             imageView.setImageBitmap(bitmapImage);
+            isDefault=false;
 
         }).addOnFailureListener(exception -> {
+
             if(UserClient.getUser().getTrader()){
                 bitmapImage=getBitmap(R.drawable.negozio_vettorizzato);
             }
@@ -80,6 +84,7 @@ public class SetAvatarActivity extends AppCompatActivity {
                 bitmapImage=getBitmap(R.drawable.ic_logo_vettorizzato);
             }
             imageView.setImageBitmap( bitmapImage );
+            isDefault=true;
         });
 
     }
@@ -127,6 +132,7 @@ public class SetAvatarActivity extends AppCompatActivity {
 
             bitmapImage=null;
             deletePrev();
+            isDefault=true;
 
         });
 
@@ -135,20 +141,35 @@ public class SetAvatarActivity extends AppCompatActivity {
         Button buttonConfirm =  findViewById(R.id.confirm_changes_picture);
         buttonConfirm.setOnClickListener(v -> {
 
-            if(bitmapImage!=null) {
+            if(!isDefault) {
 
                 //upload su db
                 uploadImage(o -> {
                     Toast.makeText(getApplicationContext(),"avatar personalizzato cambiato",Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getApplicationContext(), SettingsCustomer.class);
+
+                    Intent intent;
+                    if(UserClient.getUser().getTrader()){
+                        intent = new Intent(getApplicationContext(), SettingsTrader.class);
+                    }
+                    else{
+                        intent = new Intent(getApplicationContext(), SettingsCustomer.class);
+                    }
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+
                 });
 
             }
             else {
                 Toast.makeText(getApplicationContext(),"avatar personalizzato ripristinato",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), SettingsCustomer.class);
+
+                Intent intent;
+                if(UserClient.getUser().getTrader()){
+                    intent = new Intent(getApplicationContext(), SettingsTrader.class);
+                }
+                else{
+                    intent = new Intent(getApplicationContext(), SettingsCustomer.class);
+                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
@@ -175,6 +196,7 @@ public class SetAvatarActivity extends AppCompatActivity {
 
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
+            photoPickerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityForResult(photoPickerIntent, RESULT_LOAD_IMAGE);
             return true;
         } else
@@ -195,10 +217,13 @@ public class SetAvatarActivity extends AppCompatActivity {
 
                 imageView.setImageBitmap(bitmapImage);
 
+                isDefault=false;
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Qualcosa è andato storto... scegli un'altra immagine", Toast.LENGTH_LONG).show();
             }
+
 
         }else {
             Toast.makeText(this, "Non hai selezionato nulla",Toast.LENGTH_LONG).show();
