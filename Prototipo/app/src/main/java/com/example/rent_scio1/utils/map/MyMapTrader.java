@@ -1,6 +1,7 @@
 package com.example.rent_scio1.utils.map;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.CountDownTimer;
@@ -131,6 +132,12 @@ public class MyMapTrader extends MyMap{
         }*/
     //}
 
+    public Bitmap resizeMapIcons(String filePath, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeFile(filePath);
+
+        return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+    }
+
     private void searchCustomers() {
         FirebaseFirestore.getInstance().collection("run")
                 .whereEqualTo("trader", UserClient.getUser().getUser_id())
@@ -162,80 +169,86 @@ public class MyMapTrader extends MyMap{
                                             //
                                             StorageReference islandRef = mStorageRef.child("users/" + user.getUser_id() + "/avatar.jpg");
 
+                                            MarkerOptions markerOptions=new MarkerOptions()
+                                                    .position( new LatLng(
+                                                            UserClient.getUser().getTraderPosition().getLatitude(),
+                                                            UserClient.getUser().getTraderPosition().getLongitude()))
+                                                    .title(user.getName() + " " + user.getSurname());
+
                                             File localFile;
+
                                             try {
                                                 localFile = File.createTempFile("images", "jpg");
                                                 islandRef.getFile(localFile)
-                                                        .addOnSuccessListener(taskSnapshot -> Log.e(TAG, "caricata"))
+                                                        .addOnSuccessListener(taskSnapshot -> {
+
+                                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),200,200)));
+                                                            Marker costumer=mMap.addMarker(markerOptions);
+
+                                                            Run run=dc.getDocument().toObject(Run.class);
+                                                            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+
+                                                            new CountDownTimer(time,1000){
+
+                                                                @Override
+                                                                public void onTick(long millisUntilFinished) {
+                                                                    Integer minutes=(int) (millisUntilFinished / 1000) / 60;
+                                                                    Integer seconds=(int) (millisUntilFinished / 1000) % 60;
+
+
+                                                                    if(minutes>=60){
+                                                                        int hours=minutes/60;
+                                                                        minutes=minutes-(hours*60);
+
+                                                                        String hoursText=""+hours;
+                                                                        if(hours<10){
+
+                                                                            hoursText="0"+hoursText;
+                                                                        }
+
+                                                                        String minutesText=""+minutes;
+                                                                        if(minutes<10){
+
+                                                                            minutesText="0"+minutesText;
+                                                                        }
+
+                                                                        costumer.setSnippet( ((float)run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
+                                                                    }
+                                                                    else{
+
+                                                                        String minutesText=""+minutes;
+                                                                        if(minutes<10){
+
+                                                                            minutesText="0"+minutesText;
+                                                                        }
+
+                                                                        costumer.setSnippet(((float)run.getSpeed())+" "+minutesText+":"+seconds );
+                                                                    }
+
+                                                                    if(costumer.isInfoWindowShown())
+                                                                        costumer.showInfoWindow();
+                                                                }
+
+                                                                @Override
+                                                                public void onFinish() {
+                                                                    int minutes=0;
+                                                                    int seconds=0;
+                                                                    costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
+
+                                                                    if(costumer.isInfoWindowShown())
+                                                                        costumer.showInfoWindow();
+                                                                }
+                                                            }.start();
+
+                                                            costumer.setVisible(false);
+
+                                                            listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
+
+                                                            Log.d(TAG, document.getId() + " => " + document.getData());
+                                                                }
+                                                        )
                                                         .addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
 
-                                                Marker costumer=mMap.addMarker(new MarkerOptions()
-                                                        .position( new LatLng(
-                                                                UserClient.getUser().getTraderPosition().getLatitude(),
-                                                                UserClient.getUser().getTraderPosition().getLongitude()))
-                                                        .title(user.getName() + " " + user.getSurname())
-                                                        .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeFile(localFile.getPath()))));
-
-                                                Run run=dc.getDocument().toObject(Run.class);
-                                                long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
-
-                                                new CountDownTimer(time,1000){
-
-                                                    @Override
-                                                    public void onTick(long millisUntilFinished) {
-                                                        Integer minutes=(int) (millisUntilFinished / 1000) / 60;
-                                                        Integer seconds=(int) (millisUntilFinished / 1000) % 60;
-
-
-                                                        if(minutes>=60){
-                                                            int hours=minutes/60;
-                                                            minutes=minutes-(hours*60);
-
-                                                            String hoursText=""+hours;
-                                                            if(hours<10){
-
-                                                                hoursText="0"+hoursText;
-                                                            }
-
-                                                            String minutesText=""+minutes;
-                                                            if(minutes<10){
-
-                                                                minutesText="0"+minutesText;
-                                                            }
-
-                                                            costumer.setSnippet( ((float)run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
-                                                        }
-                                                        else{
-
-                                                            String minutesText=""+minutes;
-                                                            if(minutes<10){
-
-                                                                minutesText="0"+minutesText;
-                                                            }
-
-                                                            costumer.setSnippet(((float)run.getSpeed())+" "+minutesText+":"+seconds );
-                                                        }
-
-                                                        if(costumer.isInfoWindowShown())
-                                                            costumer.showInfoWindow();
-                                                    }
-
-                                                    @Override
-                                                    public void onFinish() {
-                                                        int minutes=0;
-                                                        int seconds=0;
-                                                        costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
-
-                                                        if(costumer.isInfoWindowShown())
-                                                            costumer.showInfoWindow();
-                                                    }
-                                                }.start();
-
-                                                costumer.setVisible(false);
-
-                                                listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
-
-                                                Log.d(TAG, document.getId() + " => " + document.getData());
 
                                             } catch (IOException ioException) {
                                                 Log.e(TAG, "Errore nel caricamento dell'immaigne");
