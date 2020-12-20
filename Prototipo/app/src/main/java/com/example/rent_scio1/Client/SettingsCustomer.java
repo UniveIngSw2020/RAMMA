@@ -14,9 +14,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.Settings.SetAvatarActivity;
 import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
 
 import java.util.Objects;
@@ -93,7 +93,7 @@ public class SettingsCustomer extends AppCompatActivity {
                         break;
                     /*CAMBIO AVATAR*/
                     case 6:
-                        intentTextView = new Intent(getApplicationContext(),SetAvatarActivity.class);
+                        intentTextView = new Intent(getApplicationContext(), SetAvatarActivity.class);
                         break;
                     default:
                 }

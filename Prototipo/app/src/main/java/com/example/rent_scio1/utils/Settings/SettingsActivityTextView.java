@@ -103,8 +103,10 @@ public class SettingsActivityTextView extends AppCompatActivity {
         //setto cosa deve fare il tasto conferma
         Button button=findViewById(R.id.settings_text_view_confirm);
         String finalFormat = format;
+
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
         AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), user.getUser_id()); // Current Login Credentials \\
+
         button.setOnClickListener(v -> {
             //cambio il dato dentro l'oggetto
             switch (type){
@@ -129,20 +131,14 @@ public class SettingsActivityTextView extends AppCompatActivity {
 
                     // Prompt the user to re-provide their sign-in credentials
                     u.reauthenticate(credential)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Log.d(TAG, "User re-authenticated.");
-                                    user.setEmail(editText.getText().toString());
-                                    u.updateEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Log.d(TAG, "User email address updated.");
-                                                    }
-                                                }
-                                            });
-                                }
+                            .addOnCompleteListener(task -> {
+                                Log.d(TAG, "User re-authenticated.");
+                                user.setEmail(editText.getText().toString());
+                                u.updateEmail(user.getEmail()).addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        Log.d(TAG, "User email address updated.");
+                                    }
+                                });
                             });
 
                     break;
@@ -154,15 +150,12 @@ public class SettingsActivityTextView extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    u.updatePassword(editText.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Log.e(TAG, "Password updated");
-                                                user.setUser_id(FirebaseAuth.getInstance().getUid());
-                                            } else {
-                                                Log.e(TAG, "Error password not updated");
-                                            }
+                                    u.updatePassword(editText.getText().toString()).addOnCompleteListener(task12 -> {
+                                        if (task12.isSuccessful()) {
+                                            Log.e(TAG, "Password updated");
+                                            user.setUser_id(FirebaseAuth.getInstance().getUid());
+                                        } else {
+                                            Log.e(TAG, "Error password not updated");
                                         }
                                     });
                                 }

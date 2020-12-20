@@ -5,9 +5,9 @@
     android:layout_height="fill_parent">
 
     <ImageView
-        android:id="@+id/imgView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/avatar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_weight="1"
         android:contentDescription="TODO" />
 
@@ -18,5 +18,12 @@
         android:layout_weight="0"
         android:text="@string/load_picture"
         android:layout_gravity="center" />
+
+    <Button
+        android:id="@+id/confirm_changes_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Button" />
 
 </LinearLayout>
