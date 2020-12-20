@@ -31,15 +31,15 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:layout_marginTop="20dp"
-        android:contentDescription="TODO"
-        android:padding="20dp"
-        android:scaleType="centerCrop"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/elimina_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_settings_avatar"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:contentDescription="@string/immagine_avatar" />
 
     <Button
         android:id="@+id/elimina_avatar"
