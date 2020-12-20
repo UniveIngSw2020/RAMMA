@@ -135,6 +135,8 @@
     <!-- PROVO -->
     <string name="server_key" translatable="false">AAAABf5BCzc:AAAABf5BCzc:APA91bF5G0ERO7Rdg6NYLSQ6ynFlAEhjNboCgSbraP9L85FdO9M62467gaWTLfmvrSggrcVEdKeOLnzGKtaZMgRrfnTPgc9eVSICMDRJLiZNAXFnCOYTOMg7rRqkru5yFwMV3KcDE6Lr</string>
     <string name="load_picture">Load Picture</string>
+    <string name="carica_foto">Carica foto</string>
+    <string name="conferma_il_tuo_avatar">Conferma il tuo avatar</string>
 
 
 </resources>

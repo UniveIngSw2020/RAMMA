@@ -1,29 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    android:background="@color/back">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_settings_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text"
+        android:theme="@style/ToolbarTheme_inverted"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Personalizza il tuo avatar"
+        app:menu="@menu/toolbar_settings_avatar_client"
+        app:titleTextAppearance="@style/Style_TextView"
+        app:titleTextColor="@color/back" />
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_weight="1"
-        android:contentDescription="TODO" />
-
-    <Button
-        android:id="@+id/buttonLoadPicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:contentDescription="TODO"
+        app:layout_constraintBottom_toTopOf="@+id/elimina_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/elimina_avatar"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="80dp"
         android:layout_weight="0"
-        android:text="@string/load_picture"
-        android:layout_gravity="center" />
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/comfortaa_regular"
+        android:text="Utilizza avatar di default"
+        android:textColor="@color/back"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_changes_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/confirm_changes_picture"
-        android:layout_width="match_parent"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
         android:layout_weight="1"
-        android:text="Button" />
+        android:fontFamily="@font/comfortaa_regular"
+        android:textColor="@color/back"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/conferma_il_tuo_avatar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
