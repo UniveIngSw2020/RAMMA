@@ -10,15 +10,18 @@
     android:clickable="true"
     android:onClick="hideKeyboard"
     android:focusableInTouchMode="true"
-    android:focusable="true">
+    android:focusable="true"
+    app:autoSizeTextType="uniform">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_login"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        android:theme="@style/ToolbarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/back"
-        android:theme="@style/ToolbarTheme"/>
+        app:titleTextColor="@color/back" />
 
     <EditText
         android:id="@+id/email_login"
@@ -111,6 +114,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/comfortaa_regular"
+        app:autoSizeTextType="uniform"
         android:text="@string/inserisci_la_tua_email_e_la_password"
         android:textAlignment="center"
         android:textColor="@color/text"

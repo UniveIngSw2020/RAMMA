@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_activity_register"
         android:layout_below="@+id/toolbar_register"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
         android:clickable="true"
         android:fillViewport="true"
         android:focusable="true"
@@ -184,10 +186,10 @@
                 android:textColor="@color/teal_200"
                 android:textColorHint="@color/text"
                 android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/shopName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/shopName"
                 app:layout_constraintTop_toBottomOf="@+id/passwordregister_confirm" />
 
             <EditText
@@ -207,24 +209,9 @@
                 android:textColorHint="@color/text"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/textview_Activity_register"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/phone_register" />
-
-            <TextView
-                android:id="@+id/textview_Activity_register"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/back"
-                android:paddingTop="20dp"
-                android:textColor="@color/back"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/phone_register" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
