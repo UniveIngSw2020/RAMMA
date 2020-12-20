@@ -240,13 +240,16 @@ public class MyMapClient extends MyMap {
                 File localFile;
                 try {
                     localFile = File.createTempFile("images", "jpg");
-                    islandRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> Log.e(TAG, "caricata")).addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
+                    islandRef.getFile(localFile)
+                            .addOnSuccessListener(taskSnapshot ->
 
-                    getmMap().addMarker(new MarkerOptions()
-                            .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
-                            .title(trader.getFirst().getShopName())
-                            .icon( BitmapDescriptorFactory.fromBitmap( resizeMapIcons(localFile.getPath(),100,100)) )
-                            .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName()));
+                                    getmMap().addMarker(new MarkerOptions()
+                                    .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
+                                    .title(trader.getFirst().getShopName())
+                                    .icon( BitmapDescriptorFactory.fromBitmap( resizeMapIcons(localFile.getPath(),100,100)) )
+                                    .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName())))
+
+                            .addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
 
                 } catch (IOException e) {
                     e.printStackTrace();
