@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.Settings.SetAvatarActivity;
 import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
 
 public class SettingsTrader extends AppCompatActivity {
@@ -100,7 +101,7 @@ public class SettingsTrader extends AppCompatActivity {
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv.setTypeface(typeface);
 
-        String[] items = { "Cambia Nome Negozio", "Cambia la posizione del negozio"};
+        String[] items = { "Cambia Nome Negozio", "Cambia la posizione del negozio", "Cambia avatar del negozio"};
         ListView listView = findViewById(R.id.listview_settings_shop_info);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,R.layout.format_info_settings, items);
 
@@ -119,6 +120,10 @@ public class SettingsTrader extends AppCompatActivity {
                 /*POSIZIONE NEGOZIO*/
                 case 2:
                     startActivity(new Intent(getApplicationContext(),SetPositionActivityTrader.class));
+                    break;
+                /*CAMBIO AVATAR NEGOZIO*/
+                case 3:
+                    startActivity(new Intent(getApplicationContext(), SetAvatarActivity.class));
                     break;
 
                 default:
