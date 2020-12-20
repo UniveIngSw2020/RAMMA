@@ -19,17 +19,20 @@ import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.NewVehicleActivityTrader;
 import com.example.rent_scio1.utils.UserClient;
-import com.example.rent_scio1.utils.Vehicle;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
+
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -39,20 +42,70 @@ public class SetAvatarActivity extends AppCompatActivity {
     Bitmap bitmapImage;
     ImageView imageView;
 
+
+    private void loadPrev() throws IOException {
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReference();
+
+        StorageReference avatarRef = storageRef.child("users/"+UserClient.getUser().getUser_id()+"/avatar.jpg");
+
+        File localFile = File.createTempFile( UserClient.getUser().getUser_id(), "jpg");
+
+
+        avatarRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+
+            bitmapImage = BitmapFactory.decodeFile(localFile.getPath());
+            imageView.setImageBitmap(bitmapImage);
+
+        }).addOnFailureListener(exception -> {
+            bitmapImage=BitmapFactory.decodeResource(getResources(), R.drawable.logo1);
+            imageView.setImageBitmap( bitmapImage );
+        });
+
+    }
+
+    private void deletePrev() {
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference avatarRef = storageRef.child("users/"+UserClient.getUser().getUser_id()+"/avatar.jpg");
+
+        avatarRef.delete()
+                .addOnSuccessListener(aVoid -> Toast.makeText(getApplicationContext(),"avatar personalizzato eliminato",Toast.LENGTH_LONG).show())
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"impossibile eliminare avatar personalizzato",Toast.LENGTH_LONG).show());
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_avatar);
 
+
         imageView=(ImageView)findViewById(R.id.avatar);
+
+        //prendi l'avatar settato precedentemente
+        try {
+            loadPrev();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         initViews();
 
-        /*TODO: BOTTONE PER ELIMINA AVATAR.*/
+
+        /*elimina avatar*/
         Button delete_avatar = findViewById(R.id.elimina_avatar);
         delete_avatar.setOnClickListener(v -> {
 
-            /*INSERIRE CODICE PER ELIMINA AVATAR*/
+            imageView.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.logo1));
+            bitmapImage=null;
+            deletePrev();
+
         });
+
 
         //setto il comportamento del bottone conferma
         Button buttonConfirm =  findViewById(R.id.confirm_changes_picture);
@@ -60,19 +113,20 @@ public class SetAvatarActivity extends AppCompatActivity {
 
             if(bitmapImage!=null) {
 
-                //aggiorno l'oggetto
-                UserClient.getUser().setAvatar(bitmapImage);
-
+                //upload su db
                 uploadImage(o -> {
+                    Toast.makeText(getApplicationContext(),"avatar personalizzato cambiato",Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), SettingsCustomer.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 });
 
-
             }
-            else{
-                Toast.makeText(getApplicationContext(),"Carica prima un'immagine!",Toast.LENGTH_LONG).show();
+            else {
+                Toast.makeText(getApplicationContext(),"avatar personalizzato ripristinato",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), SettingsCustomer.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
 
