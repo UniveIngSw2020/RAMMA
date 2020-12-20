@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
@@ -220,6 +221,11 @@ public class MyMapClient extends MyMap {
         });
     }*/
 
+    public Bitmap resizeMapIcons(String filePath, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeFile(filePath);
+
+        return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+    }
 
     private void setMarkerDelimitedTraderNotify(){
         Log.e(TAG, "setMarkerDelimitedTraderNotify " + listTrader.size());
@@ -235,11 +241,13 @@ public class MyMapClient extends MyMap {
                 try {
                     localFile = File.createTempFile("images", "jpg");
                     islandRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> Log.e(TAG, "caricata")).addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
+
                     getmMap().addMarker(new MarkerOptions()
                             .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
                             .title(trader.getFirst().getShopName())
-                            .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeFile(localFile.getPath())))
+                            .icon( BitmapDescriptorFactory.fromBitmap( resizeMapIcons(localFile.getPath(),100,100)) )
                             .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName()));
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

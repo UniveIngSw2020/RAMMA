@@ -158,14 +158,16 @@ public class MyMapTrader extends MyMap{
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             User user = new User(document.toObject(User.class));
-                                            Log.e(TAG, "OK");
 
+                                            //
                                             StorageReference islandRef = mStorageRef.child("users/" + user.getUser_id() + "/avatar.jpg");
 
                                             File localFile;
                                             try {
                                                 localFile = File.createTempFile("images", "jpg");
-                                                islandRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> Log.e(TAG, "caricata")).addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
+                                                islandRef.getFile(localFile)
+                                                        .addOnSuccessListener(taskSnapshot -> Log.e(TAG, "caricata"))
+                                                        .addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
 
                                                 Marker costumer=mMap.addMarker(new MarkerOptions()
                                                         .position( new LatLng(
