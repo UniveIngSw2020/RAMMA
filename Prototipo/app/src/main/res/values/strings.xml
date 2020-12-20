@@ -137,6 +137,7 @@
     <string name="load_picture">Load Picture</string>
     <string name="carica_foto">Carica foto</string>
     <string name="conferma_il_tuo_avatar">Conferma il tuo avatar</string>
+    <string name="accedi_start">ACCEDI</string>
 
 
 </resources>
