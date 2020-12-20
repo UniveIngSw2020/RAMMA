@@ -1,6 +1,7 @@
 package com.example.rent_scio1.utils.map;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -22,6 +23,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -34,8 +37,13 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.maps.android.clustering.ClusterManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -53,6 +61,8 @@ public class MyMapTrader extends MyMap{
 
     private final Context context;
 
+    private StorageReference mStorageRef;
+
     //private ClusterManager<ClusterMarkers> clusterManager;
 
 
@@ -64,6 +74,8 @@ public class MyMapTrader extends MyMap{
         areaLimitata();
         //setUpClusterer();
         searchCustomers();
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(context));
 
@@ -119,7 +131,7 @@ public class MyMapTrader extends MyMap{
         }*/
     //}
 
-    private void searchCustomers(){
+    private void searchCustomers() {
         FirebaseFirestore.getInstance().collection("run")
                 .whereEqualTo("trader", UserClient.getUser().getUser_id())
                 .addSnapshotListener((snapshots, e) -> {
@@ -148,73 +160,86 @@ public class MyMapTrader extends MyMap{
                                             User user = new User(document.toObject(User.class));
                                             Log.e(TAG, "OK");
 
-                                            Marker costumer=mMap.addMarker(new MarkerOptions()
-                                                    .position( new LatLng(
-                                                            UserClient.getUser().getTraderPosition().getLatitude(),
-                                                            UserClient.getUser().getTraderPosition().getLongitude()))
-                                                    .title(user.getName() + " " + user.getSurname())
-                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.logo1)));
+                                            StorageReference islandRef = mStorageRef.child("users/" + user.getUser_id() + "/avatar.jpg");
 
-                                            Run run=dc.getDocument().toObject(Run.class);
-                                            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+                                            File localFile;
+                                            try {
+                                                localFile = File.createTempFile("images", "jpg");
+                                                islandRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> Log.e(TAG, "caricata")).addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
 
-                                            new CountDownTimer(time,1000){
+                                                Marker costumer=mMap.addMarker(new MarkerOptions()
+                                                        .position( new LatLng(
+                                                                UserClient.getUser().getTraderPosition().getLatitude(),
+                                                                UserClient.getUser().getTraderPosition().getLongitude()))
+                                                        .title(user.getName() + " " + user.getSurname())
+                                                        .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeFile(localFile.getPath()))));
 
-                                                @Override
-                                                public void onTick(long millisUntilFinished) {
-                                                    Integer minutes=(int) (millisUntilFinished / 1000) / 60;
-                                                    Integer seconds=(int) (millisUntilFinished / 1000) % 60;
+                                                Run run=dc.getDocument().toObject(Run.class);
+                                                long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+
+                                                new CountDownTimer(time,1000){
+
+                                                    @Override
+                                                    public void onTick(long millisUntilFinished) {
+                                                        Integer minutes=(int) (millisUntilFinished / 1000) / 60;
+                                                        Integer seconds=(int) (millisUntilFinished / 1000) % 60;
 
 
-                                                    if(minutes>=60){
-                                                        int hours=minutes/60;
-                                                        minutes=minutes-(hours*60);
+                                                        if(minutes>=60){
+                                                            int hours=minutes/60;
+                                                            minutes=minutes-(hours*60);
 
-                                                        String hoursText=""+hours;
-                                                        if(hours<10){
+                                                            String hoursText=""+hours;
+                                                            if(hours<10){
 
-                                                            hoursText="0"+hoursText;
+                                                                hoursText="0"+hoursText;
+                                                            }
+
+                                                            String minutesText=""+minutes;
+                                                            if(minutes<10){
+
+                                                                minutesText="0"+minutesText;
+                                                            }
+
+                                                            costumer.setSnippet( ((float)run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
+                                                        }
+                                                        else{
+
+                                                            String minutesText=""+minutes;
+                                                            if(minutes<10){
+
+                                                                minutesText="0"+minutesText;
+                                                            }
+
+                                                            costumer.setSnippet(((float)run.getSpeed())+" "+minutesText+":"+seconds );
                                                         }
 
-                                                        String minutesText=""+minutes;
-                                                        if(minutes<10){
-
-                                                            minutesText="0"+minutesText;
-                                                        }
-
-                                                        costumer.setSnippet( ((float)run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
+                                                        if(costumer.isInfoWindowShown())
+                                                            costumer.showInfoWindow();
                                                     }
-                                                    else{
 
-                                                        String minutesText=""+minutes;
-                                                        if(minutes<10){
+                                                    @Override
+                                                    public void onFinish() {
+                                                        int minutes=0;
+                                                        int seconds=0;
+                                                        costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
 
-                                                            minutesText="0"+minutesText;
-                                                        }
-
-                                                        costumer.setSnippet(((float)run.getSpeed())+" "+minutesText+":"+seconds );
+                                                        if(costumer.isInfoWindowShown())
+                                                            costumer.showInfoWindow();
                                                     }
+                                                }.start();
 
-                                                    if(costumer.isInfoWindowShown())
-                                                        costumer.showInfoWindow();
-                                                }
+                                                costumer.setVisible(false);
 
-                                                @Override
-                                                public void onFinish() {
-                                                    int minutes=0;
-                                                    int seconds=0;
-                                                    costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
+                                                listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
 
-                                                    if(costumer.isInfoWindowShown())
-                                                        costumer.showInfoWindow();
-                                                }
-                                            }.start();
+                                                Log.d(TAG, document.getId() + " => " + document.getData());
 
-                                            costumer.setVisible(false);
+                                            } catch (IOException ioException) {
+                                                Log.e(TAG, "Errore nel caricamento dell'immaigne");
+                                                ioException.printStackTrace();
+                                            }
 
-                                            listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
-
-                                            Log.d(TAG, document.getId() + " => " + document.getData());
                                         }
                                     } else {
                                         Log.w(TAG, "Error getting documents.", task.getException());

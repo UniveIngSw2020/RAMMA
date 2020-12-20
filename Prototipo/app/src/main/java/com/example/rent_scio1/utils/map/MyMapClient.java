@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -34,9 +35,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.CancellationToken;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -66,6 +74,8 @@ public class MyMapClient extends MyMap {
     LocationManager manager;
 
     DialogInterface.OnClickListener listener;
+
+    private StorageReference mStorageRef;
 
     public MyMapClient() {
         super();
@@ -104,6 +114,7 @@ public class MyMapClient extends MyMap {
         //enableMyLocation();
         Log.e(TAG, "MAPPA PRONTA");
 
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         //passo una lambda nulla
         MyPermission permission = new MyPermission(context, context, location -> {
@@ -218,11 +229,22 @@ public class MyMapClient extends MyMap {
             //int col = rnd.nextInt(360);
             //Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
             if (trader.getFirst().getTraderPosition() != null) {
-                getmMap().addMarker(new MarkerOptions()
-                        .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
-                        .title(trader.getFirst().getShopName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(trader.getSecond().getFirst()))
-                        .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName()));
+                StorageReference islandRef = mStorageRef.child("users/" + UserClient.getUser().getUser_id() + "/avatar.jpg");
+
+                File localFile;
+                try {
+                    localFile = File.createTempFile("images", "jpg");
+                    islandRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> Log.e(TAG, "caricata")).addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
+                    getmMap().addMarker(new MarkerOptions()
+                            .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
+                            .title(trader.getFirst().getShopName())
+                            .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeFile(localFile.getPath())))
+                            .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
             }
 
             List<LatLng> latLngs = new ArrayList<>();
