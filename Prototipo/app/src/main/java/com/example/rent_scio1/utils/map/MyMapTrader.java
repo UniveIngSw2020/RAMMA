@@ -424,7 +424,7 @@ public class MyMapTrader extends MyMap{
 
             PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
             Polygon polygon=mMap.addPolygon(polygonOptions);
-            polygon.setStrokeColor(Color.BLACK);
+            polygon.setStrokeColor(Color.rgb( 111,163,167));
         }
     }
 }

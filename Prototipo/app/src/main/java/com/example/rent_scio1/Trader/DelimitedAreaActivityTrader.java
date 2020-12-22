@@ -295,6 +295,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                     if(!markersStack.empty()){
 
                         Marker last=markersStack.pop();
+
                         last.remove();
                         markers.remove(last);
 
@@ -310,8 +311,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                                 map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                             }
                         }
-
-
 
                         if(markersStack.empty())
                             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
