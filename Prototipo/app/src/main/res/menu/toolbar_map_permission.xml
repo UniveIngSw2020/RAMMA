@@ -5,7 +5,8 @@
     <group>
         <item android:id="@+id/locate_me"
             android:title="@string/localizzami"
-            app:showAsAction="always"/>
+            app:showAsAction="always"
+            app:autoSizeTextType="uniform"/>
     </group>
 
     <group>

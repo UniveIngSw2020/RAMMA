@@ -27,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ToolbarTheme"
+            app:autoSizeTextType="uniform"
             app:layout_scrollFlags="scroll|snap"
             app:title="@string/tutorial_utilizzo_area_limitata"
             app:titleTextColor="@color/text" />
@@ -40,6 +41,7 @@
             android:paddingTop="0dp"
             android:paddingEnd="0dp"
             android:paddingRight="0dp"
+            app:autoSizeTextType="uniform"
             android:theme="@style/ToolbarTheme"
             app:layout_collapseMode="pin"
             app:title="@string/tutorial_utilizzo_area_limitata"

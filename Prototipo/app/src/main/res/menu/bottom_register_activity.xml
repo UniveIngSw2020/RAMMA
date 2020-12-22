@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group>
         <item android:id="@+id/confitmregister_btn"
             android:title="@string/registrati_"
-            android:icon="@drawable/ic_register_button"/>
+            android:icon="@drawable/ic_register_button"
+            app:autoSizeTextType="uniform"/>
     </group>
 </menu>

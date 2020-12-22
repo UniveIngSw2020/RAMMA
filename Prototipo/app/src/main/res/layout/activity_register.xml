@@ -15,7 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/back"
+        app:titleTextColor="@color/text"
+        app:title="Registrati"
+        app:autoSizeTextType="uniform"
         android:background="@color/back"
         android:theme="@style/ToolbarTheme"/>
 
@@ -224,6 +226,7 @@
         android:layout_alignParentBottom="true"
         app:layout_constraintTop_toBottomOf="@id/scroll_view_activity_register"
         android:background="@color/text"
+        app:autoSizeTextType="uniform"
         android:theme="@style/Widget.BottomNavigationView"
         app:menu="@menu/bottom_register_activity"
         app:itemIconTint="@color/back"

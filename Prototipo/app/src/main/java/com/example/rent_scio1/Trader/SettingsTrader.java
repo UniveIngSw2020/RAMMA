@@ -43,7 +43,7 @@ public class SettingsTrader extends AppCompatActivity {
 
         TextView tv = new TextView(this);
         tv.setText("INFORMAZIONI PERSONALI");
-        tv.setTextSize(25);
+        tv.setTextSize(23);
         tv.setTextColor(getColor(R.color.teal_200));
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv.setTypeface(typeface);

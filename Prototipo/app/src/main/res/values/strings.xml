@@ -139,6 +139,7 @@
     <string name="conferma_il_tuo_avatar">Conferma il tuo avatar</string>
     <string name="accedi_start">ACCEDI</string>
     <string name="immagine_avatar">Immagine avatar</string>
+    <string name="utilizza_avatar_di_default">Utilizza avatar di default</string>
 
 
 </resources>

@@ -22,6 +22,7 @@
             android:background="@color/text"
             android:id="@+id/toolbar_map_trader"
             app:title="Mappa"
+            app:autoSizeTextType="uniform"
             android:theme="@style/ToolbarTheme_inverted"
             app:titleTextColor="@color/back"
             app:subtitleTextAppearance="@style/Style_TextView"

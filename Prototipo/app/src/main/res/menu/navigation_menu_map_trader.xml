@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
         <item android:id="@+id/nuova_corsa"
             android:title="@string/nuova_corsa"
-            android:icon="@drawable/ic_add_map_trader_"/>
+            android:icon="@drawable/ic_add_map_trader_"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/Parco_mezzi"
             android:title="@string/visualizza_parco_mezzi"
-            android:icon="@drawable/ic_parcomezzi_map_trader"/>
+            android:icon="@drawable/ic_parcomezzi_map_trader"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/area_limited"
             android:title="@string/imposta_area_limitata"
-            android:icon="@drawable/ic_area_limitata"/>
+            android:icon="@drawable/ic_area_limitata"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/tabella_corse"
             android:title="@string/corse_attive"
-            android:icon="@drawable/ic_round_format_list_bulleted_24"/>
+            android:icon="@drawable/ic_round_format_list_bulleted_24"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/impostazioni_trader"
             android:title="@string/impostazioni"
-            android:icon="@drawable/ic_settings_trader"/>
+            android:icon="@drawable/ic_settings_trader"
+            app:autoSizeTextType="uniform"/>
 
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_logout_map_trader"
-            android:title="@string/logout"/>
+            android:title="@string/logout"
+            app:autoSizeTextType="uniform"/>
     </group>
 </menu>

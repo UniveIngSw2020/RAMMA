@@ -15,13 +15,15 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_login"
+        app:autoSizeTextType="uniform"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:theme="@style/ToolbarTheme"
+        app:title="Login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/back" />
+        app:titleTextColor="@color/text" />
 
     <EditText
         android:id="@+id/email_login"
@@ -92,13 +94,14 @@
 
     <Button
         android:id="@+id/confirmlogin_btn"
-        android:layout_width="277dp"
-        android:layout_height="66dp"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/rounded_button"
         android:fontFamily="@font/comfortaa_regular"
         android:text="@string/accedi"
-        android:textColor="#000000"
-        android:textSize="24sp"
+        android:textColor="@color/back"
+        android:textSize="20sp"
+        app:autoSizeTextType="uniform"
         android:textStyle="bold"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

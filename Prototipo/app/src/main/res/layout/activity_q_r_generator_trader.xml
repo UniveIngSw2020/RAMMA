@@ -4,15 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Trader.QRGeneratorTrader">
+    tools:context=".Trader.QRGeneratorTrader"
+    android:background="@color/back">
 
-    <ImageView
-        android:id="@+id/QR_code"
-        android:layout_width="322dp"
-        android:layout_height="353dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_new_trade_qr"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:title="Fai scannerizzare il QR!"
+        app:autoSizeTextType="uniform"
+        android:theme="@style/ToolbarTheme"
+        app:titleTextColor="@color/text"/>
+
+    <ImageView
+        android:id="@+id/QR_code"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_new_trade_qr"
         tools:srcCompat="@tools:sample/avatars" />
 </androidx.constraintlayout.widget.ConstraintLayout>

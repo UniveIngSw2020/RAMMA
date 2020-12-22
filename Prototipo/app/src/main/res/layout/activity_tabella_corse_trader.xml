@@ -17,13 +17,15 @@
         android:layout_height="?actionBarSize"
         android:theme="@style/ToolbarTheme"
         android:visibility="visible"
+        app:autoSizeTextType="uniform"
+        app:title="Tabella delle corse"
+        app:titleTextColor="@color/text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:titleTextColor="@color/back" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TableLayout
         android:id="@+id/tabella_corse"
@@ -34,6 +36,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:paddingTop="0dp"
+        app:autoSizeTextType="uniform"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +54,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:text="@string/cliente"
+                app:autoSizeTextType="uniform"
                 android:textColor="@color/text"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -63,6 +67,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:text="@string/veicolo"
+                app:autoSizeTextType="uniform"
                 android:textColor="@color/text"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -75,6 +80,7 @@
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:text="@string/rimasti"
+                app:autoSizeTextType="uniform"
                 android:textColor="@color/text"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -86,6 +92,7 @@
                 android:fontFamily="@font/comfortaa_regular"
                 android:paddingBottom="10dp"
                 android:text="@string/elimina_corsa_trader_table"
+                app:autoSizeTextType="uniform"
                 android:textAlignment="center"
                 android:textColor="@color/text"
                 android:textSize="18sp"
@@ -102,6 +109,7 @@
         android:textAlignment="center"
         android:fontFamily="@font/comfortaa_regular"
         android:textColor="@color/text"
+        app:autoSizeTextType="uniform"
         android:text="@string/non_ci_sono_corse_attive_al_momento"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

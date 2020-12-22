@@ -5,15 +5,18 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/costruisci"
             android:title="@string/costruisci"
-            android:icon="@drawable/ic_costruisci"/>
+            android:icon="@drawable/ic_costruisci"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/clear_last"
             android:title="@string/elimina_l_ultimo"
-            android:icon="@drawable/ic_clear_last_marker"/>
+            android:icon="@drawable/ic_clear_last_marker"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/clear_all"
             android:title="@string/pulisci_area"
-            android:icon="@drawable/ic_clear_all"/>
+            android:icon="@drawable/ic_clear_all"
+            app:autoSizeTextType="uniform"/>
     </group>
 
 </menu>

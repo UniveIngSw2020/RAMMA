@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group>
         <item android:id="@+id/tempo_rimasto"
-            android:title="Tempo rimasto"
+            android:title="@string/tempo_rimasto"
+            app:autoSizeTextType="uniform"
             />
     </group>
     <group>
         <item android:id="@+id/velocita_attuale"
-            android:title="Velocità attuale"/>
+            android:title="@string/velocit_attuale"
+            app:autoSizeTextType="uniform"/>
     </group>
 </menu>

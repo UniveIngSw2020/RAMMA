@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group>
         <item android:id="@+id/nuova_corsa_client"
             android:title="@string/nuova_corsa"
-            android:icon="@drawable/ic_add_client"/>
+            android:icon="@drawable/ic_add_client"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/Assistenza"
             android:title="@string/assistenza"
-            android:icon="@drawable/ic_assistenza" />
+            android:icon="@drawable/ic_assistenza"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/go_back_shop"
             android:title="@string/ritorno_al_negozio"
-            android:icon="@drawable/ic_go_back_shop" />
+            android:icon="@drawable/ic_go_back_shop"
+            app:autoSizeTextType="uniform"/>
 
         <item
             android:id="@+id/end_run"
             android:title="@string/termina_corsa"
-            android:icon="@drawable/ic_stop_trade"/>
+            android:icon="@drawable/ic_stop_trade"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/impostazioni_client"
             android:title="@string/impostazioni"
-            android:icon="@drawable/ic_settings_trader"/>
+            android:icon="@drawable/ic_settings_trader"
+            app:autoSizeTextType="uniform"/>
 
         <item android:id="@+id/logout_client"
             android:title="@string/logout"
-            android:icon="@drawable/ic_logout_client"/>
+            android:icon="@drawable/ic_logout_client"
+            app:autoSizeTextType="uniform"/>
     </group>
 </menu>
