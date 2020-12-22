@@ -3,11 +3,14 @@ package com.example.rent_scio1.utils.map;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Run;
@@ -138,6 +141,85 @@ public class MyMapTrader extends MyMap{
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
     }
 
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+    private void addDocument(MarkerOptions markerOptions,DocumentChange dc){
+
+        Run run=dc.getDocument().toObject(Run.class);
+
+        if(run.getGeoPoint()!=null)
+            markerOptions.position(new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude()));
+        else
+            markerOptions.position(new LatLng(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude()));
+        Marker costumer=mMap.addMarker(markerOptions);
+
+
+        long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
+
+        new CountDownTimer(time,1000){
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Integer minutes=(int) (millisUntilFinished / 1000) / 60;
+                Integer seconds=(int) (millisUntilFinished / 1000) % 60;
+
+
+                if(minutes>=60){
+                    int hours=minutes/60;
+                    minutes=minutes-(hours*60);
+
+                    String hoursText=""+hours;
+                    if(hours<10){
+
+                        hoursText="0"+hoursText;
+                    }
+
+                    String minutesText=""+minutes;
+                    if(minutes<10){
+
+                        minutesText="0"+minutesText;
+                    }
+
+                    costumer.setSnippet( (run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
+                }
+                else{
+
+                    String minutesText=""+minutes;
+                    if(minutes<10){
+
+                        minutesText="0"+minutesText;
+                    }
+
+                    costumer.setSnippet((run.getSpeed())+" "+minutesText+":"+seconds );
+                }
+
+                if(costumer.isInfoWindowShown())
+                    costumer.showInfoWindow();
+            }
+
+            @Override
+            public void onFinish() {
+                int minutes=0;
+                int seconds=0;
+                costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
+
+                if(costumer.isInfoWindowShown())
+                    costumer.showInfoWindow();
+            }
+        }.start();
+
+        listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
+    }
+
     private void searchCustomers() {
         FirebaseFirestore.getInstance().collection("run")
                 .whereEqualTo("trader", UserClient.getUser().getUser_id())
@@ -153,7 +235,6 @@ public class MyMapTrader extends MyMap{
                     }*/
 
                     //viewCustomers(runs);
-
                     for (DocumentChange dc : snapshots.getDocumentChanges()) {
                         Log.e(TAG, "PRE SWITCH");
                         switch (dc.getType()) {
@@ -166,14 +247,9 @@ public class MyMapTrader extends MyMap{
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             User user = new User(document.toObject(User.class));
 
-                                            //
                                             StorageReference islandRef = mStorageRef.child("users/" + user.getUser_id() + "/avatar.jpg");
 
-                                            MarkerOptions markerOptions=new MarkerOptions()
-                                                    .position( new LatLng(
-                                                            UserClient.getUser().getTraderPosition().getLatitude(),
-                                                            UserClient.getUser().getTraderPosition().getLongitude()))
-                                                    .title(user.getName() + " " + user.getSurname());
+                                            MarkerOptions markerOptions=new MarkerOptions().title(user.getName() + " " + user.getSurname());
 
                                             File localFile;
 
@@ -182,72 +258,15 @@ public class MyMapTrader extends MyMap{
                                                 islandRef.getFile(localFile)
                                                         .addOnSuccessListener(taskSnapshot -> {
 
-                                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),200,200)));
-                                                            Marker costumer=mMap.addMarker(markerOptions);
+                                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),150,150)));
+                                                            addDocument(markerOptions,dc);
 
-                                                            Run run=dc.getDocument().toObject(Run.class);
-                                                            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
-
-                                                            new CountDownTimer(time,1000){
-
-                                                                @Override
-                                                                public void onTick(long millisUntilFinished) {
-                                                                    Integer minutes=(int) (millisUntilFinished / 1000) / 60;
-                                                                    Integer seconds=(int) (millisUntilFinished / 1000) % 60;
-
-
-                                                                    if(minutes>=60){
-                                                                        int hours=minutes/60;
-                                                                        minutes=minutes-(hours*60);
-
-                                                                        String hoursText=""+hours;
-                                                                        if(hours<10){
-
-                                                                            hoursText="0"+hoursText;
-                                                                        }
-
-                                                                        String minutesText=""+minutes;
-                                                                        if(minutes<10){
-
-                                                                            minutesText="0"+minutesText;
-                                                                        }
-
-                                                                        costumer.setSnippet( ((float)run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
-                                                                    }
-                                                                    else{
-
-                                                                        String minutesText=""+minutes;
-                                                                        if(minutes<10){
-
-                                                                            minutesText="0"+minutesText;
-                                                                        }
-
-                                                                        costumer.setSnippet(((float)run.getSpeed())+" "+minutesText+":"+seconds );
-                                                                    }
-
-                                                                    if(costumer.isInfoWindowShown())
-                                                                        costumer.showInfoWindow();
-                                                                }
-
-                                                                @Override
-                                                                public void onFinish() {
-                                                                    int minutes=0;
-                                                                    int seconds=0;
-                                                                    costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
-
-                                                                    if(costumer.isInfoWindowShown())
-                                                                        costumer.showInfoWindow();
-                                                                }
-                                                            }.start();
-
-                                                            costumer.setVisible(false);
-
-                                                            listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
-
-                                                            Log.d(TAG, document.getId() + " => " + document.getData());
-                                                                }
-                                                        )
-                                                        .addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
+                                                        })
+                                                        .addOnFailureListener(exception -> {
+                                                            Log.e(TAG, "NON caricata");
+                                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(R.drawable.logo_vettorizzato_transp),250,250,false) ));
+                                                            addDocument(markerOptions,dc);
+                                                        });
 
 
                                             } catch (IOException ioException) {
@@ -314,7 +333,6 @@ public class MyMapTrader extends MyMap{
             if(costumer!=null){
 
                 costumer.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
-                costumer.setVisible(true);
             }
             /*listMarker.add(mMap.addMarker(new MarkerOptions()
                     .position( new LatLng(r.getGeoPoint().getLatitude(), r.getGeoPoint().getLongitude()))
@@ -367,9 +385,32 @@ public class MyMapTrader extends MyMap{
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
 
-        Marker traderMarker = googleMap.addMarker(new MarkerOptions()
+        MarkerOptions markerOptions=new MarkerOptions()
                 .position(new LatLng(mTrader.getTraderPosition().getLatitude(), mTrader.getTraderPosition().getLongitude()))
-                .title("Tu sei qui!"));
+                .title(UserClient.getUser().getShopName());
+
+        StorageReference islandRef = mStorageRef.child("users/" + UserClient.getUser().getUser_id() + "/avatar.jpg");
+        File localFile;
+        try {
+            localFile = File.createTempFile("images", "jpg");
+            islandRef.getFile(localFile)
+                    .addOnSuccessListener(taskSnapshot -> {
+
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),150,150)));
+                        googleMap.addMarker(markerOptions);
+
+                    })
+                    .addOnFailureListener(exception -> {
+                        Log.e(TAG, "NON caricata");
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(R.drawable.negozio_vettorizzato),150,150,false) ));
+                        googleMap.addMarker(markerOptions);
+                    });
+
+
+        } catch (IOException ioException) {
+            Log.e(TAG, "Errore nel caricamento dell'immaigne");
+            ioException.printStackTrace();
+        }
     }
 
     private void areaLimitata(){

@@ -15,9 +15,9 @@ public class Run {
     private long startTime;
     private long duration;
 
-    private double speed;
+    private int speed;
 
-    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle, String runUID, long startTime, long duration, double speed) {
+    public Run(GeoPoint geoPoint, Date timestamp, String user, String trader, String vehicle, String runUID, long startTime, long duration, int speed) {
 
         this.geoPoint = geoPoint;
         this.timestamp = timestamp;
@@ -128,11 +128,11 @@ public class Run {
         }
     }
 
-    public double getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 }

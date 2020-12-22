@@ -2,7 +2,11 @@ package com.example.rent_scio1.Trader;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -13,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.PositionIterable;
@@ -22,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -36,9 +42,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.maps.android.PolyUtil;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -192,10 +202,54 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     }
 
+    public Bitmap resizeMapIcons(String filePath, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeFile(filePath);
+
+        return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+    }
+
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
     private void addNegozio(){
+
         GeoPoint traderpos=UserClient.getUser().getTraderPosition();
-        trader=mMap.addMarker(new MarkerOptions().position(new LatLng(traderpos.getLatitude(),traderpos.getLongitude())));
-        trader.setTitle("NEGOZIO");
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+
+        MarkerOptions markerOptions=new MarkerOptions().position(new LatLng(traderpos.getLatitude(),traderpos.getLongitude())).title("Tu sei qui");
+
+        StorageReference islandRef = mStorageRef.child("users/" + UserClient.getUser().getUser_id() + "/avatar.jpg");
+        File localFile;
+        try {
+            localFile = File.createTempFile("images", "jpg");
+            islandRef.getFile(localFile)
+                    .addOnSuccessListener(taskSnapshot -> {
+
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),150,150)));
+                        trader=mMap.addMarker(markerOptions);
+
+                    })
+                    .addOnFailureListener(exception -> {
+                        Log.e(TAG, "NON caricata");
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(R.drawable.negozio_vettorizzato),150,150,false) ));
+                        trader=mMap.addMarker(markerOptions);
+                    });
+
+
+        } catch (IOException ioException) {
+            Log.e(TAG, "Errore nel caricamento dell'immaigne");
+            ioException.printStackTrace();
+        }
+
+
     }
 
     private void costruisci(){

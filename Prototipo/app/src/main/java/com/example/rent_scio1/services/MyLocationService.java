@@ -52,22 +52,22 @@ public class MyLocationService extends Service {
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
         //in teoria non serve ma bisogna fare una prova
-        Location mPreLastLocation;
+
 
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
-            mPreLastLocation=new Location(provider);
+
         }
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
             Log.e(TAG, "POSIZIONE CAMBIATA");
 
-            mPreLastLocation.set(mLastLocation);
+
 
             mLastLocation.set(location);
-            double speed= mLastLocation.getSpeed()*3.6;/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
+            int speed= (int)(mLastLocation.getSpeed() *3.6);/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
 
             updateUserLocation(location, speed);
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
@@ -87,7 +87,7 @@ public class MyLocationService extends Service {
 //            }
         }
 
-        private void updateUserLocation(Location location, double speed){
+        private void updateUserLocation(Location location, int speed){
             if(UserClient.getRun() != null) {
                 Log.w(TAG, "update user location ");
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());

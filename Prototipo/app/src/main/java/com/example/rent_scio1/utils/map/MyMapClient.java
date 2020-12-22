@@ -267,10 +267,12 @@ public class MyMapClient extends MyMap {
 
                     islandRef.getFile(localFile)
                             .addOnSuccessListener(taskSnapshot ->{
+                                        //icona personalizzata
                                         markerOptionsTrader.icon( BitmapDescriptorFactory.fromBitmap( resizeMapIcons(localFile.getPath(),100,100)) );
                                         getmMap().addMarker(markerOptionsTrader);
                                     })
                             .addOnFailureListener( exception ->{
+                                        //icona di default
                                         markerOptionsTrader.icon( BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),100,100,false) ));
                                         getmMap().addMarker(markerOptionsTrader);
                                     });

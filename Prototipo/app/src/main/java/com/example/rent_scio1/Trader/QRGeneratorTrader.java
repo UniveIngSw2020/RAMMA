@@ -42,7 +42,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
 
         
-        Log.e(TAG, UserClient.getUser().toString());
+        //Log.e(TAG, UserClient.getUser().toString());
 
 
         Toast.makeText(this, code, Toast.LENGTH_LONG).show();

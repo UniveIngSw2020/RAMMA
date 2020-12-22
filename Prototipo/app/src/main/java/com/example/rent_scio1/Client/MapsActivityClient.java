@@ -217,7 +217,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
                 int minutes=(int) (millisUntilFinished / 1000) / 60;
                 int seconds=(int) (millisUntilFinished / 1000) % 60;
-                float speed=(float)run.getSpeed();
+                int speed=run.getSpeed();
 
                 if(minutes>=60){
                     int hours=minutes/60;
