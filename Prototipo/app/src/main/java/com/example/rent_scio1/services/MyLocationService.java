@@ -87,6 +87,14 @@ public class MyLocationService extends Service {
 //            }
         }
 
+
+        @Override
+        public void onProviderEnabled(@NonNull String provider) { }
+
+        @Override
+        public void onProviderDisabled(@NonNull String provider) { }
+
+
         private void updateUserLocation(Location location, int speed){
             if(UserClient.getRun() != null) {
                 Log.w(TAG, "update user location ");
