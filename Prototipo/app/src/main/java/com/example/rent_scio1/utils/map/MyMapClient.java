@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.CountDownTimer;
@@ -15,6 +17,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.MyNotify;
@@ -147,22 +150,25 @@ public class MyMapClient extends MyMap {
             Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
 
 
-            for(Pair<User, Pair<Float, Polygon>> trader: listTrader){
-                if(trader.getFirst().getDelimited_area() != null && marker.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))){
-                    int col = Color.HSVToColor(new float[] { trader.getSecond().getFirst(), 0.2f, 1.0f });
-                    trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
-                    trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
+            for(Pair<User, Pair<Float, Polygon>> trader: listTrader) {
 
-                    //fillPol = trader.getSecond().getSecond();
-                    return true;
-                    /*else{
+                if (trader.getFirst().getDelimited_area() != null) {
+
+                    if (marker.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))) {
+                        int col = Color.HSVToColor(new float[]{trader.getSecond().getFirst(), 0.2f, 1.0f});
+                        trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
+                        trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
+
+                    }
+                    else {
+
                         trader.getSecond().getSecond().setVisible(false);
                         trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
-                    }*/
-                }
+                    }
 
+                }
             }
-            return false;
+            return true;
         });
 
         getmMap().setOnMapClickListener(latLng -> {
@@ -227,34 +233,51 @@ public class MyMapClient extends MyMap {
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
     }
 
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
     private void setMarkerDelimitedTraderNotify(){
+
         Log.e(TAG, "setMarkerDelimitedTraderNotify " + listTrader.size());
+
         for (Pair<User, Pair<Float, Polygon>> trader : listTrader) {
+
             Log.e(TAG, "                    " + trader.getFirst().toString());
-            //Random rnd = new Random();
-            //int col = rnd.nextInt(360);
-            //Log.d(TAG, "AGGIUNGO IIIIIIIIIII MARKERRRRRRRRRRRRRRRRRRR" + new LatLng(trader.getTraderposition().getLatitude(), trader.getTraderposition().getLongitude()));
+
             if (trader.getFirst().getTraderPosition() != null) {
-                StorageReference islandRef = mStorageRef.child("users/" + UserClient.getUser().getUser_id() + "/avatar.jpg");
 
-                File localFile;
+
+                MarkerOptions markerOptionsTrader= new MarkerOptions()
+                        .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
+                        .title(trader.getFirst().getShopName())
+                        .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName());
+
                 try {
-                    localFile = File.createTempFile("images", "jpg");
+
+                    StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");
+                    File localFile = File.createTempFile( trader.getFirst().getUser_id() , "jpg");
+
                     islandRef.getFile(localFile)
-                            .addOnSuccessListener(taskSnapshot ->
-
-                                    getmMap().addMarker(new MarkerOptions()
-                                    .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
-                                    .title(trader.getFirst().getShopName())
-                                    .icon( BitmapDescriptorFactory.fromBitmap( resizeMapIcons(localFile.getPath(),100,100)) )
-                                    .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName())))
-
-                            .addOnFailureListener(exception -> Log.e(TAG, "NON caricata"));
+                            .addOnSuccessListener(taskSnapshot ->{
+                                        markerOptionsTrader.icon( BitmapDescriptorFactory.fromBitmap( resizeMapIcons(localFile.getPath(),100,100)) );
+                                        getmMap().addMarker(markerOptionsTrader);
+                                    })
+                            .addOnFailureListener( exception ->{
+                                        markerOptionsTrader.icon( BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),100,100,false) ));
+                                        getmMap().addMarker(markerOptionsTrader);
+                                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
 
             }
 
