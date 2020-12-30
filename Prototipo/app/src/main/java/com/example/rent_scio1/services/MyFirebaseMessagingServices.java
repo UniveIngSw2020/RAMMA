@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
@@ -39,7 +38,6 @@ import java.util.Random;
 public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     private final String TAG = "MyFirebaseMessagingServices";
     private final String ADMIN_CHANNEL_ID ="admin_channel";
-//    private String ADMIN_CHANNEL_ID = "admin_channel";
 
 
     @Override
@@ -62,16 +60,6 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.e(TAG, "caspiterina è arrivato un messaggio");
-//        if(UserClient. getUser() != null) {
-//            String title = remoteMessage.getData().get("title");
-//            String type = remoteMessage.getData().get("type");
-//            String msg = remoteMessage.getData().get("message");
-//            int id = Integer.parseInt(remoteMessage.getData().get("id"));
-//            Log.e(TAG, "caspiterina è arrivato un messaggio" + title + " " + type + " " + msg + " " + id);
-//            MyNotify notification = new MyNotify(MapsActivityTrader.thisContext, type, title, "prova", title, msg, R.drawable.ic_not_permitted);
-//            Log.e(TAG, "" + notification.getNotify());
-//            notification.getNotificationManager().notify(id, notification.getNotify());
-//        }
         final Intent intent = new Intent(this, MapsActivityTrader.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
@@ -101,8 +89,6 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
                 .setSound(notificationSoundUri)
                 .setContentIntent(pendingIntent);
 
-        //Set notification color to match your app color template
-        //notificationBuilder.setColor(Color.rgb(1,1,1));
         notificationManager.notify(notificationID, notificationBuilder.build());
     }
 
@@ -130,7 +116,6 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
 
     private void sendRegistrationToServer(String refreshedToken) {
         if(UserClient.getUser() != null && UserClient.getUser().addToken(refreshedToken)) {
-           // FirebaseMessaging.getInstance().subscribeToTopic(refreshedToken); // forse è brutto, sarebbe meglio l'id dell'utente
             DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
             mDatabase.update("tokens", UserClient.getUser().getTokens()).addOnSuccessListener(aVoid -> Log.d(TAG, "TOKEN AGGIUNTO"));
         }
@@ -159,9 +144,9 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
                 error -> Log.i(TAG, "onErrorResponse: Didn't work"))
         {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();
-                params.put("Authorization", "key="+ "AAAABf5BCzc:APA91bGIHRPUPEuWQT0TT5iXwZytmeN_5-NHn2lA_Fpkz3Mmxmxn5i5N3c1wrEoZW7Zoj05_18zNg2KIa5VXuZMwWoLn9_Yzh-hfqXPl-xInE0cDHyDJn0VHdow3cUaxnx-SWCLhtQO3"); //
+                params.put("Authorization", "key="+ "AAAABf5BCzc:APA91bGIHRPUPEuWQT0TT5iXwZytmeN_5-NHn2lA_Fpkz3Mmxmxn5i5N3c1wrEoZW7Zoj05_18zNg2KIa5VXuZMwWoLn9_Yzh-hfqXPl-xInE0cDHyDJn0VHdow3cUaxnx-SWCLhtQO3");
                 params.put("Content-Type", "application/json");
                 return params;
             }
