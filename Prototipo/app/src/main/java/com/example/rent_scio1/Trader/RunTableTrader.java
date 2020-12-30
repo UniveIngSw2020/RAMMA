@@ -244,13 +244,8 @@ public class RunTableTrader extends AppCompatActivity {
             builder.setTitle("Elimina");
             builder.setMessage("Sei sicuro di voler eliminare definitivamente questa corsa?");
 
-            //builder.setIcon(R.drawable.ic_launcher);
             builder.setPositiveButton("Sì", (dialog, id) -> {
                 dialog.dismiss();
-                //deleteRun(run.getRunUID());
-                //unlockVehiclebyID(run.getVehicle());
-                //Intent intent=new Intent(getApplicationContext(), RunTableTrader.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Log.e(TAG, "Sto eliminando la corsa: " + run.getRunUID());
                 Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
                 intent.putExtra(ToQR, run.getRunUID());
@@ -267,13 +262,7 @@ public class RunTableTrader extends AppCompatActivity {
         row.addView(tv2);
         row.addView(delete);
 
-
-
-
         table.addView(row);
-
-
-
 
         //setti invisible
         warning_empty_table.setVisibility(View.INVISIBLE);
@@ -281,19 +270,4 @@ public class RunTableTrader extends AppCompatActivity {
         return tv2;
     }
 
-    /*private void deleteRun(String PK_run){
-        db.collection("run").document(PK_run)
-                .delete()
-                .addOnSuccessListener(aVoid ->
-
-                        Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!"))
-                .addOnFailureListener(e -> Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e));
-    }
-
-    private void unlockVehiclebyID(String id){
-        DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
-        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
-            Log.d(TAG, "VEICOLO LIBERATO");
-        });
-    }*/
 }

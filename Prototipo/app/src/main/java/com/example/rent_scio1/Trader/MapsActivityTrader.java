@@ -28,21 +28,16 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
 
 
     private FirebaseAuth mAuth;
-    //private FirebaseFirestore mStore;
-
     private static final String TAG = "MapsActivityTrader";
-    //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private GoogleMap mMap;
-    //private Intent serviceIntent;
-    public static Context thisContext;
+    public Context thisContext;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_trader);
 
         mAuth = FirebaseAuth.getInstance();
-        //mStore = FirebaseFirestore.getInstance();
-        //serviceIntent = new Intent(this, GetLocationService);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapDelimiter);
@@ -51,8 +46,6 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
         startService(new Intent(MapsActivityTrader.this, MyFirebaseMessagingServices.class));
         initViews();
     }
-
-
 
     private void initViews(){
         NavigationView navigationView = findViewById(R.id.navigationView_Map_Trader);
@@ -67,48 +60,6 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
         drawer_map_trader.addDrawerListener(toggle);
         toggle.syncState();
     }
-
-
-    /*@Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        mMap = googleMap;
-        getUserDetails(googleMap);
-        areaLimitata();
-
-    }*/
-
-    //da spostare
-    /*private void areaLimitata(){
-        User u=UserClient.getUser();
-
-        if(u!=null && u.getDelimited_area()!=null){
-
-            List<LatLng> latLngs = new ArrayList<>();
-
-            List<GeoPoint> geoPoints = u.getDelimited_area();
-            for (GeoPoint a:geoPoints) {
-                latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
-            }
-
-            PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
-            Polygon polygon=mMap.addPolygon(polygonOptions);
-            polygon.setStrokeColor(Color.BLACK);
-        }
-    }*/
-
-    /*private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            if (mMap != null) {
-                mMap.setMyLocationEnabled(true);
-            }
-        } else {
-            // Permission to access the location is missing. Show rationale and request permission
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        }
-    }*/
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

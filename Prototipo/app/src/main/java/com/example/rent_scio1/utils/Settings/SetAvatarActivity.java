@@ -20,19 +20,12 @@ import android.widget.Toast;
 
 import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.Trader.NewVehicleActivityTrader;
 import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.UserClient;
-
-
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
-
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;

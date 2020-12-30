@@ -147,22 +147,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 Log.d(TAG, "OK, delimited area pushata");
             }
         });
-        /*
-        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
-
-        databaseReference.child("users").child(u.getUser_id()).child("delimited_area").setValue(geoPoints)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + u.getUser_id());
-                    }
-                });*/
-
-        /*DocumentReference documentReference=mStore.collection("users").document(u.getUser_id());
-
-        documentReference.set(u.getUser_id())
-                .addOnSuccessListener(aVoid -> Log.d(TAG,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + u.getUser_id()))
-                .addOnFailureListener(e -> System.out.println("onFaiulure: "+ e.toString()));*/
     }
 
     //inizializzazione mappa 2
@@ -171,8 +155,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         getUserDetails(googleMap);
-        //enableMyLocation();  // TODO attivare GPS in automatico
-        //mMap.setMyLocationEnabled(true);
 
         mMap.setOnMapClickListener(latLng -> {
             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
@@ -337,19 +319,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         if(mTrader == null){
             mTrader = new User();
             DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()){
-                        Log.d(TAG, "onComplete: successfully get teh user details");
-                        User user = task.getResult().toObject(User.class);
-                        mTrader = new User (user);
-                        /*mTraderLocation.setGeoPoint(user.getTraderposition());
-                        mTrader.set*/
-                        /*UserClient.setUser(user);*/
-                        setCameraView(googleMap);
-                    }
+            userRef.get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: successfully get teh user details");
+                    User user = task.getResult().toObject(User.class);
+                    mTrader = new User (user);
+                    setCameraView(googleMap);
                 }
             });
         }

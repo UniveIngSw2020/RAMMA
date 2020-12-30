@@ -29,9 +29,6 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG="NewVehicleActivityTrader";
 
-    private static final String Intent_newVehicle_maxID="Intent_newVehicle_maxID";
-    private static final String Intent_newVehicle_nVehicle="Intent_newVehicle_nVehicle";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +39,6 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         EditText vehicle_type = findViewById(R.id.tipo_veicolo);
         EditText seats = findViewById(R.id.posti_a_sedere);
         EditText maxSpeed=findViewById(R.id.maxSpeed);
-
-
-
 
         //aggiungo bottone conferma e il comportamento al click
         Button conferma = findViewById(R.id.Conferma);
@@ -112,7 +106,6 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
                     Log.w(TAG, "Error adding document");
                 }
             });
-            //db.collection("vehicles").add(newVehicle).addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId())).addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
 
             //ritorno alla tabella dei veicoli
             Intent intent=new Intent(getApplicationContext(),VehicleListActivityTrader.class);

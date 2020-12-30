@@ -188,7 +188,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
         new CountDownTimer(time, 100) {
-            @SuppressLint("DefaultLocale")
+            @SuppressLint({"DefaultLocale", "SetTextI18n"})
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -235,7 +235,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 }
 
 
-                speedText.setText(speed+R.string.kmh);
+                speedText.setText(speed+" km/h");
 
 
             }

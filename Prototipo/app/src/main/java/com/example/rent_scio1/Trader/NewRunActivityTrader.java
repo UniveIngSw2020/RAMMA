@@ -25,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 public class NewRunActivityTrader extends AppCompatActivity {
@@ -66,25 +68,6 @@ public class NewRunActivityTrader extends AppCompatActivity {
 
     private void query(ArrayList<Vehicle> veicoliDisponibili, Spinner spinner){
 
-        /*db.collection("vehicles")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-
-                            Vehicle v = new Vehicle(document.toObject(Vehicle.class));
-
-                            if (!v.isRented())
-                                veicoliDisponibili.add(v);
-
-                            Log.d(TAG, document.getId() + " => " + document.getData());
-                        }
-                        spinnerAdd(veicoliDisponibili , spinner);
-
-                    } else {
-                        Log.w(TAG, "Error getting documents.", task.getException());
-                    }
-                });*/
         Query getVehiclesTrader = db.collection("vehicles").whereEqualTo("fk_trader", FirebaseAuth.getInstance().getUid());
 
         getVehiclesTrader.get().addOnCompleteListener(task -> {
@@ -120,11 +103,10 @@ public class NewRunActivityTrader extends AppCompatActivity {
 
                     if(vehicle.getVehicleType()!=null) {
 
-
-
                         int durataMin=m.getValue() + h.getValue()*60;
-                        Long durataMillisec= (long) (durataMin*60)*1000;
-                        String durataString=durataMillisec.toString();
+                        long durataMillisec= (long) (durataMin*60)*1000;
+
+                        String durataString=""+durataMillisec;
 
                         Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
                         String str = UserClient.getUser().getUser_id() + " " + vehicle.getVehicleUID() + " " + durataString;
@@ -157,7 +139,7 @@ public class NewRunActivityTrader extends AppCompatActivity {
                 }
 
                 @Override
-                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                     View view = super.getDropDownView(position, convertView, parent);
                     TextView tv = (TextView) view;
                     tv.setTextColor(Color.rgb(3,50,73));

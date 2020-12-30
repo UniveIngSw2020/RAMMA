@@ -123,10 +123,6 @@ public class SettingsActivityTextView extends AppCompatActivity {
                     user.setShopName(editText.getText().toString());
                     break;
                 case "email":
-
-                   // FirebaseAuth.getInstance().getCurrentUser().updateEmail(user.getEmail());
-
-
                     // Get auth credentials from the user for re-authentication
 
                     // Prompt the user to re-provide their sign-in credentials
@@ -143,8 +139,6 @@ public class SettingsActivityTextView extends AppCompatActivity {
 
                     break;
                 case "password":
-                    //user.setUser_id(editText.getText().toString());
-                    //FirebaseAuth.getInstance().getCurrentUser().updatePassword(user.getEmail());
 
                     u.reauthenticate(credential)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -188,7 +182,6 @@ public class SettingsActivityTextView extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             startActivity(intent);
-            //this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

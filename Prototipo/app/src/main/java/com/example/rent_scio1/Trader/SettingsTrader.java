@@ -21,7 +21,6 @@ import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
 
 public class SettingsTrader extends AppCompatActivity {
 
-    private static final String TAG = "SettingsTrader";
     private Intent intentTextView;
 
     @Override

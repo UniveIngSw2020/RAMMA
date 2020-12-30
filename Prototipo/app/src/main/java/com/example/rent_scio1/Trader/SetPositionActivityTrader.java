@@ -143,7 +143,6 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
                     builder.setTitle("Attenzione");
                     builder.setMessage("Il posizionamento selezionato comporterà l'eliminazione dell'area limitata.\n Vuoi procedere comunque?");
 
-                    //builder.setIcon(R.drawable.ic_launcher);
                     builder.setPositiveButton("Sì", (dialog, id) -> {
 
                         UserClient.getUser().setTraderPosition(newPosition);
@@ -200,8 +199,6 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             areaLimitata();
         }
 
-
-
         mMap.setOnMapClickListener(latLng -> {
             mMap.clear();
             shop=mMap.addMarker(new MarkerOptions().position(latLng));
@@ -209,35 +206,6 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
             setCameraView(null, shop.getPosition());
         });
-
-
-        /*
-        //TODO gettarsi la stringa
-        Places.initialize(getApplicationContext(), "AIzaSyB4cHCVsFMmJEBrYM1lkNpG_BgwoxMM8vo");
-
-        // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@org.jetbrains.annotations.NotNull @NotNull Place place) {
-
-                mMap.clear();
-                shop=mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getAddress()));
-                shop.setDraggable(true);
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred : " + status);
-            }
-        });*/
-
 
     }
 

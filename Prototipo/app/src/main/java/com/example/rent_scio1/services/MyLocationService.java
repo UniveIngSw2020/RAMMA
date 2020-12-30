@@ -46,12 +46,10 @@ public class MyLocationService extends Service {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private boolean runAlreadyInsert = false;
     private  long lastNotificationArea;
     private  long lastNotificationSpeed;
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
-        //in teoria non serve ma bisogna fare una prova
 
 
         public LocationListener(String provider) {
@@ -64,10 +62,8 @@ public class MyLocationService extends Service {
         public void onLocationChanged(@NonNull Location location) {
             Log.e(TAG, "POSIZIONE CAMBIATA");
 
-
-
             mLastLocation.set(location);
-            int speed= (int)(mLastLocation.getSpeed() *3.6);/*(Math.sqrt( (Math.pow(mLastLocation.getLatitude() - mPreLastLocation.getLatitude(),2)) + (Math.pow(mLastLocation.getLongitude()- mPreLastLocation.getLongitude(),2)) ) /  (double) mLastLocation.getTime()-mPreLastLocation.getTime());*/
+            int speed= (int)(mLastLocation.getSpeed() *3.6);
 
             updateUserLocation(location, speed);
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
@@ -80,11 +76,7 @@ public class MyLocationService extends Service {
                 lastNotificationSpeed = Calendar.getInstance().getTime().getTime();
                 checkSpeedLimit(speed);
             }
-//            if(speed > UserClient.getRun)
-//            if(UserClient.getTrader() != null){
-//                for(String token : UserClient.getTrader().getTokens())
-//                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Il Cliente"+ UserClient.getUser().getName() + " fa il furbo e scappa");
-//            }
+
         }
 
 
@@ -104,8 +96,8 @@ public class MyLocationService extends Service {
                 UserClient.getRun().setSpeed(speed);
 
                 DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
-                mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si"));
-                mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "Cazzo si al quadrato"));
+                mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "push posizione"));
+                mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "push speed"));
             }
         }
 
@@ -145,12 +137,6 @@ public class MyLocationService extends Service {
                 }
             });
         }
-//        private void stopService(){
-//            if(UserClient.getUser() == null || UserClient.getRun() == null){
-//                stopForeground(true);
-//                stopSelf();
-//            }
-//        }
 
     }
 
@@ -161,8 +147,6 @@ public class MyLocationService extends Service {
     public MyLocationService() {
     }
 
-
-
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -172,14 +156,13 @@ public class MyLocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        runAlreadyInsert = intent.getBooleanExtra("LoginActivity", false);
+        boolean runAlreadyInsert = intent.getBooleanExtra("LoginActivity", false);
         if(!runAlreadyInsert) {
-            final String rawValue = intent.getStringExtra("ScannedBarcodeActivity");       //TODO PER FAR FUNZIONARE IL SALTA SCANNER -> "ScannedBarcodeActivity"
+            final String rawValue = intent.getStringExtra("ScannedBarcodeActivity");
             String user = UserClient.getUser().getUser_id();
             String idComm = rawValue.split(" ")[0];
             String idVehicle = rawValue.split(" ")[1];
             long duration = Long.parseLong(rawValue.split(" ")[2]);
-            runAlreadyInsert = true;
             //Crea un nuovo documento vuoto
             DocumentReference ref = db.collection("vehicles").document();
 
@@ -211,35 +194,6 @@ public class MyLocationService extends Service {
         });
     }
 
-    private void deleteRun(String PK_run){
-        db.collection("run").document(PK_run)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e);
-                    }
-                })
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        UserClient.setRun(null);
-                        Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                });
-
-        Log.e(TAG,"AREA ELIMINATA");
-
-    }
-
     private void lockVehiclebyID(String id){
         Log.d(TAG, "cerco di lockare il veicolo");
         DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
@@ -252,9 +206,7 @@ public class MyLocationService extends Service {
             DocumentReference locationRef = db.collection("run").document(run.getRunUID());
             Log.d(TAG, run.getUser());
             locationRef.set(run).addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-
-                }
+                Log.d(TAG,"run pushata");
             });
         }catch(NullPointerException e){
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");

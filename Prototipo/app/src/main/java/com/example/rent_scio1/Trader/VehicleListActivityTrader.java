@@ -1,7 +1,6 @@
 package com.example.rent_scio1.Trader;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -15,12 +14,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
-
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,15 +25,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-
 import java.util.ArrayList;
 
 public class VehicleListActivityTrader extends AppCompatActivity {
 
     private static final String TAG="VehicleListActivityTrader";
-
-    private static final String Intent_newVehicle_maxID="Intent_newVehicle_maxID";
-    private static final String Intent_newVehicle_nVehicle="Intent_newVehicle_nVehicle";
 
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -75,142 +68,9 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             }
         });
 
-       /* db.collection("vehicles")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-
-                            vehicleArrayList.add(new Vehicle(document.toObject(Vehicle.class)));
-
-                            Log.d(TAG, document.getId() + " => " + document.getData());
-                        }
-
-                        vehicleArrayList.sort( (o1, o2) -> o1.getID()-o2.getID() );
-
-                        maxID=createTable(vehicleArrayList);
-
-                        if( vehicleArrayList.size()==0 )
-                            warningEmpty.setVisibility(View.VISIBLE);
-
-                    } else {
-                        Log.w(TAG, "Error getting documents.", task.getException());
-                    }
-                });*/
-
         initViews();
         toolbar_vehicle_list_java = findViewById(R.id.toolbar_vehicle_list);
     }
-
-    /*
-    private void creaEliminazione(AtomicBoolean wasSelected){
-
-        //creo copia ArrayList per trasformarlo in ArrayAdapter
-        ArrayList<Vehicle> forDataAdapter=new ArrayList<>(vehicleArrayList);
-        //forDataAdapter.removeIf(Vehicle::isRented);
-
-        //aggiungo riga di selezione a Arraylist
-        forDataAdapter.add(0,new Vehicle());
-
-
-        //getto lo spinner
-        Spinner selezionaVeicolo = findViewById(R.id.seleziona_veicolo_eliminare);
-
-        //adatto i dati da Arraylist di veicolo
-        ArrayAdapter<Vehicle> dataAdapter = new ArrayAdapter<Vehicle>(this, R.xml.spinner_item, forDataAdapter ){
-
-            @Override
-            public boolean isEnabled(int position){
-                // Disable the first item from Spinner
-                // First item will be use for hint
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if(position == 0){
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.rgb(3,50,73));
-                }
-                else {
-                    tv.setTextColor(Color.rgb(3,50,73));
-                }
-
-                return view;
-            }
-        };
-
-        //aggiungo dati adattati a spinner
-        dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        selezionaVeicolo.setAdapter(dataAdapter);
-
-
-        //dico cosa accade quando seleziono un item
-        selezionaVeicolo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                Vehicle vehicle = (Vehicle) parent.getItemAtPosition(position);
-
-                Button conferma = findViewById(R.id.conferma_eliminazione_veicolo);
-                conferma.setOnClickListener(v -> {
-
-                    if( vehicle.getVehicleType()!=null ) {
-
-                        db.collection("vehicles")
-                                .get()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                            if( (new Vehicle(document.toObject(Vehicle.class))).getVehicleUID().equals(vehicle.getVehicleUID())  ){
-
-                                                if( vehicle.isRented() ){
-                                                    Toast.makeText(getApplicationContext(),"Non puoi eliminare un veicolo che è attualmente in corsa!",Toast.LENGTH_LONG).show();
-                                                    return;
-                                                }
-                                                //elimina veicolo da DB
-                                                eliminazione(document.getId());
-
-                                                //reinizializza tabella
-                                                vehicleArrayList.remove(vehicle);
-                                                recreateTable(vehicleArrayList);
-
-                                                //reinizializza spinner
-                                                creaEliminazione(wasSelected);
-
-                                                //setta visibilità
-                                                findViewById(R.id.seleziona_veicolo_eliminare).setVisibility(View.INVISIBLE);
-                                                findViewById(R.id.conferma_eliminazione_veicolo).setVisibility(View.INVISIBLE);
-                                                wasSelected.set(false);
-
-                                                if( vehicleArrayList.size()==0 )
-                                                    warningEmpty.setVisibility(View.VISIBLE);
-
-                                            }
-
-                                            Log.d(TAG, document.getId() + " => " + document.getData());
-                                        }
-                                    } else {
-                                        Log.w(TAG, "Error getting documents.", task.getException());
-                                    }
-                                });
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(),"Seleziona un veicolo prima!!!!! ",Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -301,7 +161,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
             delete.setPadding(0,1,0,0);
             delete.setBackgroundResource(R.drawable.rounded_button);
             delete.setTextSize(18);
-            delete.setTextColor(getResources().getColor(R.color.back));
+            delete.setTextColor(getColor(R.color.back));
             delete.setText("ELIMINA");
 
             delete.setOnClickListener(view -> {
@@ -313,22 +173,15 @@ public class VehicleListActivityTrader extends AppCompatActivity {
                     builder.setTitle("Conferma eliminazione");
                     builder.setMessage("Sei sicuro di voler eliminare definitivamente questo veicolo?");
 
-                    //builder.setIcon(R.drawable.ic_launcher);
-                    builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            eliminazione(v.getVehicleUID());
+                    builder.setPositiveButton("Sì", (dialog, id) -> {
+                        dialog.dismiss();
+                        eliminazione(v.getVehicleUID());
 
-                            Intent intent=new Intent(getApplicationContext(),VehicleListActivityTrader.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                        }
+                        Intent intent=new Intent(getApplicationContext(),VehicleListActivityTrader.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     });
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                        }
-                    });
+                    builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
                     AlertDialog alert = builder.create();
                     alert.show();
                 }

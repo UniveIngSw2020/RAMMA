@@ -1,5 +1,6 @@
 package com.example.rent_scio1.utils.map;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -8,12 +9,8 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import androidx.core.content.res.ResourcesCompat;
-
-import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -52,6 +49,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void createTableCustomers(TableLayout table, String speed, String remainingTime) {
 
         Typeface typeface = ResourcesCompat.getFont(mContext, R.font.comfortaa_regular);
@@ -103,7 +101,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         textView2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView2.setTypeface(typeface);
         textView2.setTextColor(Color.rgb(3,50,73));
-        textView2.setText(speed +" km/h");
+        textView2.setText(speed + " km/h");
 
         rowNumbers.addView(textView1);
         rowNumbers.addView(textView2);

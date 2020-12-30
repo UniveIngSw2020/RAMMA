@@ -22,8 +22,6 @@ public class User {
 
     private List<String> tokens;
 
-    //private Bitmap avatar=null;
-
     public User(){}
 
     public User(String user_id, String name, String surname, String email, String phone, Boolean trader, String shopName, GeoPoint traderPosition, List<GeoPoint> delimited_area, List<String> tokens) {
@@ -38,7 +36,6 @@ public class User {
         this.traderPosition = traderPosition;
         this.delimited_area = delimited_area;
         this.tokens = tokens;
-        //this.avatar= BitmapFactory.decodeResource(context.getResources(), R.drawable.logo1);
     }
 
 

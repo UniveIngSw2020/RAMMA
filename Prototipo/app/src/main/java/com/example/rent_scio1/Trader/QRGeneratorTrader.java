@@ -6,20 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.WriterException;
-
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
@@ -40,14 +33,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
         //ID univoco
         final String code = getIntent().getStringExtra(ToQR);
 
-
-        
-        //Log.e(TAG, UserClient.getUser().toString());
-
-
         Toast.makeText(this, code, Toast.LENGTH_LONG).show();
-
-
 
         //Genero QR e ne faccio il display
         QRGEncoder qrgEncoder = new QRGEncoder(code, null, QRGContents.Type.TEXT,500);
@@ -63,8 +49,6 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
 
         //quando il cliente ha stabile la connessione devo ritornare alla mappa principale
-
-
         redirectMasActivityTrader(code);
 
     }
@@ -72,41 +56,34 @@ public class QRGeneratorTrader extends AppCompatActivity {
     private void redirectMasActivityTrader(String code){
         FirebaseFirestore.getInstance().collection("run")
                 .whereEqualTo("trader", UserClient.getUser().getUser_id())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w(TAG, "Listen failed.", e);
-                            return;
-                        }
-
-                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                            Log.w(TAG, "PRE SWITCH");
-                            switch (dc.getType()) { //dc.getType()
-                                case ADDED:
-                                    Log.e(TAG, "SWITCH ADD");
-                                    //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE CONfERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
-                                    if(code.split(" ").length==3 && dc.getDocument().toObject(Run.class).getVehicle().equals(code.split(" ")[1])){
-                                        Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                        Toast.makeText(QRGeneratorTrader.this, "Corsa Creaata con Successo!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    break;
-                                case REMOVED:
-                                    Log.e(TAG, "SWITCH DELETE");
-                                    if(code.split(" ").length==1){
-                                        Log.e(TAG, "ABBIAMO UN PROBLEMA REMOVE");
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                        Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
-                                    }
-                                    break;
-                            }
-                        }
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
                     }
 
-
+                    for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                        Log.w(TAG, "PRE SWITCH");
+                        switch (dc.getType()) {
+                            case ADDED:
+                                Log.e(TAG, "SWITCH ADD");
+                                //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE CONfERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
+                                if(code.split(" ").length==3 && dc.getDocument().toObject(Run.class).getVehicle().equals(code.split(" ")[1])){
+                                    Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
+                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                    Toast.makeText(QRGeneratorTrader.this, "Corsa Creaata con Successo!", Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            case REMOVED:
+                                Log.e(TAG, "SWITCH DELETE");
+                                if(code.split(" ").length==1){
+                                    Log.e(TAG, "ABBIAMO UN PROBLEMA REMOVE");
+                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                    Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                        }
+                    }
                 });
-
     }
 }
