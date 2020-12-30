@@ -1,16 +1,9 @@
 package com.example.rent_scio1.utils;
 
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import com.example.rent_scio1.R;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +25,6 @@ public class User {
     //private Bitmap avatar=null;
 
     public User(){}
-
 
     public User(String user_id, String name, String surname, String email, String phone, Boolean trader, String shopName, GeoPoint traderPosition, List<GeoPoint> delimited_area, List<String> tokens) {
 
@@ -127,10 +119,6 @@ public class User {
         this.shopName = shopName;
     }
 
-    public void setTokens(List<String> tokens){
-        this.tokens = tokens;
-    }
-
     public List<String> getTokens(){
         return this.tokens;
     }
@@ -162,6 +150,7 @@ public class User {
         this.delimited_area = delimited_area;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "User{" +
@@ -175,5 +164,4 @@ public class User {
                 ", traderPosition=" + traderPosition + '\'' +
                 '}';
     }
-
 }

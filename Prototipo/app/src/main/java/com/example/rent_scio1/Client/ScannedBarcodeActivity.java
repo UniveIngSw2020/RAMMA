@@ -10,26 +10,18 @@ import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.UserClient;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 public class ScannedBarcodeActivity extends AppCompatActivity {
@@ -47,16 +39,12 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         ADD
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
         event = (Action) getIntent().getSerializableExtra(ToQR);
-
     }
-
-
 
     private void initViews() {
 
@@ -113,15 +101,14 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
             }
         });
 
-
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
-                //Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
-            public void receiveDetections(Detector.Detections<Barcode> detections) {
+            public void receiveDetections(@NotNull Detector.Detections<Barcode> detections) {
 
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
@@ -222,9 +209,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private void unlockVehiclebyID(String id){
         DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("vehicles").document(id);
-        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> {
-            Log.d(TAG, "VEICOLO LIBERATO");
-        });
+        mDatabase.update("rented", false).addOnSuccessListener(aVoid -> Log.d(TAG, "VEICOLO LIBERATO"));
     }
 
 
@@ -232,27 +217,14 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     private void deleteRun(String PK_run){
         FirebaseFirestore.getInstance().collection("run").document(PK_run)
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e);
-                    }
-                })
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        UserClient.setRun(null);
-                        UserClient.setTrader(null);
-                        Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
+                .addOnSuccessListener(aVoid -> Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!"))
+                .addOnFailureListener(e -> Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e))
+                .addOnCompleteListener(task -> {
+                    UserClient.setRun(null);
+                    UserClient.setTrader(null);
+                    Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 });
 
         Log.e(TAG,"AREA ELIMINATA");

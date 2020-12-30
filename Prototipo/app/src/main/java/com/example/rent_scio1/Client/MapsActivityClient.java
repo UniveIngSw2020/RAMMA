@@ -2,7 +2,6 @@ package com.example.rent_scio1.Client;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,7 +28,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyFirebaseMessagingServices;
@@ -52,6 +49,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.Random;
 
 public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -59,24 +57,9 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     private static final String TAG = "MapsActivityClient";
     private static final String ToQR="QR_code_creation";
 
-    //private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    public static final int ERROR_DIALOG_REQUEST = 9001;
-    public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
-    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 9004;
 
     private boolean mCameraPermissionGranted = false;
-    private boolean mLocationPermissionGranted = false;
-    //private MyMapClient myMapClient;
-
-
-    //private Notification notification_delarea;
-    //private FirebaseFirestore mStore;
-    //private FusedLocationProviderClient mFusedLocationClient;
-    //private GoogleMap mMap;
-    //private LatLngBounds mMapBoundary;
-    private Intent serviceIntent;
-    //private ArrayList<User> listTrader = new ArrayList<>();
     private NavigationView navigationView;
 
     MyMapClient myMapClient;
@@ -86,7 +69,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     private ScannedBarcodeActivity.Action LastAction;
 
 
-    private ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader = new ArrayList<>();
+    private final ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader = new ArrayList<>();
     private Vehicle v = null;
 
     //Polygon delimitedArea;
@@ -105,15 +88,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "sono nel resume ");
-        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        //mStore = FirebaseFirestore.getInstance();
-        serviceIntent = new Intent(this, MyLocationService.class);
-        //getCameraPermission();
         initViews();
         startService(new Intent(MapsActivityClient.this, MyFirebaseMessagingServices.class));
 
@@ -205,7 +183,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         mapFragment.getMapAsync(myMapClient);
     }
 
-
     private void updateTime(TextView timeText,TextView speedText, Run run){
 
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
@@ -258,7 +235,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 }
 
 
-                speedText.setText(speed+" km/h");
+                speedText.setText(speed+R.string.kmh);
 
 
             }
@@ -278,8 +255,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         TableLayout table = findViewById(R.id.gridview_maps_client);
-
-        /*da gettare il tempo rimasto e l'altra cosa che non ricordo ora all'interno delle textview*/
 
             TableRow row;
             row = new TableRow(this);
@@ -320,7 +295,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     private void initViews(){
         navigationView = findViewById(R.id.navigationView_Map_Client);
         TextView textView = navigationView.getHeaderView(0).findViewById(R.id.text_email_client);
-        textView.setText(mAuth.getCurrentUser().getEmail());
+        textView.setText(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail());
 
 
         DrawerLayout drawer_map_client= findViewById(R.id.drawer_map_client1);
@@ -349,70 +324,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         drawer_map_client.addDrawerListener(toggle);
         toggle.syncState();
 
-
-        /*GridView gridView = findViewById(R.id.gridview_maps_client);*/
-
-
     }
-
-    /*private Notification createNotificationChannel(String IDChannel, String nameNot, String descriptionNot, int icon) {
-        if (Build.VERSION.SDK_INT >= 26) {
-
-            CharSequence name = nameNot;
-            String description = descriptionNot;
-
-
-            NotificationChannel channel = new NotificationChannel(IDChannel, name, NotificationManager.IMPORTANCE_DEFAULT);
-
-            channel.setDescription(description);
-
-
-            Notification not = new NotificationCompat.Builder(this, "delimitedAreaChannel")
-                    .setSmallIcon(icon)
-                    .setContentTitle("My notification")
-                    .setContentText("Hello World!")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT).build();
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-
-            Log.e(TAG, "ENTRATO QUA: createNotificationChannel");
-
-            return not;
-        }
-        return null;
-    }*/
-
-
-
-    ////////////////////////////////////////////////// FUNZIONI PER EVITARE IL BARCODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    private boolean isLocationServiceRunning() {
-        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.example.rent_scio1.services.MyLocationService".equals(service.service.getClassName())) {
-                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
-                return true;
-            }
-        }
-        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
-        return false;
-    }
-    private void evitaBarcodeScanner(){
-        String rawValue = "McjQ8VvrI2YRGboKYDuv26vMav52 qBigNbdreFNjna5ufJKC 80000";
-        if (!isLocationServiceRunning()) {
-            serviceIntent.putExtra(TAG, rawValue);
-            Log.w(TAG, rawValue);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                MapsActivityClient.this.startForegroundService(serviceIntent);
-            } else {
-                Log.w(TAG, "parti cazzo");
-                startService(serviceIntent);
-            }
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -475,9 +387,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
         return true;
     }
-
-
-
 
     private void startActivityBarcode(ScannedBarcodeActivity.Action action){
         if(action==ScannedBarcodeActivity.Action.ADD){
@@ -542,97 +451,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         mCameraPermissionGranted=true;
     }
 
-
-
-
-
-
-/*
-    private boolean checkMapServices() {
-        if (isServicesOK()) {
-            return isMapsEnabled();
-        }
-        return false;
-    }
-
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("\"L'applicazione per funzionare ha bisogno che la geolocalizzazione sia attiva dalle impostazioni.")
-                .setCancelable(false)
-                .setPositiveButton("Yes", (dialog, id) -> {
-                    Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    public boolean isMapsEnabled() {
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-            return false;
-        }
-        return true;
-    }
-
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    public boolean isServicesOK() {
-        Log.d(TAG, "isServicesOK: checking google services version");
-
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivityClient.this);
-
-        if (available == ConnectionResult.SUCCESS) {
-            //everything is fine and the user can make map requests
-            Log.d(TAG, "isServicesOK: Google Play Services is working");
-            return true;
-        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
-            //an error occured but we can resolve it
-            Log.d(TAG, "isServicesOK: an error occured but we can fix it");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MapsActivityClient.this, available, ERROR_DIALOG_REQUEST);
-            dialog.show();
-        } else {
-            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
-        }
-        return false;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {// If request is cancelled, the result arrays are empty.
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-                break;
-            case PERMISSIONS_REQUEST_ACCESS_CAMERA:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mCameraPermissionGranted = true;
-                }
-                break;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: called.");
-        if (requestCode == PERMISSIONS_REQUEST_ENABLE_GPS) {
-            if (!mLocationPermissionGranted) {
-                getLocationPermission();
-            }
-        }
-    }
-*/
-
     private void returnShop() {
         //TODO: Molto diffcile ora come ora
     }
@@ -650,161 +468,4 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             startActivity(intent);
         });
     }
-
-
-    /*@Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        enableMyLocation();
-        getPositionTrader();
-
-        Run run = UserClient.getRun();
-        if (run != null) {
-
-            NotificationCompat.Builder n=createNotificationChannel();
-
-            long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
-
-            CountDownTimer timerDelimitedArea = new CountDownTimer(time,10000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-
-                    delimitedArea(run);
-                    //TODO volendo si puo' gestire un po' meglio il discorso dell'id di notifica, così da fare azioni quando bla bla bla
-
-                    startNotification(run, n,0);
-                    Log.e(TAG,"TICK TIMER");
-                }
-
-                @Override
-                public void onFinish() {
-
-                }
-            }.start();
-
-        }
-    }*/
-
-    /*private NotificationCompat.Builder createNotificationChannel(){
-        if (Build.VERSION.SDK_INT >= 26) {
-
-            CharSequence name = getString(R.string.delimitedAreaChannel);
-            String description = getString(R.string.delimitedAreaChannelD);
-
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-            NotificationChannel channel = new NotificationChannel("delimitedAreaChannel", name, importance);
-
-            channel.setDescription(description);
-
-            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "delimitedAreaChannel")
-                    .setSmallIcon(R.drawable.ic_not_permitted)
-                    .setContentTitle("My notification")
-                    .setContentText("Hello World!")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setAutoCancel(true)
-                    .setTimeoutAfter(60000)
-                    .setSound(alarmSound);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-
-            // notificationId is a unique int for each notification that you must define
-            Log.e(TAG,"ENTRATO QUA: createNotificationChannel");
-
-            return builder;
-        }
-
-        return null;
-    }*/
-
-
-
-
-
-   /* private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            if (mMap != null) {
-                mMap.setMyLocationEnabled(true);
-                getLastKnownLocation();
-                //getUserDetails();
-            }
-        } else {
-            // Permission to access the location is missing. Show rationale and request permission
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        }
-    }*/
-
-//    private void getUserDetails() {
-//        if (UserClient.getRun() == null) {
-//            DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
-//            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        Log.d(TAG, "onComplete: successfully get teh user details");
-//                        User user = task.getResult().toObject(User.class);
-//                        //mRun.setUser(user);
-//                        UserClient.setUser(user);
-//                        //getLastKnownLocation();
-//                    }
-//                }
-//            });
-//        } else {
-//            //getLastKnownLocation();
-//        }
-//    }
-
-    /*private void getLastKnownLocation() {
-        Log.d(TAG, "getLastKnownLocation: called.");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        //TODO MOVE CAMERA AUTOMATIc
-        mFusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
-            @Override
-            public boolean isCancellationRequested() {
-                return false;
-            }
-
-            @NonNull
-            @Override
-            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
-                return this;
-            }
-        }).addOnSuccessListener(this::setCameraView);
-    }*/
-
-    /*private void setCameraView(Location location) {
-        try {
-
-            double bottomBundary = location.getLatitude() - .01;
-            double leftBoundary = location.getLongitude() - .01;
-            double topBoundary = location.getLatitude() + .01;
-            double rightBoundary = location.getLongitude() + .01;
-
-            mMapBoundary = new LatLngBounds(
-                    new LatLng(bottomBundary, leftBoundary),
-                    new LatLng(topBoundary, rightBoundary)
-            );
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
-        } catch (Exception e) {
-        }
-    }*/
-
-/*
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isLocationServiceRunning()) { //TODO: richimaare queste due righe al momento della terminazionedella corsa
-            //myMapClient.stopNotification();
-            stopService(serviceIntent);
-        }
-    }*/
-
 }

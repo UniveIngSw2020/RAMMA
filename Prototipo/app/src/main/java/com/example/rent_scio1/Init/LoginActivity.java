@@ -11,11 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
@@ -24,15 +21,13 @@ import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Objects;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -47,7 +42,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Widgets
     private EditText mEmail, mPassword;
     private ProgressBar mProgressBar;
-    private Toolbar toolbar_act_login;
 
 
     @Override
@@ -56,7 +50,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         mEmail = findViewById(R.id.email_login);
         mPassword = findViewById(R.id.password_login);
-        //mLoginBtn = findViewById(R.id.confirmlogin_btn);
         mProgressBar = findViewById(R.id.progressBarlogin);
 
         setupFirebaseAuth();
@@ -70,9 +63,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initViews(){
-        toolbar_act_login = findViewById(R.id.toolbar_login);
+        Toolbar toolbar_act_login = findViewById(R.id.toolbar_login);
         setSupportActionBar(toolbar_act_login);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -108,29 +101,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-  /*
-                Query userquery = db.collection("users").whereEqualTo("user_id", user.getUid());
-                userquery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            for(QueryDocumentSnapshot document : task.getResult()){
-                                User u = new User(document.toObject(User.class));
-                                UserClient.setUser(u);
-                                Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
-                            }
-                        }else{
-                            Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
-                        }
-
-                        if(UserClient.getUser().getTrader()){
-                            startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                        }else{
-                            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-                        }
-                    }
-                });
- */
                 DocumentReference userRef = db.collection("users")
                         .document(user.getUid());
 
@@ -143,36 +113,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         UserClient.setRun(null);
                         if(user1 != null) {
                             db.collection("run").whereEqualTo("user", user1.getUser_id()).get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            for (DocumentSnapshot d : queryDocumentSnapshots.getDocuments()) {
-                                                Log.e(TAG, "C'è UNA CORSA SOLA SPERO");
-                                                UserClient.setRun(d.toObject(Run.class)); // TODO PRENDERE LA CORSA SE C'E
-                                                startLocationService(true);
-                                            }
+                                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                                        for (DocumentSnapshot d : queryDocumentSnapshots.getDocuments()) {
+                                            Log.e(TAG, "C'è UNA CORSA SOLA SPERO");
+                                            UserClient.setRun(d.toObject(Run.class)); // TODO PRENDERE LA CORSA SE C'E
+                                            startLocationService(true);
                                         }
                                     })
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            Toast.makeText(LoginActivity.this, "Autenticato come: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                                    .addOnCompleteListener(task1 -> {
+                                        Toast.makeText(LoginActivity.this, "Autenticato come: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                                            if (user1 != null) {
+                                        if (user1.getTrader()) {
+                                            if (user1.getTraderPosition() == null)
+                                                startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
+                                            else
+                                                startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                        } else
+                                            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
 
-
-                                                if (user1.getTrader()) {
-                                                    if (user1.getTraderPosition() == null)
-                                                        startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
-                                                    else
-                                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                                } else
-                                                    startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-
-                                                hideDialog();
-                                                finishAffinity();
-                                            }
-                                        }
+                                        hideDialog();
+                                        finishAffinity();
                                     });
                         }else{
                             Log.e(TAG, "L'account è stato eliminato per qualche ragione");      //SUPPONGO CHE SIA COSì :)
@@ -180,10 +140,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
 
-                /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();*/
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -266,67 +222,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(TextUtils.isEmpty(mEmail.getText().toString().trim())){ mEmail.setError("Email Richiesta!"); }
         if(TextUtils.isEmpty(mPassword.getText().toString().trim())){ mPassword.setError("Password Richiesta"); }
     }
-
-
-    /*private void signIn(String email, String password) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Log.d(TAG, "signIn:" + email);
-
-
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        // [START sign_in_with_email]
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "Authentication Successes.", Toast.LENGTH_SHORT).show();
-
-
-                            Query userquery = db.collection("users").whereEqualTo("user_id", mAuth.getCurrentUser().getUid());
-                            userquery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        for(QueryDocumentSnapshot document : task.getResult()){
-                                            u = new User(document.toObject(User.class));
-
-                                            Log.d(TAG, "INFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO " + u.toString());
-                                        }
-                                    }else{
-                                        Log.w(TAG, "-----------------------------------------------------------Error getting documents.", task.getException());
-                                    }
-
-                                    if(u.getTrader()){
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                    }else{
-                                        startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-                                    }
-                                }
-                            });
-
-
-
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            System.out.println("signInWithEmail:failure" + task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
-    }*/
-
 
     @Override
     public void onClick(View view) {
