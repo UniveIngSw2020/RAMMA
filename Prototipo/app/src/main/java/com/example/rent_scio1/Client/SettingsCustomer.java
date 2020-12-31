@@ -65,14 +65,12 @@ public class SettingsCustomer extends AppCompatActivity {
                     break;
                 /*CAMBIA EMAIL*/
                 case 3:
-                    //Toast.makeText(getApplicationContext(), "Cambia email selezionato", Toast.LENGTH_LONG).show();
                     intentTextView.putExtra("type","email");
                     intentTextView.putExtra("textType","Scrivi la tua email");
                     //startActivity(intentTextView);
                     break;
                 /*CAMBIA PASSWORD*/
                 case 4:
-                    //Toast.makeText(getApplicationContext(), "Cambia password selezionato", Toast.LENGTH_LONG).show();
                     intentTextView.putExtra("type","password");
                     intentTextView.putExtra("textType","Scrivi la tua password");
                     //startActivity(intentTextView);

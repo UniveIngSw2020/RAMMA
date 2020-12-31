@@ -454,7 +454,11 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     }
 
     private void returnShop() {
-        //TODO: Molto diffcile ora come ora
+        String uri = "http://maps.google.com/maps?saddr=" + UserClient.getRun().getGeoPoint().getLatitude() +
+                "," + UserClient.getRun().getGeoPoint().getLongitude() + "&daddr=" + UserClient.getTrader().getTraderPosition().getLatitude() +
+                "," + UserClient.getTrader().getTraderPosition().getLongitude();
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
     }
 
     private void help() {

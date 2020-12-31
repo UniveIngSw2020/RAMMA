@@ -61,31 +61,30 @@ public class SettingsTrader extends AppCompatActivity {
                 case 1:
                     intentTextView.putExtra("type","name");
                     intentTextView.putExtra("textType","Scrivi il tuo nome!");
-                    startActivity(intentTextView);
                     break;
                 /*CAMBIA COGNOME*/
                 case 2:
                     intentTextView.putExtra("type","surname");
                     intentTextView.putExtra("textType","Scrivi il tuo cognome!");
-                    startActivity(intentTextView);
                     break;
                 /*CAMBIA EMAIL*/
                 case 3:
-                    Toast.makeText(getApplicationContext(), "Cambia mail selezionato", Toast.LENGTH_LONG).show();
+                    intentTextView.putExtra("type","email");
+                    intentTextView.putExtra("textType","Scrivi la tua email");
                     break;
                 /*CAMBIA PASSWORD*/
                 case 4:
-                    Toast.makeText(getApplicationContext(), "Cambia password selezionato", Toast.LENGTH_LONG).show();
+                    intentTextView.putExtra("type","password");
+                    intentTextView.putExtra("textType","Scrivi la tua password");
                     break;
                 /*CAMBIA TELEFONO*/
                 case 5:
                     intentTextView.putExtra("type","phone");
                     intentTextView.putExtra("textType","Scrivi il tuo numero di telefono!");
-                    startActivity(intentTextView);
                     break;
-
                 default:
             }
+            startActivity(intentTextView);
         });
     }
 

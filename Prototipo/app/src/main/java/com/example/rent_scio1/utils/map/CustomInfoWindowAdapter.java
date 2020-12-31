@@ -110,6 +110,8 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     }
 
+    private void createTableClient(){ }
+
     @Override
     public View getInfoWindow(Marker marker) {
         rendowWindowText(marker, mWindow);

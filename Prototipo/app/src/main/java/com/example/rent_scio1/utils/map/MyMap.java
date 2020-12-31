@@ -12,6 +12,7 @@ public class MyMap implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
     @Nullable

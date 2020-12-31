@@ -1,12 +1,9 @@
 package com.example.rent_scio1.utils.Settings;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -25,20 +22,19 @@ import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SettingsActivityTextView extends AppCompatActivity {
 
     private Intent intent;
     private static final String TAG = "SettingsActivityTextView";
+    private boolean check = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +42,8 @@ public class SettingsActivityTextView extends AppCompatActivity {
         setContentView(R.layout.activity_settings_text_view);
 
         String format="";
-        User user= UserClient.getUser();
 
-        if(user.getTrader()){
+        if(UserClient.getUser().getTrader()){
             intent = new Intent(getApplicationContext(), SettingsTrader.class);
         }
         else{
@@ -70,27 +65,27 @@ public class SettingsActivityTextView extends AppCompatActivity {
         switch (type){
             case "name":
                 format = "Nome";
-                editText.setText(user.getName());
+                editText.setText(UserClient.getUser().getName());
                 editText.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 break;
             case "surname":
                 format = "Cognome";
-                editText.setText(user.getSurname());
+                editText.setText(UserClient.getUser().getSurname());
                 editText.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
                 break;
             case "phone":
                 format = "Numero di telefono";
-                editText.setText(user.getPhone());
+                editText.setText(UserClient.getUser().getPhone());
                 editText.setInputType(InputType.TYPE_CLASS_PHONE);
                 break;
             case "shopName":
                 format= "Nome del negozio";
-                editText.setText(user.getShopName());
+                editText.setText(UserClient.getUser().getShopName());
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
                 break;
             case "email":
                 format = "Email";
-                editText.setText(user.getEmail());
+                editText.setText(UserClient.getUser().getEmail());
                 editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 break;
             case "password":
@@ -105,22 +100,22 @@ public class SettingsActivityTextView extends AppCompatActivity {
         String finalFormat = format;
 
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), user.getUser_id()); // Current Login Credentials \\
+        AuthCredential credential = EmailAuthProvider.getCredential(UserClient.getUser().getEmail(), UserClient.getUser().getUser_id()); // Current Login Credentials \\
 
         button.setOnClickListener(v -> {
             //cambio il dato dentro l'oggetto
             switch (type){
                 case "name":
-                    user.setName(editText.getText().toString());
+                    UserClient.getUser().setName(editText.getText().toString());
                     break;
                 case "surname":
-                    user.setSurname(editText.getText().toString());
+                    UserClient.getUser().setSurname(editText.getText().toString());
                     break;
                 case "phone":
-                    user.setPhone(editText.getText().toString());
+                    UserClient.getUser().setPhone(editText.getText().toString());
                     break;
                 case "shopName":
-                    user.setShopName(editText.getText().toString());
+                    UserClient.getUser().setShopName(editText.getText().toString());
                     break;
                 case "email":
                     // Get auth credentials from the user for re-authentication
@@ -129,42 +124,45 @@ public class SettingsActivityTextView extends AppCompatActivity {
                     u.reauthenticate(credential)
                             .addOnCompleteListener(task -> {
                                 Log.d(TAG, "User re-authenticated.");
-                                user.setEmail(editText.getText().toString());
-                                u.updateEmail(user.getEmail()).addOnCompleteListener(task1 -> {
+                                u.updateEmail(editText.getText().toString().trim()).addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
-                                        Log.d(TAG, "User email address updated.");
+                                        UserClient.getUser().setEmail(editText.getText().toString());
+                                        Log.e(TAG, "User email address updated.");
+                                        check = true;
+                                    }else{
+                                        Log.e(TAG, "User NOT email address updated.");
+                                        check = false;
                                     }
                                 });
                             });
 
                     break;
                 case "password":
-
                     u.reauthenticate(credential)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    u.updatePassword(editText.getText().toString()).addOnCompleteListener(task12 -> {
-                                        if (task12.isSuccessful()) {
-                                            Log.e(TAG, "Password updated");
-                                            user.setUser_id(FirebaseAuth.getInstance().getUid());
-                                        } else {
-                                            Log.e(TAG, "Error password not updated");
-                                        }
-                                    });
+                            .addOnCompleteListener(task -> u.updatePassword(editText.getText().toString().trim()).addOnCompleteListener(task12 -> {
+                                if (task12.isSuccessful()) {
+                                    Log.e(TAG, "Password updated");
+                                    UserClient.getUser().setUser_id(FirebaseAuth.getInstance().getUid());
+                                    check = true;
+                                } else {
+                                    Log.e(TAG, "Error password not updated");
+                                    check = false;
                                 }
-                            });
+                            }));
 
 
                     break;
             }
 
             //richiamo metodo che aggiorna il DB
-            SettingsUtil.updateAttribute("users", user.getUser_id(), type, editText.getText().toString(), o -> {
-                Toast.makeText(getApplicationContext(), finalFormat + " cambiato/a correttamente.", Toast.LENGTH_LONG).show();
-                startActivity(intent);
+            if(check){
+                SettingsUtil.updateAttribute("users", UserClient.getUser().getUser_id(), type, editText.getText().toString(), o -> {
+                    Toast.makeText(getApplicationContext(), finalFormat + " cambiato/a correttamente.", Toast.LENGTH_LONG).show();
+                    startActivity(intent);
+                    finishAffinity();
 
-            });
+                });
+            }
         });
 
         initViews();
