@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -28,10 +30,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.services.ExitService;
 import com.example.rent_scio1.services.MyFirebaseMessagingServices;
-import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
@@ -43,9 +46,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,7 +99,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         Log.e(TAG, "sono nel resume ");
         initViews();
         startService(new Intent(MapsActivityClient.this, MyFirebaseMessagingServices.class));
-
+        startService(new Intent(MapsActivityClient.this, ExitService.class));
     }
 
     @Override
@@ -333,20 +338,17 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         switch (item.getItemId()){
             case R.id.logout_client:
                 if(UserClient.getRun() == null) {
-                    FirebaseAuth.getInstance().signOut();
-                    UserClient.setUser(null);
-
-                    startActivity(new Intent(getApplicationContext(), StartActivity.class));
-                    finishAffinity();
+                    logout();
                 }else {
-                    {
+                    /*{
                         // TODO Non andrà fatto così
                         stopService(new Intent(getApplicationContext(), MyLocationService.class));
                         FirebaseAuth.getInstance().signOut();
                         UserClient.setUser(null);
                         startActivity(new Intent(getApplicationContext(), StartActivity.class));
                         finishAffinity();
-                    }
+                    }*/
+                    Toast.makeText(this, "Non puoi scappare, termina la corsa prima", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "Non puoi scappare, termina la corsa prima");
                 }
                 break;
@@ -468,4 +470,26 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             startActivity(intent);
         });
     }
+
+    public void logout(){
+        final String TAG = "deleteCurrentToken";
+        Log.e(TAG, "CIAO CIAO TOKEN");
+        if(UserClient.getUser() != null && UserClient.getUser().getTokens() != null){
+            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(s -> {
+                UserClient.getUser().getTokens().remove(s);
+                DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
+                mDatabase.update("tokens", UserClient.getUser().getTokens())
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Token rimosso correttamente"))
+                        .addOnFailureListener(error -> Log.e(TAG, "Errore nella rimozione del token"))
+                        .addOnCompleteListener(complete -> {
+                            FirebaseAuth.getInstance().signOut();
+                            UserClient.setUser(null);
+                            startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                            finishAffinity();
+                            Log.d(TAG, "terminato tentativo di rimozione token");
+                        });
+            });
+        }
+    }
+
 }

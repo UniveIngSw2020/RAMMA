@@ -17,16 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -104,7 +99,7 @@ public class MyLocationService extends Service {
         private void checkAreaLimit(@NonNull Location location){
             LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 
-            if(UserClient.getTrader() != null && UserClient.getTrader().getDelimited_area() != null && !PolyUtil.containsLocation(position, UserClient.getTrader().getDelimited_areaLatLng(), true)) {
+            if(UserClient.getTrader() != null && UserClient.getTrader().getDelimited_area() != null && !PolyUtil.containsLocation(position, UserClient.getTrader().convertDelimited_areaLatLng(), true)) {
                 Log.e(TAG,"ENTRATO QUA: notifica area limitata");
 
                 //TODO QUESTO CICLO POTREBBE SOSTITUIRE TUTTO IL MyNotify

@@ -185,7 +185,7 @@ public class MyMapTrader extends MyMap{
                                             User user = new User(document.toObject(User.class));
 
                                             StorageReference islandRef = mStorageRef.child("users/" + user.getUser_id() + "/avatar.jpg");
-
+                                            Log.e(TAG, "COGNOME: "+user.getSurname());
                                             MarkerOptions markerOptions=new MarkerOptions().title(user.getName() + " " + user.getSurname());
 
                                             File localFile;

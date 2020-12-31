@@ -1,8 +1,10 @@
 package com.example.rent_scio1.Trader;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -15,13 +17,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.services.ExitService;
 import com.example.rent_scio1.services.MyFirebaseMessagingServices;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.map.MyMapTrader;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MapsActivityTrader extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -44,6 +49,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
         mapFragment.getMapAsync(new MyMapTrader(this));
         thisContext = MapsActivityTrader.this;
         startService(new Intent(MapsActivityTrader.this, MyFirebaseMessagingServices.class));
+        startService(new Intent(MapsActivityTrader.this, ExitService.class));
         initViews();
     }
 
@@ -61,14 +67,15 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
         toggle.syncState();
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.logout:
-                mAuth.signOut();
-                UserClient.setUser(null);
-                startActivity(new Intent(getApplicationContext(), StartActivity.class));
-                finishAffinity();
+
+                logout();
+
+                //finishAffinity();
                 break;
             case R.id.nuova_corsa:
                 startActivity(new Intent(getApplicationContext(), NewRunActivityTrader.class));
@@ -88,4 +95,25 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
         }
         return true;
     }
+
+    public void logout(){
+        final String TAG = "deleteCurrentToken";
+        Log.e(TAG, "CIAO CIAO TOKEN");
+        if(UserClient.getUser() != null && UserClient.getUser().getTokens() != null){
+            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(s -> {
+                UserClient.getUser().getTokens().remove(s);
+                DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
+                mDatabase.update("tokens", UserClient.getUser().getTokens())
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Token rimosso correttamente"))
+                        .addOnFailureListener(error -> Log.e(TAG, "Errore nella rimozione del token"))
+                        .addOnCompleteListener(complete -> {
+                            FirebaseAuth.getInstance().signOut();
+                            UserClient.setUser(null);
+                            startActivity(new Intent(getApplicationContext(), StartActivity.class));
+                            Log.d(TAG, "terminato tentativo di rimozione token");
+                        });
+            });
+        }
+    }
+
 }

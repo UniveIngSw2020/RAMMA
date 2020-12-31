@@ -115,10 +115,20 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     }
 
     private void sendRegistrationToServer(String refreshedToken) {
-        if(UserClient.getUser() != null && UserClient.getUser().addToken(refreshedToken)) {
-            DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
-            mDatabase.update("tokens", UserClient.getUser().getTokens()).addOnSuccessListener(aVoid -> Log.d(TAG, "TOKEN AGGIUNTO"));
+        if(UserClient.getUser() != null){
+            if(!UserClient.getUser().getTrader()){
+                UserClient.getUser().getTokens().clear();
+            }
+
+            if(UserClient.getUser().addToken(refreshedToken)) {
+                DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
+                mDatabase.update("tokens", UserClient.getUser().getTokens())
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Token aggiunto correttamente"))
+                        .addOnFailureListener(error -> Log.e(TAG, "Errore nell'inserimento del token"))
+                        .addOnCompleteListener(complete -> Log.d(TAG, "terminato tentativo di inserimento token"));
+            }
         }
+
     }
 
     public static void sendNotification(Context context, String destinationTopic, String title, String msg) {
@@ -155,5 +165,4 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
         RequestQueueSingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
 
     }
-
 }

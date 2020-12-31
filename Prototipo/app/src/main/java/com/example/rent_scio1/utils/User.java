@@ -130,7 +130,7 @@ public class User {
         return delimited_area;
     }
 
-    public List<LatLng> getDelimited_areaLatLng(){
+    public List<LatLng> convertDelimited_areaLatLng(){
         if(delimited_area!=null){
             List<LatLng> latLngs = new ArrayList<>();
             for (GeoPoint a: getDelimited_area()) {

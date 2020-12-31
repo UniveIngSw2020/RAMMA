@@ -3,24 +3,31 @@ package com.example.rent_scio1.Init;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.Trader.SetPositionActivityTrader;
+import com.example.rent_scio1.services.ExitService;
 import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -42,7 +49,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Widgets
     private EditText mEmail, mPassword;
     private ProgressBar mProgressBar;
-
+    private CheckBox mCheckBox;
+    private SharedPreferences loginPreferences;
+    private SharedPreferences.Editor loginPrefsEditor;
+    private Boolean saveLogin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,10 +61,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEmail = findViewById(R.id.email_login);
         mPassword = findViewById(R.id.password_login);
         mProgressBar = findViewById(R.id.progressBarlogin);
+        mCheckBox = findViewById(R.id.checkBoxLogin);
+
+        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPrefsEditor = loginPreferences.edit();
 
         setupFirebaseAuth();
         initViews();
         findViewById(R.id.confirmlogin_btn).setOnClickListener(this);
+
+        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        if (saveLogin == true) {
+            mEmail.setText(loginPreferences.getString("username", ""));
+            mPassword.setText(loginPreferences.getString("password", ""));
+            mCheckBox.setChecked(true);
+        }
     }
 
     public void hideKeyboard(View view) {
@@ -93,12 +114,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
+
             if (user != null) {
                 if(mProgressBar.getVisibility() == View.INVISIBLE){
                     findViewById(R.id.progressBarLoadLogin).setVisibility(View.VISIBLE);
                 }
 
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 DocumentReference userRef = db.collection("users")
@@ -203,13 +227,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mProgressBar.setVisibility(View.VISIBLE);
             findViewById(R.id.progressBarLoadLogin).setVisibility(View.INVISIBLE);
 
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(mEmail.getText().toString().trim(),
-                    mPassword.getText().toString().trim())
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(mEmail.getText().toString().trim(), mPassword.getText().toString().trim())
                     .addOnFailureListener(e -> {
                         Toast.makeText(LoginActivity.this, "Autenticazione Fallita!", Toast.LENGTH_SHORT).show();
                         showDialog();
                         if(mProgressBar.getVisibility() == View.VISIBLE){
                             mProgressBar.setVisibility(View.INVISIBLE);
+                        }
+                    })
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+
+
+                            boolean check = mCheckBox.isChecked();
+                            if (check) {
+                                loginPrefsEditor.putBoolean("saveLogin", true);
+                                loginPrefsEditor.putString("username", mEmail.getText().toString().trim());
+                                loginPrefsEditor.putString("password", mPassword.getText().toString().trim());
+                            }else{
+                                loginPrefsEditor.clear();
+                            }
+                            loginPrefsEditor.commit();
                         }
                     });
         }else{

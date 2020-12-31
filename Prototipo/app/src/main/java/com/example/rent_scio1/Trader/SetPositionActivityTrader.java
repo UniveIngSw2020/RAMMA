@@ -1,11 +1,5 @@
 package com.example.rent_scio1.Trader;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.User;
@@ -125,7 +123,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
 
                 GeoPoint newPosition=new GeoPoint(shop.getPosition().latitude, shop.getPosition().longitude);
 
-                if(user.getDelimited_area()==null || PolyUtil.containsLocation(new LatLng(newPosition.getLatitude(),newPosition.getLongitude()),user.getDelimited_areaLatLng(),true) ){
+                if(user.getDelimited_area()==null || PolyUtil.containsLocation(new LatLng(newPosition.getLatitude(),newPosition.getLongitude()),user.convertDelimited_areaLatLng(),true) ){
 
                     UserClient.getUser().setTraderPosition(newPosition);
 
