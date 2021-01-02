@@ -117,7 +117,9 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     private void sendRegistrationToServer(String refreshedToken) {
         if(UserClient.getUser() != null){
             if(!UserClient.getUser().getTrader()){
-                UserClient.getUser().getTokens().clear();
+                if(UserClient.getUser().getTokens() != null) {
+                    UserClient.getUser().getTokens().clear();
+                }
             }
 
             if(UserClient.getUser().addToken(refreshedToken)) {

@@ -93,9 +93,6 @@ public class SettingsActivityTextView extends AppCompatActivity {
                 editText.setText(UserClient.getUser().getEmail());
                 editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-                editText1.setHint("Conferma mail");
-                editText1.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                editText1.setVisibility(View.VISIBLE);
                 break;
             case "password":
                 format = "Password";
@@ -132,27 +129,18 @@ public class SettingsActivityTextView extends AppCompatActivity {
 
                     if(UserClient.getUser().getTrader()){
                         intent = new Intent(getApplicationContext(), MapsActivityTrader.class);
-                    }
-                    else{
+                    } else{
                         intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                     }
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                     break;
                 case "email":
-                    // Get auth credentials from the user for re-authentication
-
-                    if( editText.getText().toString().equals(editText1.getText().toString()) ) {
-                        // Prompt the user to re-provide their sign-in credentials
-                        u.reauthenticate(credential)
+                    u.reauthenticate(credential)
                                 .addOnCompleteListener(task -> {
                                     Log.d(TAG, "User re-authenticated.");
                                     u.updateEmail(editText.getText().toString().trim()).addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
-
-                                            String prevId=UserClient.getUser().getUser_id();
-                                            //TODO query di update campi veicoli e corse
-
                                             UserClient.getUser().setEmail(editText.getText().toString());
                                             check=true;
                                             Log.e(TAG, "User email address updated.");
@@ -162,37 +150,24 @@ public class SettingsActivityTextView extends AppCompatActivity {
                                         check = false;
                                     });
                                 });
-                    }
-                    else{
-                        check=false;
-                        Toast.makeText(this,"Le mail non corrispondono",Toast.LENGTH_LONG).show();
-                    }
 
                     break;
                 case "password":
-
+                    check=false;
                     if( editText.getText().toString().equals(editText1.getText().toString()) ){
-
                         u.reauthenticate(credential)
                                 .addOnCompleteListener(task -> u.updatePassword(editText.getText().toString().trim()).addOnCompleteListener(task12 -> {
                                     if (task12.isSuccessful()) {
-                                        Log.e(TAG, "Password updated");
-
-                                        String prevId=UserClient.getUser().getUser_id();
-                                        //TODO query di update campi veicoli e corse
-
+                                        Log.e(TAG, "Password updated " + editText.getText().toString());
                                         UserClient.getUser().setUser_id(FirebaseAuth.getInstance().getUid());
+                                        startActivity(intent);
                                     } else {
                                         Log.e(TAG, "Error password not updated");
-                                        check = false;
                                     }
                                 }));
-                    }
-                    else{
-                        check=false;
+                    } else{
                         Toast.makeText(this,"Le password non corrispondono",Toast.LENGTH_LONG).show();
                     }
-
                     break;
             }
 

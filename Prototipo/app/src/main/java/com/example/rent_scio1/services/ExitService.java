@@ -25,7 +25,7 @@ public class ExitService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "ExitService partito");
+        Log.e(TAG, "ExitService partito");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -35,7 +35,8 @@ public class ExitService extends Service {
         super.onTaskRemoved(rootIntent);
         FirebaseAuth.getInstance().signOut();
         //stop service
-        Log.d(TAG, "ExitService FERMATO");
+        Log.e(TAG, "ExitService FERMATO");
         this.stopSelf();
     }
+
 }
