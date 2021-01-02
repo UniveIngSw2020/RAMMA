@@ -18,8 +18,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -132,6 +134,16 @@ public class SetAvatarActivity extends AppCompatActivity {
 
         //setto il comportamento del bottone conferma
         Button buttonConfirm =  findViewById(R.id.confirm_changes_picture);
+
+        Intent intent;
+        if(UserClient.getUser().getTrader()){
+            intent = new Intent(getApplicationContext(), MapsActivityTrader.class);
+        }
+        else{
+            intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         buttonConfirm.setOnClickListener(v -> {
 
             if(!isDefault) {
@@ -139,15 +151,6 @@ public class SetAvatarActivity extends AppCompatActivity {
                 //upload su db
                 uploadImage(o -> {
                     Toast.makeText(getApplicationContext(),"avatar personalizzato cambiato",Toast.LENGTH_LONG).show();
-
-                    Intent intent;
-                    if(UserClient.getUser().getTrader()){
-                        intent = new Intent(getApplicationContext(), SettingsTrader.class);
-                    }
-                    else{
-                        intent = new Intent(getApplicationContext(), SettingsCustomer.class);
-                    }
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
 
                 });
@@ -155,15 +158,6 @@ public class SetAvatarActivity extends AppCompatActivity {
             }
             else {
                 Toast.makeText(getApplicationContext(),"avatar personalizzato ripristinato",Toast.LENGTH_LONG).show();
-
-                Intent intent;
-                if(UserClient.getUser().getTrader()){
-                    intent = new Intent(getApplicationContext(), SettingsTrader.class);
-                }
-                else{
-                    intent = new Intent(getApplicationContext(), SettingsCustomer.class);
-                }
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });

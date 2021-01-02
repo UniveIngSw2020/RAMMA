@@ -50,6 +50,11 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
         thisContext = MapsActivityTrader.this;
         startService(new Intent(MapsActivityTrader.this, MyFirebaseMessagingServices.class));
         startService(new Intent(MapsActivityTrader.this, ExitService.class));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initViews();
     }
 
@@ -109,6 +114,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
                         .addOnCompleteListener(complete -> {
                             FirebaseAuth.getInstance().signOut();
                             UserClient.setUser(null);
+                            finishAffinity();
                             startActivity(new Intent(getApplicationContext(), StartActivity.class));
                             Log.d(TAG, "terminato tentativo di rimozione token");
                         });

@@ -11,6 +11,25 @@
     android:background="@color/back"
     android:onClick="hideKeyboard">
 
+    <EditText
+        android:id="@+id/settings_text_view2"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="230dp"
+        android:backgroundTint="@color/text"
+        android:ems="10"
+        android:fontFamily="@font/comfortaa_regular"
+        android:inputType="textPersonName"
+        android:textColor="@color/teal_200"
+        android:textColorHint="@color/text"
+        app:layout_constraintBottom_toTopOf="@+id/settings_text_view_confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.881"
+        android:visibility="invisible"/>
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_settings_textview"
         android:layout_width="match_parent"

@@ -17,8 +17,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -62,6 +64,9 @@ public class SettingsActivityTextView extends AppCompatActivity {
         //setto il testo modificabile
         EditText editText= findViewById(R.id.settings_text_view);
 
+        //text solo per password
+        EditText editText1=findViewById(R.id.settings_text_view2);
+
         switch (type){
             case "name":
                 format = "Nome";
@@ -87,11 +92,19 @@ public class SettingsActivityTextView extends AppCompatActivity {
                 format = "Email";
                 editText.setText(UserClient.getUser().getEmail());
                 editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+                editText1.setHint("Conferma mail");
+                editText1.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                editText1.setVisibility(View.VISIBLE);
                 break;
             case "password":
                 format = "Password";
                 editText.setHint("Password");
                 editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+                editText1.setHint("Conferma password");
+                editText1.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                editText1.setVisibility(View.VISIBLE);
                 break;
         }
 
@@ -116,40 +129,69 @@ public class SettingsActivityTextView extends AppCompatActivity {
                     break;
                 case "shopName":
                     UserClient.getUser().setShopName(editText.getText().toString());
+
+                    if(UserClient.getUser().getTrader()){
+                        intent = new Intent(getApplicationContext(), MapsActivityTrader.class);
+                    }
+                    else{
+                        intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+                    }
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                     break;
                 case "email":
                     // Get auth credentials from the user for re-authentication
 
-                    // Prompt the user to re-provide their sign-in credentials
-                    u.reauthenticate(credential)
-                            .addOnCompleteListener(task -> {
-                                Log.d(TAG, "User re-authenticated.");
-                                u.updateEmail(editText.getText().toString().trim()).addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        UserClient.getUser().setEmail(editText.getText().toString());
-                                        Log.e(TAG, "User email address updated.");
-                                        check = true;
-                                    }else{
-                                        Log.e(TAG, "User NOT email address updated.");
+                    if( editText.getText().toString().equals(editText1.getText().toString()) ) {
+                        // Prompt the user to re-provide their sign-in credentials
+                        u.reauthenticate(credential)
+                                .addOnCompleteListener(task -> {
+                                    Log.d(TAG, "User re-authenticated.");
+                                    u.updateEmail(editText.getText().toString().trim()).addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+
+                                            String prevId=UserClient.getUser().getUser_id();
+                                            //TODO query di update campi veicoli e corse
+
+                                            UserClient.getUser().setEmail(editText.getText().toString());
+                                            check=true;
+                                            Log.e(TAG, "User email address updated.");
+                                        } else {
+                                            Log.e(TAG, "User NOT email address updated.");
+                                        }
                                         check = false;
-                                    }
+                                    });
                                 });
-                            });
+                    }
+                    else{
+                        check=false;
+                        Toast.makeText(this,"Le mail non corrispondono",Toast.LENGTH_LONG).show();
+                    }
 
                     break;
                 case "password":
-                    u.reauthenticate(credential)
-                            .addOnCompleteListener(task -> u.updatePassword(editText.getText().toString().trim()).addOnCompleteListener(task12 -> {
-                                if (task12.isSuccessful()) {
-                                    Log.e(TAG, "Password updated");
-                                    UserClient.getUser().setUser_id(FirebaseAuth.getInstance().getUid());
-                                    check = true;
-                                } else {
-                                    Log.e(TAG, "Error password not updated");
-                                    check = false;
-                                }
-                            }));
 
+                    if( editText.getText().toString().equals(editText1.getText().toString()) ){
+
+                        u.reauthenticate(credential)
+                                .addOnCompleteListener(task -> u.updatePassword(editText.getText().toString().trim()).addOnCompleteListener(task12 -> {
+                                    if (task12.isSuccessful()) {
+                                        Log.e(TAG, "Password updated");
+
+                                        String prevId=UserClient.getUser().getUser_id();
+                                        //TODO query di update campi veicoli e corse
+
+                                        UserClient.getUser().setUser_id(FirebaseAuth.getInstance().getUid());
+                                    } else {
+                                        Log.e(TAG, "Error password not updated");
+                                        check = false;
+                                    }
+                                }));
+                    }
+                    else{
+                        check=false;
+                        Toast.makeText(this,"Le password non corrispondono",Toast.LENGTH_LONG).show();
+                    }
 
                     break;
             }
@@ -159,8 +201,6 @@ public class SettingsActivityTextView extends AppCompatActivity {
                 SettingsUtil.updateAttribute("users", UserClient.getUser().getUser_id(), type, editText.getText().toString(), o -> {
                     Toast.makeText(getApplicationContext(), finalFormat + " cambiato/a correttamente.", Toast.LENGTH_LONG).show();
                     startActivity(intent);
-                    finishAffinity();
-
                 });
             }
         });
