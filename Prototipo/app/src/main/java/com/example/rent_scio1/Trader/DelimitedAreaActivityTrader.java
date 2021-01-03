@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.core.utilities.Utilities;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -49,6 +50,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
@@ -149,20 +151,63 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        //quando la mappa è caricata setto la visualizzazione
         setCameraView();
+
+        AtomicReference<Marker> lastClickedMarker = new AtomicReference<>();
 
         mMap.setOnMapClickListener(latLng -> {
 
-            //aggiungi marker a mappa e settalo draggable
-            Marker marker=mMap.addMarker(new MarkerOptions().position(latLng));
-            marker.setDraggable(true);
+            //se nessun marker è stato cliccato in precedenza ne aggiungo uno sulla mappa, altrimenti nascondo la info window
+            if(lastClickedMarker.get()==null) {
+                //aggiungi marker a mappa e settalo draggable
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng));
+                marker.setDraggable(true);
 
-            //aggiungi marker a list e stack
-            markersStack.push(marker);
-            markers.add(marker);
+                //aggiungi marker a list e stack
+                markersStack.push(marker);
+                markers.add(marker);
 
-            //prova a costruire l'area
+                //prova a costruire l'area
+                costruisci();
+            }
+            else{
+                //nascondi la info window
+                lastClickedMarker.get().hideInfoWindow();
+                //setta il marker cliccato a null
+                lastClickedMarker.set(null);
+            }
+        });
+
+        //setto l'info window con il bottone
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapterDelimited(this));
+
+        //setto il comportamento al click del marker
+        mMap.setOnMarkerClickListener(marker -> {
+
+            marker.showInfoWindow();
+            lastClickedMarker.set(marker);
+            return true;
+        });
+
+        //setto i listener al click della info window
+        mMap.setOnInfoWindowClickListener(marker -> {
+
+            markers.remove(marker);
+            markersStack.remove(marker);
+            marker.remove();
+            lastClickedMarker.set(null);
             costruisci();
+        });
+        mMap.setOnInfoWindowLongClickListener(marker -> {
+
+            markers.remove(marker);
+            markersStack.remove(marker);
+            marker.remove();
+            lastClickedMarker.set(null);
+            costruisci();
+
         });
 
         //aggiungi il listener per il drag del marker
@@ -257,6 +302,9 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             //setta a visibile il bottone per confermare i cambiamenti
             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
         }
+        else {
+            map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
+        }
     }
 
     private void initViews(){
@@ -336,7 +384,11 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 new LatLng(topBoundary, rightBoundary)
         );
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary,width,height, padding));
 
     }
 
