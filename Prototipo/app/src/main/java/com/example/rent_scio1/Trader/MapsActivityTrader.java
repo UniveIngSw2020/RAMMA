@@ -113,6 +113,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
                         .addOnFailureListener(error -> Log.e(TAG, "Errore nella rimozione del token"))
                         .addOnCompleteListener(complete -> {
                             FirebaseAuth.getInstance().signOut();
+                            getSharedPreferences("loginPrefs", MODE_PRIVATE).edit().clear().apply();
                             UserClient.setUser(null);
                             finishAffinity();
                             startActivity(new Intent(getApplicationContext(), StartActivity.class));

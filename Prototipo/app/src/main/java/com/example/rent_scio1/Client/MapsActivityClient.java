@@ -136,7 +136,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
     }
 
-
     private void getListTrader(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query getTrader;
@@ -239,9 +238,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                     }
                 }
 
-
                 speedText.setText(speed+" km/h");
-
 
             }
 
@@ -340,22 +337,13 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 if(UserClient.getRun() == null) {
                     logout();
                 }else {
-                    /*{
-                        // TODO Non andrà fatto così
-                        stopService(new Intent(getApplicationContext(), MyLocationService.class));
-                        FirebaseAuth.getInstance().signOut();
-                        UserClient.setUser(null);
-                        startActivity(new Intent(getApplicationContext(), StartActivity.class));
-                        finishAffinity();
-                    }*/
                     Toast.makeText(this, "Non puoi scappare, termina la corsa prima", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "Non puoi scappare, termina la corsa prima");
                 }
                 break;
             case R.id.nuova_corsa_client:
 
-                //TODO ATTENZIONE!!! REMINDER: SE SI VUOLE EVITARE IL BARCODE UTILIZZA COMM@GMAIL.COM E IL TRENO E DURATA 80000
-                //evitaBarcodeScanner();
+
                 LastAction= ScannedBarcodeActivity.Action.ADD;
 
                 getCameraPermission();
@@ -487,6 +475,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                         .addOnFailureListener(error -> Log.e(TAG, "Errore nella rimozione del token"))
                         .addOnCompleteListener(complete -> {
                             FirebaseAuth.getInstance().signOut();
+                            getSharedPreferences("loginPrefs", MODE_PRIVATE).edit().clear().apply();
                             UserClient.setUser(null);
                             finishAffinity();
                             startActivity(new Intent(getApplicationContext(), StartActivity.class));
@@ -496,4 +485,16 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
     }
 
+    //Mancano poche linee
+    //ce la si sta facendo
+    //manca sempre meno
+    //ci siamo quasi
+    //tutto questo
+    //perchè sono depresso
+    //dai manca poco
+    //sempre meno
+    //ultimi sforzi
+    //poi smetto lo giuro
+    //si vede il traguardo
+    //TODO: CAZZO SI (x500)
 }

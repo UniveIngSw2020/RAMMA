@@ -98,6 +98,7 @@ public class MyLocationService extends Service {
 
         private void checkAreaLimit(@NonNull Location location){
             LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+            Log.e(TAG,"PRE notifica area limitata");
 
             if(UserClient.getTrader() != null && UserClient.getTrader().getDelimited_area() != null && !PolyUtil.containsLocation(position, UserClient.getTrader().convertDelimited_areaLatLng(), true)) {
                 Log.e(TAG,"ENTRATO QUA: notifica area limitata");
@@ -119,6 +120,7 @@ public class MyLocationService extends Service {
         }
 
         private void checkSpeedLimit(double speed){
+            Log.e(TAG,"PRE notifica velocità");
             db.collection("vehicles").document(UserClient.getRun().getVehicle()).get().addOnSuccessListener(documentSnapshot -> {
                 Log.e(TAG,"ENTRATO QUA: notifica velocità");
                 if(speed > Objects.requireNonNull(documentSnapshot.toObject(Vehicle.class)).getMaxSpeedKMH()) {

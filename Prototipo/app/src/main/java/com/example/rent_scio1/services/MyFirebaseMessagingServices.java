@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.utils.RequestQueueSingleton;
@@ -60,7 +61,11 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.e(TAG, "caspiterina è arrivato un messaggio");
-        final Intent intent = new Intent(this, MapsActivityTrader.class);
+        Intent intent;
+        if(UserClient.getUser().getTrader())
+            intent = new Intent(this, MapsActivityTrader.class);
+        else
+            intent = new Intent(this, MapsActivityClient.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
