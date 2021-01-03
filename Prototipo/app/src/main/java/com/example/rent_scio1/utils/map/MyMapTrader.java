@@ -64,7 +64,7 @@ public class MyMapTrader extends MyMap{
 
         //setCameraView(googleMap);
 
-        
+
         areaLimitata();
         searchCustomers();
 

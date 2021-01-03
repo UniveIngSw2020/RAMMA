@@ -36,7 +36,6 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.core.utilities.Utilities;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -97,6 +96,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -234,8 +234,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
     }
 
-    private Bitmap getBitmap(int drawableRes) {
-        Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
+    private Bitmap getBitmap() {
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.negozio_vettorizzato);
         Canvas canvas = new Canvas();
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         canvas.setBitmap(bitmap);
@@ -266,7 +266,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                     })
                     .addOnFailureListener(exception -> {
                         Log.e(TAG, "NON caricata");
-                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(R.drawable.negozio_vettorizzato),150,150,false) ));
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(),150,150,false) ));
                         trader=mMap.addMarker(markerOptions);
                     });
 
@@ -307,6 +307,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     private void initViews(){
         map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
         setSupportActionBar(map_trader_delim);
