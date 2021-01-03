@@ -142,17 +142,19 @@
 
     <CheckBox
         android:id="@+id/checkBoxLogin"
-        android:layout_width="96dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="39dp"
-        android:layout_marginBottom="39dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/text"
+        android:fontFamily="@font/comfortaa_regular"
         android:text="@string/ricordami"
+        android:textColor="@color/text"
+        android:textSize="20sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/confirmlogin_btn"
         app:layout_constraintEnd_toStartOf="@+id/progressBarlogin"
+        app:layout_constraintHorizontal_bias="0.697"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_login" />
+        app:layout_constraintTop_toBottomOf="@+id/password_login"
+        app:layout_constraintVertical_bias="0.405" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

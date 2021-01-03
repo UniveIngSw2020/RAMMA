@@ -36,12 +36,6 @@
             android:id="@+id/tutorial_horyzontal_navbar_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="0dp"
-            android:paddingLeft="0dp"
-            android:paddingTop="0dp"
-            android:paddingEnd="0dp"
-            android:paddingRight="0dp"
-            app:autoSizeTextType="uniform"
             android:theme="@style/ToolbarTheme"
             app:layout_collapseMode="pin"
             app:title="@string/tutorial_utilizzo_area_limitata"
@@ -51,6 +45,7 @@
                 android:id="@+id/tabella_tutorial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="0dp"
                 app:tabTextColor="@color/text"
                 app:tabTextAppearance="@style/TabLayoutAppearance">
 
@@ -58,7 +53,7 @@
                     android:id="@+id/build"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/costruisci"
+                    android:text="@string/crea_area"
                     android:textAlignment="center" />
 
                 <com.google.android.material.tabs.TabItem

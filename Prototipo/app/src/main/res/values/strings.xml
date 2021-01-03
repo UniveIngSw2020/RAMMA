@@ -70,7 +70,6 @@
     <string name="conferma_eliminazione_tabella">CONFERMA</string>
     <string name="registrati">REGISTRATI</string>
     <string name="imposta_area_limitata">Imposta area limitata</string>
-    <string name="costruisci">Costruisci</string>
     <string name="elimina_ultimo_mark">Elimina ultimo mark</string>
     <string name="pulisci_area">Pulisci area</string>
     <string name="elimina_l_ultimo">Elimina l\'ultimo</string>
@@ -109,24 +108,21 @@
     <string name="per_costruire_la_tua_area_limitata_assicurati_di_vedere_il_tuo_negozio_sulla_mappa">Per costruire la tua area limitata, assicurati di vedere il tuo negozio sulla mappa.</string>
     <string name="ora_tocca_sullo_schermo_per_piazzare_dei_marker_attorno_al_tuo_negozio">Ora tocca sullo schermo per piazzare dei marker attorno al tuo negozio.</string>
     <string name="una_volta_creati_i_marker_attorno_al_tuo_negozio_premi_costruisci_e_la_zona_selezionata_si_colorer">Una volta creati i marker attorno al tuo negozio, premi <b><u><i>Costruisci</i></u></b> e la zona selezionata si colorerà.</string>
-    <string name="nota_bene_che_per_poter_disegnare_l_area_devono_esserci_minimo_3_marker_escluso_il_marker_del_tuo_negozio">Nota bene che per poter disegnare l\'area devono esserci minimo 3 marker, ESCLUSO il marker del tuo negozio!</string>
+    <string name="nota_bene_che_per_poter_disegnare_l_area_devono_esserci_minimo_3_marker_escluso_avatar_del_tuo_negozio">Nota bene che per poter disegnare l\'area devono esserci minimo 3 marker, ESCLUSO l\'avatar del tuo negozio!</string>
     <string name="se_vuoi_eliminare_l_ultimo_marker_inserito_dovrai_farlo_prima_di_aver_premuto_il_tasto_costruisci">Se vuoi eliminare l\'ultimo marker inserito, dovrai farlo prima di aver premuto il tasto <b><u><i>Costruisci</i></u></b>.</string>
     <string name="se_hai_gi_premuto_il_tasto_costruisci_e_vuoi_eliminare_l_ultimo_marker_dovrai_eliminare_l_intera_area_e_ricostruirla_da_capo">Se hai già premuto il tasto <b><u><i>Costruisci</i></u></b> e vuoi eliminare l\'ultimo marker, dovrai eliminare l\'intera area e ricostruirla da capo.</string>
     <string name="per_eliminare_l_ultimo_marker_inserito_baster_premere_il_tasto_elimina_ultimo">Per eliminare l\'ultimo marker inserito basterà premere il tasto <b><u><i>Elimina Ultimo</i></u></b>.</string>
-    <string name="se_hai_gi_costruito_una_tua_area_e_hai_eliminato_un_marker_l_area_verr_ricalcolata_automaticamente_e_potrai_confermare_o_aggiungere_la_tua_scelta">Se hai già costruito la tua area e hai eliminato un marker, l\'area verrà ricalcolata automaticamente e potrai confermare o aggiungere la tua scelta.</string>
-    <string name="nota_bene_che_se_la_zona_rimane_inclusa_fra_meno_di_3_marker_non_verr_disegnata_in_quanto_ne_occorrono_minimo_3">Nota bene che se la zona rimane inclusa fra meno di 3 marker, non verrà disegnata in quanto ne occorrono minimo 3, ESCLUSO il marker del tuo negozio.</string>
+    <string name="se_hai_gi_costruito_una_tua_area_e_hai_eliminato_un_marker_l_area_verr_ricalcolata_automaticamente_e_potrai_confermare_o_aggiungere_la_tua_scelta">Se hai già costruito la tua area e hai eliminato un marker, l\'area verrà ricalcolata automaticamente e potrai apportare ulteriori modifiche.</string>
+    <string name="nota_bene_che_se_la_zona_rimane_inclusa_fra_meno_di_3_marker_non_verr_disegnata_in_quanto_ne_occorrono_minimo_3">Nota bene che se la zona rimane inclusa fra meno di 3 marker, non verrà disegnata in quanto ne occorrono minimo 3, ESCLUSO l\'avatar del tuo negozio.</string>
     <string name="premi_sul_tasto_pulisci_area_se_vuoi_eliminare_tutta_l_area_per_rifarla_da_capo">Premi sul tasto <b><u><i>Pulisci Area</i></u></b> se vuoi eliminare tutta l\'area per rifarla da capo.</string>
-    <string name="rester_anche_dopo_la_cancellazione_il_marker_che_indica_il_tuo_negozio">Resterà, anche dopo la cancellazione dell\'area creata, il marker che indica il tuo negozio.</string>
+    <string name="rester_anche_dopo_la_cancellazione_il_marker_che_indica_il_tuo_negozio">Resterà, anche dopo la cancellazione dell\'area creata, l\'avatar che indica il tuo negozio.</string>
     <string name="puoi_spostare_e_quindi_modificare_la_tua_area_limitata_tenendo_premuto_un_marker_aspettando_qualche_secondo_e_trascinandolo_in_una_nuova_posizione_l_area_verr_ricalcolata_subito_dopo">Puoi spostare e quindi modificare la tua area limitata tenendo premuto un marker, aspettando qualche secondo e trascinandolo in una nuova posizione. L\'area verrà ricalcolata subito dopo.</string>
-    <string name="una_volta_premuto_il_tasto_costruisci_per_poter_salvare_l_area_creata_baster_premere_la_spunta_che_comparir_in_alto_a_destra_per_confermare_il_tutto">Una volta premuto il tasto <b><u><i>Costruisci</i></u></b>, per poter salvare l\'area creata basterà premere la spunta che comparirà in alto a destra per confermare il tutto.</string>
     <string name="se_hai_gi_confermato_un_area_precedente_e_vuoi_modificarla_ulteriormente_baster_tener_premuto_su_un_marker_e_spostarlo_nella_posizione_desiderata_poi_ripremere_conferma">Se hai già confermato un\'area precedente e vuoi modificarla ulteriormente, basterà tener premuto su un marker e spostarlo nella posizione desiderata, poi ripremere <b><u><i>Conferma</i></u></b>.</string>
     <string name="una_volta_premuto_il_tasto_conferma_ritornerai_alla_mappa_iniziale_con_l_area_limitata_impostata">Una volta premuto il tasto <b><u><i>Conferma</i></u></b>, ritornerai alla mappa iniziale con l\'area limitata impostata.</string>
     <string name="title_activity_set_position_trader">Map</string>
     <string name="localizzami">Localizzami</string>
     <string name="velocit_massima">Velocità massima</string>
-    <string name="non_mi_ricordo">Non mi ricordo</string>
     <string name="velocit_attuale">Velocità attuale</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="info_personali">INFORMAZIONI PERSONALI</string>
     <string name="kmh"> km/h</string>
@@ -144,6 +140,11 @@
     <string name="immagine_avatar">Immagine avatar</string>
     <string name="utilizza_avatar_di_default">Utilizza avatar di default</string>
     <string name="ricordami">Ricordami</string>
+    <string name="una_volta_creati_3_marker_si_generer_automaticamente_l_area_limitata_e_potrai_modificarla_aggiungendo_altri_marker_o_cliccando_su_elimina_ultimo">Una volta creati 3 marker, si genererà automaticamente l\'area limitata e potrai modificarla aggiungendo altri marker o cliccando su Elimina ultimo.</string>
+    <string name="costruzione">Costruzione</string>
+    <string name="una_volta_creata_l_area_con_i_relativi_marker_baster_premere_il_tasto_conferma_che_comparir_in_alto_a_destra">Una volta creata l\'area con i relativi marker, basterà premere il tasto Conferma che comparirà in alto a destra.</string>
+    <string name="crea_area">Crea area</string>
+    <string name="elimina_marker">Elimina marker</string>
 
 
 </resources>

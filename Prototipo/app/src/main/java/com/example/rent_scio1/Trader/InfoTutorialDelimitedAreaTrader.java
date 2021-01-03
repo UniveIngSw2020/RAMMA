@@ -18,6 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
 
@@ -42,7 +43,7 @@ public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager(), 1);
-        adapter.addFragment(new BuildFragment(), "Costruisci");
+        adapter.addFragment(new BuildFragment(), "Crea area");
         adapter.addFragment(new DeleteLastFragmentTutorial(), "Elimina l'ultimo");
         adapter.addFragment(new DeleteAllragmentTutorial(), "Pulisci Area");
         adapter.addFragment(new ConfirmFragmentTutorial(), "Conferma");
@@ -52,7 +53,7 @@ public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
     private void initViews(){
         info_tutorial = findViewById(R.id.toolbar_info_tutorial_);
         setSupportActionBar(info_tutorial);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

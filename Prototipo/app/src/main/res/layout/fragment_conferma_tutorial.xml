@@ -21,7 +21,7 @@
             android:background="@color/text"
             android:fontFamily="@font/comfortaa_regular"
             android:gravity="center"
-            android:text="@string/una_volta_premuto_il_tasto_costruisci_per_poter_salvare_l_area_creata_baster_premere_la_spunta_che_comparir_in_alto_a_destra_per_confermare_il_tutto"
+            android:text="@string/una_volta_creata_l_area_con_i_relativi_marker_baster_premere_il_tasto_conferma_che_comparir_in_alto_a_destra"
             android:textColor="@color/back"
             android:textSize="18sp"
             app:autoSizeTextType="uniform"
