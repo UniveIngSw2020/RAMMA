@@ -74,7 +74,7 @@ public class MyMapClient extends MyMap {
 
     private static final String TAG = "MyMapClient";
     private final AppCompatActivity context;
-    private ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader;
+    private final ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader;
     private final FusedLocationProviderClient mFusedLocationClient;
     private boolean mLocationPermissionGranted = false;
     private Location actualLocation;
@@ -260,7 +260,7 @@ public class MyMapClient extends MyMap {
                     latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
                 }
 
-                PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
+                PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(false);
                 Polygon polygon=getmMap().addPolygon(polygonOptions);
                 polygon.setVisible(false);
                 float [] col = new float[] { trader.getSecond().getFirst(), 1.0f, 1.0f };
