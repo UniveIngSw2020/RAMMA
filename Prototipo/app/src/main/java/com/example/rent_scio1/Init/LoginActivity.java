@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.confirmlogin_btn).setOnClickListener(this);
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        if (saveLogin == true) {
+        if (saveLogin) {
             mEmail.setText(loginPreferences.getString("username", ""));
             mPassword.setText(loginPreferences.getString("password", ""));
             mCheckBox.setChecked(true);
@@ -96,6 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mPassword.setVisibility(View.VISIBLE);
         findViewById(R.id.confirmlogin_btn).setVisibility(View.VISIBLE);
         findViewById(R.id.textViewLogin).setVisibility(View.VISIBLE);
+        findViewById(R.id.checkBoxLogin).setVisibility(View.VISIBLE);
     }
 
     private void hideDialog(){
@@ -103,8 +104,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mPassword.setVisibility(View.INVISIBLE);
         findViewById(R.id.confirmlogin_btn).setVisibility(View.INVISIBLE);
         findViewById(R.id.textViewLogin).setVisibility(View.INVISIBLE);
+        findViewById(R.id.checkBoxLogin).setVisibility(View.INVISIBLE);
         findViewById(R.id.progressBarLoadLogin).setVisibility(View.INVISIBLE);
         if(mProgressBar.getVisibility() == View.VISIBLE){
+            findViewById(R.id.checkBoxLogin).setVisibility(View.INVISIBLE);
             mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -118,6 +121,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (user != null) {
                 if(mProgressBar.getVisibility() == View.INVISIBLE){
                     findViewById(R.id.progressBarLoadLogin).setVisibility(View.VISIBLE);
+                    findViewById(R.id.checkBoxLogin).setVisibility(View.INVISIBLE);
                 }
 
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
