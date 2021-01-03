@@ -21,7 +21,9 @@ import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -29,6 +31,8 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.Calendar;
 import java.util.Objects;
+
+import static com.example.rent_scio1.utils.map.MyMap.getmMap;
 
 public class MyLocationService extends Service {
 
@@ -61,6 +65,7 @@ public class MyLocationService extends Service {
             int speed= (int)(mLastLocation.getSpeed() *3.6);
 
             updateUserLocation(location, speed);
+            setCameraView(location);
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
             if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 30000){
                 lastNotificationArea = Calendar.getInstance().getTime().getTime();
@@ -80,6 +85,24 @@ public class MyLocationService extends Service {
 
         @Override
         public void onProviderDisabled(@NonNull String provider) { }
+
+
+        private void setCameraView(Location location) {
+            try {
+                double bottomBundary = location.getLatitude() - .01;
+                double leftBoundary = location.getLongitude() - .01;
+                double topBoundary = location.getLatitude() + .01;
+                double rightBoundary = location.getLongitude() + .01;
+
+                LatLngBounds mMapBoundary = new LatLngBounds(
+                        new LatLng(bottomBundary, leftBoundary),
+                        new LatLng(topBoundary, rightBoundary)
+                );
+
+                getmMap().moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+            } catch (Exception e) {
+            }
+        }
 
 
         private void updateUserLocation(Location location, int speed){

@@ -46,7 +46,7 @@ public class MyMapTrader extends MyMap{
     private static final String TAG = "MyMapTrader";
 
     private final FirebaseFirestore mStore = FirebaseFirestore.getInstance();
-    private GoogleMap mMap;
+    //private GoogleMap mMap;
     private final HashMap<String, Marker> listMarker = new HashMap<>();
 
     private final Context context;
@@ -57,16 +57,15 @@ public class MyMapTrader extends MyMap{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        mMap = googleMap;
         getUserDetails(googleMap);
         areaLimitata();
         searchCustomers();
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(context));
+        getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapter(context, this.getClass()));
 
-        mMap.setOnMarkerClickListener(marker -> {
+        getmMap().setOnMarkerClickListener(marker -> {
 
             marker.showInfoWindow();
 
@@ -105,7 +104,7 @@ public class MyMapTrader extends MyMap{
             markerOptions.position(new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude()));
         else
             markerOptions.position(new LatLng(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude()));
-        Marker costumer=mMap.addMarker(markerOptions);
+        Marker costumer = getmMap().addMarker(markerOptions);
 
 
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
@@ -276,7 +275,7 @@ public class MyMapTrader extends MyMap{
                 new LatLng(topBoundary, rightBoundary)
         );
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+        getmMap().moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
 
         MarkerOptions markerOptions=new MarkerOptions()
                 .position(new LatLng(mTrader.getTraderPosition().getLatitude(), mTrader.getTraderPosition().getLongitude()))
@@ -316,7 +315,7 @@ public class MyMapTrader extends MyMap{
             }
 
             PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
-            Polygon polygon=mMap.addPolygon(polygonOptions);
+            Polygon polygon=getmMap().addPolygon(polygonOptions);
             polygon.setStrokeColor(Color.rgb( 111,163,167));
         }
     }

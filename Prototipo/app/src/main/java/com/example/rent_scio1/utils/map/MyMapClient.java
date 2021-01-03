@@ -9,18 +9,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.DataParser;
 import com.example.rent_scio1.utils.Pair;
@@ -36,6 +43,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -132,6 +140,7 @@ public class MyMapClient extends MyMap {
         setMarkerDelimitedTraderNotify();
 
         getmMap().setOnMarkerClickListener(marker -> {
+            getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapter(context, this.getClass(), actualLocation));
             marker.showInfoWindow();
             Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader) {
@@ -159,13 +168,6 @@ public class MyMapClient extends MyMap {
         });
 
 
-        getmMap().setOnMapLongClickListener(latLng -> {
-            if(UserClient.getRun() != null) {
-                getmMap().addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))).setTitle("Clicca per vanigare fin qui");
-            }
-        });
 
         getmMap().setOnInfoWindowClickListener(marker -> {
             Log.e(TAG,"Click infowindow");
@@ -182,13 +184,7 @@ public class MyMapClient extends MyMap {
                         context.startActivity(intent);
 
 
-                        //TODO: NAVIGAZIONE
-                        /*
-                        String url = getRequestedUrl(new LatLng(actualLocation.getLatitude(), actualLocation.getLongitude()), marker.getPosition());
-                        Log.e("onMapClick", url);
-                        FetchUrl FetchUrl = new FetchUrl();
-                        FetchUrl.execute(url);
-                        */
+
 
 
 
@@ -198,6 +194,15 @@ public class MyMapClient extends MyMap {
             final AlertDialog alert = builder.create();
             alert.show();
         });
+
+
+        //TODO: NAVIGAZIONE
+                        /*
+                        String url = getRequestedUrl(new LatLng(actualLocation.getLatitude(), actualLocation.getLongitude()), marker.getPosition());
+                        Log.e("onMapClick", url);
+                        FetchUrl FetchUrl = new FetchUrl();
+                        FetchUrl.execute(url);
+                        */
     }
 
 
@@ -225,7 +230,7 @@ public class MyMapClient extends MyMap {
                 MarkerOptions markerOptionsTrader= new MarkerOptions()
                         .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
                         .title(trader.getFirst().getShopName())
-                        .snippet("Negozio di: " + trader.getFirst().getSurname() + " " + trader.getFirst().getName());
+                        .snippet("Clicca per avviare la navgazione verso il negozio");
 
                 try {
                     StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");
