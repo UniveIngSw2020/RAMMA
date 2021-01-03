@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
@@ -95,6 +96,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -149,20 +151,63 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        //quando la mappa è caricata setto la visualizzazione
         setCameraView();
+
+        AtomicReference<Marker> lastClickedMarker = new AtomicReference<>();
 
         mMap.setOnMapClickListener(latLng -> {
 
-            //aggiungi marker a mappa e settalo draggable
-            Marker marker=mMap.addMarker(new MarkerOptions().position(latLng));
-            marker.setDraggable(true);
+            //se nessun marker è stato cliccato in precedenza ne aggiungo uno sulla mappa, altrimenti nascondo la info window
+            if(lastClickedMarker.get()==null) {
+                //aggiungi marker a mappa e settalo draggable
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng));
+                marker.setDraggable(true);
 
-            //aggiungi marker a list e stack
-            markersStack.push(marker);
-            markers.add(marker);
+                //aggiungi marker a list e stack
+                markersStack.push(marker);
+                markers.add(marker);
 
-            //prova a costruire l'area
+                //prova a costruire l'area
+                costruisci();
+            }
+            else{
+                //nascondi la info window
+                lastClickedMarker.get().hideInfoWindow();
+                //setta il marker cliccato a null
+                lastClickedMarker.set(null);
+            }
+        });
+
+        //setto l'info window con il bottone
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapterDelimited(this));
+
+        //setto il comportamento al click del marker
+        mMap.setOnMarkerClickListener(marker -> {
+
+            marker.showInfoWindow();
+            lastClickedMarker.set(marker);
+            return true;
+        });
+
+        //setto i listener al click della info window
+        mMap.setOnInfoWindowClickListener(marker -> {
+
+            markers.remove(marker);
+            markersStack.remove(marker);
+            marker.remove();
+            lastClickedMarker.set(null);
             costruisci();
+        });
+        mMap.setOnInfoWindowLongClickListener(marker -> {
+
+            markers.remove(marker);
+            markersStack.remove(marker);
+            marker.remove();
+            lastClickedMarker.set(null);
+            costruisci();
+
         });
 
         //aggiungi il listener per il drag del marker
@@ -189,8 +234,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
     }
 
-    private Bitmap getBitmap(int drawableRes) {
-        Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
+    private Bitmap getBitmap() {
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.negozio_vettorizzato);
         Canvas canvas = new Canvas();
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         canvas.setBitmap(bitmap);
@@ -221,7 +266,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                     })
                     .addOnFailureListener(exception -> {
                         Log.e(TAG, "NON caricata");
-                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(R.drawable.negozio_vettorizzato),150,150,false) ));
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(),150,150,false) ));
                         trader=mMap.addMarker(markerOptions);
                     });
 
@@ -257,8 +302,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
             //setta a visibile il bottone per confermare i cambiamenti
             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
         }
+        else {
+            map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
+        }
     }
 
+    @SuppressLint("NonConstantResourceId")
     private void initViews(){
         map_trader_delim = findViewById(R.id.toolbar_map_trader_delimiter);
         setSupportActionBar(map_trader_delim);
@@ -336,7 +385,11 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 new LatLng(topBoundary, rightBoundary)
         );
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary,width,height, padding));
 
     }
 

@@ -2,8 +2,12 @@ package com.example.rent_scio1.utils.map;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Location;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TableLayout;
@@ -14,16 +18,28 @@ import com.example.rent_scio1.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.Locale;
 
 
-public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
 
+    private static final String TAG = "CustomInfoWindowAdapter";
     private final View mWindow;
     private Context mContext;
+    private Class myClass;
+    private Location actualLocation;
 
-    public CustomInfoWindowAdapter(Context context) {
+    public CustomInfoWindowAdapter(Context context, Class c) {
         mContext = context;
         mWindow = LayoutInflater.from(context).inflate(R.layout.costum_info_window, null);
+        myClass = c;
+    }
+
+    public CustomInfoWindowAdapter(Context context, Class c, Location location) {
+        mContext = context;
+        mWindow = LayoutInflater.from(context).inflate(R.layout.costum_info_window, null);
+        myClass = c;
+        actualLocation = location;
     }
 
     private void rendowWindowText(Marker marker, View view){
@@ -43,10 +59,32 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         if(snippet!=null){
 
             String[] strings=snippet.split(" ");
-
-            createTableCustomers(table,strings[0],strings[1]);
+            if(myClass.equals(MyMapClient.class)){
+                createTableClient(table,strings[0]);
+            }else{
+                createTableCustomers(table,strings[0],strings[1]);
+            }
         }
 
+    }
+
+    private void createTableClient(TableLayout table, String string) {
+        Typeface typeface = ResourcesCompat.getFont(mContext, R.font.comfortaa_regular);
+
+        TableRow rowTitle= new TableRow(mContext);
+        rowTitle.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        rowTitle.setBackgroundColor(Color.argb(50, 172, 202, 204));
+        rowTitle.setPadding(0, 8, 0, 0);
+        rowTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView tv1 = new TextView(mContext);
+        tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
+        tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv1.setTypeface(typeface);
+        tv1.setTextColor(Color.rgb(3,50,73));
+        tv1.setText(string);
+        rowTitle.addView(tv1);
+        table.addView(rowTitle);
     }
 
     @SuppressLint("SetTextI18n")
@@ -110,7 +148,6 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     }
 
-    private void createTableClient(){ }
 
     @Override
     public View getInfoWindow(Marker marker) {
@@ -123,4 +160,5 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         rendowWindowText(marker, mWindow);
         return mWindow;
     }
+
 }

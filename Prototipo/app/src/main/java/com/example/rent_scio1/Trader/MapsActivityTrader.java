@@ -33,7 +33,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
 
 
     private FirebaseAuth mAuth;
-    private static final String TAG = "MapsActivityTrader";
+    //private static final String TAG = "MapsActivityTrader";
     public Context thisContext;
 
 
