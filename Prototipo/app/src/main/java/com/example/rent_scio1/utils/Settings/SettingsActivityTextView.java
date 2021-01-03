@@ -146,8 +146,9 @@ public class SettingsActivityTextView extends AppCompatActivity {
                                             Log.e(TAG, "User email address updated.");
                                         } else {
                                             Log.e(TAG, "User NOT email address updated.");
+                                            check = false;
                                         }
-                                        check = false;
+
                                     });
                                 });
 
