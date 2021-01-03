@@ -34,12 +34,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
@@ -56,7 +53,6 @@ import java.util.Stack;
 
 public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
 
-    private User mTrader;
     private GoogleMap mMap;
     private FirebaseFirestore mStore;
 
@@ -67,7 +63,6 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     private PositionIterable markers =new PositionIterable();
 
     private final Stack<Marker> markersStack =new Stack<>();
-    private boolean isThereAnArea=false;
 
 
     //posizione del trader
@@ -154,22 +149,26 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        getUserDetails(googleMap);
+        setCameraView();
 
         mMap.setOnMapClickListener(latLng -> {
-            map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
 
-
+            //aggiungi marker a mappa e settalo draggable
             Marker marker=mMap.addMarker(new MarkerOptions().position(latLng));
             marker.setDraggable(true);
 
+            //aggiungi marker a list e stack
             markersStack.push(marker);
             markers.add(marker);
+
+            //prova a costruire l'area
+            costruisci();
         });
 
+        //aggiungi il listener per il drag del marker
         mMap.setOnMarkerDragListener(this);
 
-        //MARKER NEGOZIO
+        //aggiungi MARKER NEGOZIO
         addNegozio();
 
         //Carica area limitata precedente(se presente)
@@ -178,12 +177,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         if(geoPoints!=null){
             markers=new PositionIterable(geoPoints,mMap);
             costruisci();
-            isThereAnArea=true;
             markersStack.addAll(markers.getMarkers());
         }
 
     }
 
+    //metodi per l'aggiunta icona negozio
     public Bitmap resizeMapIcons(String filePath, int width, int height){
         Bitmap imageBitmap = BitmapFactory.decodeFile(filePath);
 
@@ -201,6 +200,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         return bitmap;
     }
 
+    //aggiungi marker negozio
     private void addNegozio(){
 
         GeoPoint traderpos=UserClient.getUser().getTraderPosition();
@@ -234,28 +234,29 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     }
 
+    //metodo per costruzione area
     private void costruisci(){
 
         if(markers.size()>=3){
 
+            //cancella il poligono precedente
             if( polygon!=null ){
                 polygon.remove();
                 polygon=null;
             }
 
+            //ordina i markers in senso orario
             markers.sort();
 
+            //aggiungi il nuovo poligono
             PolygonOptions polygonOptions=new PolygonOptions().addAll(markers).clickable(true);
             polygon=mMap.addPolygon(polygonOptions);
             polygon.setStrokeColor(getColor(R.color.stroke_delimited));
             polygon.setFillColor(Color.argb(130, 111,163,167));
+
+            //setta a visibile il bottone per confermare i cambiamenti
             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
         }
-        else{
-            Toast.makeText(getApplicationContext(),"Non puoi settare come area un punto o una retta",Toast.LENGTH_LONG).show();
-        }
-
-
     }
 
     private void initViews(){
@@ -264,49 +265,54 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //setto il funzionamento dei tasti di eliminazione
         BottomNavigationView bottomNavigationView = findViewById(R.id.gridview_maps_client);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
             switch (item.getItemId()){
-                case R.id.costruisci:
-                    costruisci();
-                    isThereAnArea=true;
-
-                    break;
                 case R.id.clear_last:
                     if(!markersStack.empty()){
 
+                        //tolgo dallo stack il primo
                         Marker last=markersStack.pop();
 
+                        //elimino dalla mappa e dalla lista
                         last.remove();
                         markers.remove(last);
 
+                        //se ci sono abbastanza marker costruisci altrimenti elimina
                         if(markers.size()>=3){
-                            if(isThereAnArea)
-                                costruisci();
+                            costruisci();
                         }
                         else{
                             if(polygon!=null){
                                 polygon.remove();
                                 polygon=null;
-                                isThereAnArea=false;
                                 map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
                             }
                         }
 
+                        //se non ci sono marker sulla mappa setta la possibilità di confermare i cambiamenti
                         if(markersStack.empty())
                             map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
                     }
                     break;
                 case R.id.clear_all:
 
+                    //elimina tutti i marker da lista e stack
                     markers.removeAll();
-                    mMap.clear();
-                    polygon=null;
-                    isThereAnArea=false;
+                    markersStack.removeAllElements();
 
+                    //elimino i marker dalla mappa
+                    mMap.clear();
+
+                    //setto il poligono a NULL
+                    polygon=null;
+
+                    //aggiungo il negozio
                     addNegozio();
 
+                    //setta la possibilità di confermare i cambiamenti
                     map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
                     break;
             }
@@ -315,29 +321,18 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     }
 
-    private void getUserDetails(GoogleMap googleMap){
-        if(mTrader == null){
-            mTrader = new User();
-            DocumentReference userRef = mStore.collection("users").document(FirebaseAuth.getInstance().getUid());
-            userRef.get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    Log.d(TAG, "onComplete: successfully get teh user details");
-                    User user = task.getResult().toObject(User.class);
-                    mTrader = new User (user);
-                    setCameraView(googleMap);
-                }
-            });
-        }
-    }
+    //metodo per settare la visualizzazione della camera sul negozio
+    private void setCameraView(){
 
-    private void setCameraView(GoogleMap googleMap){
-        double bottomBundary = mTrader.getTraderPosition().getLatitude() - .01;
+        User mTrader=UserClient.getUser();
+
+        double bottomBoundary = mTrader.getTraderPosition().getLatitude() - .01;
         double leftBoundary = mTrader.getTraderPosition().getLongitude() - .01;
         double topBoundary = mTrader.getTraderPosition().getLatitude() + .01;
         double rightBoundary = mTrader.getTraderPosition().getLongitude() + .01;
 
         LatLngBounds mMapBoundary = new LatLngBounds(
-                new LatLng(bottomBundary, leftBoundary),
+                new LatLng(bottomBoundary, leftBoundary),
                 new LatLng(topBoundary, rightBoundary)
         );
 
@@ -345,10 +340,12 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     }
 
+
+    //metodi per il controllo del drag marker
     @Override
     public void onMarkerDragStart(Marker marker) {
+        //tolgo il marker attuale
         markers.remove(marker);
-
     }
 
     @Override
@@ -358,8 +355,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
+        //aggiungo il marker attuale e tento la costruzione
         markers.add(marker);
-        if(isThereAnArea)
-            costruisci();
+        costruisci();
     }
 }

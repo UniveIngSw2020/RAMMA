@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_textview_marker">
+
+        <TextView
+            android:id="@+id/title_marker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/back"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TableLayout
+            android:id="@+id/tablelayout_trade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:gravity="center"
+            android:background="#ACCACC"
+            app:itemTextColor="@color/back"/>
+
+    </LinearLayout>
+
+</LinearLayout>
