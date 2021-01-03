@@ -16,13 +16,13 @@ import com.example.rent_scio1.Trader.TutorialDelimitedArea.DeleteAllragmentTutor
 import com.example.rent_scio1.Trader.TutorialDelimitedArea.DeleteLastFragmentTutorial;
 import com.google.android.material.tabs.TabLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
-
-    private Toolbar info_tutorial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
 
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager(), 1);
+        Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new BuildFragment(), "Crea area");
         adapter.addFragment(new DeleteLastFragmentTutorial(), "Elimina l'ultimo");
         adapter.addFragment(new DeleteAllragmentTutorial(), "Pulisci Area");
@@ -51,7 +51,7 @@ public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
     }
 
     private void initViews(){
-        info_tutorial = findViewById(R.id.toolbar_info_tutorial_);
+        Toolbar info_tutorial = findViewById(R.id.toolbar_info_tutorial_);
         setSupportActionBar(info_tutorial);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,10 +62,11 @@ public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public Adapter(FragmentManager manager, int behavior) {
+        public Adapter(FragmentManager manager) {
             super(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
+        @NotNull
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);

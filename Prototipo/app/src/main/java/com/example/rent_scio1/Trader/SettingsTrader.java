@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Settings.SetAvatarActivity;
