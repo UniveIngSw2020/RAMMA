@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.Trader.CustomInfoWindowAdapterTrader;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -68,7 +69,7 @@ public class MyMapTrader extends MyMap{
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapter(context, this.getClass()));
+        getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapterTrader(context));
 
         getmMap().setOnMarkerClickListener(marker -> {
 

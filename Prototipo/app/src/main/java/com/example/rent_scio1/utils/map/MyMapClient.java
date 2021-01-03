@@ -9,30 +9,21 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 
+import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.utils.DataParser;
 import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.User;
-import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,31 +34,18 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.CancellationToken;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MyMapClient extends MyMap {
@@ -140,15 +118,23 @@ public class MyMapClient extends MyMap {
         setMarkerDelimitedTraderNotify();
 
         getmMap().setOnMarkerClickListener(marker -> {
-            getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapter(context, this.getClass(), actualLocation));
+
+            getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
+
             marker.showInfoWindow();
+
             Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
+
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader) {
+
                 if (trader.getFirst().getDelimited_area() != null) {
+
                     if (marker.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))) {
+
                         int col = Color.HSVToColor(new float[]{trader.getSecond().getFirst(), 0.2f, 1.0f});
                         trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
                         trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
+
                     } else {
                         trader.getSecond().getSecond().setVisible(false);
                         trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
@@ -229,8 +215,7 @@ public class MyMapClient extends MyMap {
             if (trader.getFirst().getTraderPosition() != null) {
                 MarkerOptions markerOptionsTrader= new MarkerOptions()
                         .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
-                        .title(trader.getFirst().getShopName())
-                        .snippet("Clicca per avviare la navgazione verso il negozio");
+                        .title(trader.getFirst().getShopName());
 
                 try {
                     StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");

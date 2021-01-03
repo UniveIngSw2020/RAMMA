@@ -1,4 +1,4 @@
-package com.example.rent_scio1.utils.map;
+package com.example.rent_scio1.Trader;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,26 +21,17 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.Locale;
 
 
-public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
+public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapter{
 
     private static final String TAG = "CustomInfoWindowAdapter";
     private final View mWindow;
-    private Context mContext;
-    private Class myClass;
-    private Location actualLocation;
+    private final Context mContext;
 
-    public CustomInfoWindowAdapter(Context context, Class c) {
+    public CustomInfoWindowAdapterTrader(Context context) {
         mContext = context;
         mWindow = LayoutInflater.from(context).inflate(R.layout.costum_info_window, null);
-        myClass = c;
     }
 
-    public CustomInfoWindowAdapter(Context context, Class c, Location location) {
-        mContext = context;
-        mWindow = LayoutInflater.from(context).inflate(R.layout.costum_info_window, null);
-        myClass = c;
-        actualLocation = location;
-    }
 
     private void rendowWindowText(Marker marker, View view){
 
@@ -52,39 +43,17 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
         titleMarker.setTextColor(Color.rgb(3,50,73));
         titleMarker.setText(title);
 
-
-        String snippet = marker.getSnippet();
         TableLayout table = view.findViewById(R.id.tablelayout_trade);
         table.removeAllViews();
+
+
+        String snippet = marker.getSnippet();
         if(snippet!=null){
 
             String[] strings=snippet.split(" ");
-            if(myClass.equals(MyMapClient.class)){
-                createTableClient(table,strings[0]);
-            }else{
-                createTableCustomers(table,strings[0],strings[1]);
-            }
+            createTableCustomers(table,strings[0],strings[1]);
         }
 
-    }
-
-    private void createTableClient(TableLayout table, String string) {
-        Typeface typeface = ResourcesCompat.getFont(mContext, R.font.comfortaa_regular);
-
-        TableRow rowTitle= new TableRow(mContext);
-        rowTitle.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-        rowTitle.setBackgroundColor(Color.argb(50, 172, 202, 204));
-        rowTitle.setPadding(0, 8, 0, 0);
-        rowTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        TextView tv1 = new TextView(mContext);
-        tv1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
-        tv1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        tv1.setTypeface(typeface);
-        tv1.setTextColor(Color.rgb(3,50,73));
-        tv1.setText(string);
-        rowTitle.addView(tv1);
-        table.addView(rowTitle);
     }
 
     @SuppressLint("SetTextI18n")
