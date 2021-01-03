@@ -1,5 +1,6 @@
 package com.example.rent_scio1.Trader;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -77,6 +78,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
@@ -279,7 +281,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
             }
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
