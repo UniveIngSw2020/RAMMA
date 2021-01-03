@@ -58,7 +58,13 @@ public class MyMapTrader extends MyMap{
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         mMap = googleMap;
+
+        //questo va cancellato
         getUserDetails(googleMap);
+
+        //setCameraView(googleMap);
+
+        
         areaLimitata();
         searchCustomers();
 
@@ -249,6 +255,7 @@ public class MyMapTrader extends MyMap{
         m.remove();
     }
 
+    //questo metodo va completamente eliminato
     private void getUserDetails(GoogleMap googleMap){
         if(mTrader == null){
             mTrader = new User();
@@ -276,6 +283,14 @@ public class MyMapTrader extends MyMap{
                 new LatLng(topBoundary, rightBoundary)
         );
 
+        /*
+        int width = context.getResources().getDisplayMetrics().widthPixels;
+        int height = context.getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary,width,height, padding));*/
+
+        //questo richiamo va cancellato
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
 
         MarkerOptions markerOptions=new MarkerOptions()
