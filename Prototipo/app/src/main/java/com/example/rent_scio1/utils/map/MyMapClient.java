@@ -117,9 +117,10 @@ public class MyMapClient extends MyMap {
 
         setMarkerDelimitedTraderNotify();
 
+        getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
+
         getmMap().setOnMarkerClickListener(marker -> {
 
-            getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
 
             marker.showInfoWindow();
 
@@ -136,8 +137,10 @@ public class MyMapClient extends MyMap {
                         trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
 
                     } else {
-                        trader.getSecond().getSecond().setVisible(false);
-                        trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                        //lasciare commentato se si vuole far confrontare le areee
+
+                        //trader.getSecond().getSecond().setVisible(false);
+                        //trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
                     }
                 }
             }
