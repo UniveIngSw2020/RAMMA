@@ -18,6 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
+import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,6 +30,7 @@ import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 
 public class MyPermission {
     
@@ -160,7 +164,9 @@ public class MyPermission {
                     activity.startActivity(enableApplicationDetails);
                 })
                 .setNegativeButton(negativeArgs, (dialog, which) -> {
-                    //apri mappa in modo "limitato"
+                    NavigationView navigationView = activity.findViewById(R.id.navigationView_Map_Client);
+                    navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
+
                 });
 
         final AlertDialog alert = builder.create();

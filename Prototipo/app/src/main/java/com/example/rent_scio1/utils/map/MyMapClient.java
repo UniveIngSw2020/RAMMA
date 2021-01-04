@@ -97,7 +97,7 @@ public class MyMapClient extends MyMap {
         });
 
         boolean bol = permission.checkMapServices(
-                "L'applicazione per settare la posizione del negozio in automatico ha bisogno che la geolocalizzazione sia attiva dalle impostazioni.",
+                "L'applicazione per funzionare correttamente ha bisogno che la geolocalizzazione sia attiva dalle impostazioni.",
                 "OK", manager, listener);
 
         if (bol) {
@@ -105,8 +105,8 @@ public class MyMapClient extends MyMap {
             if (!mLocationPermissionGranted) {
 
                 mLocationPermissionGranted = permission.getLocationPermission(
-                        "L'applicazione per settare la posizione del negozio in automatico ha bisogno del permesso della posizione.",
-                        "Hai rifiutato il permesso :( , dovrai settare la posizione manualmente o attivare il permesso dalle impostazioni di sistema",
+                        "L'applicazione per funzionare correttamente ha bisogno del permesso della posizione.",
+                        "Hai rifiutato il permesso :( , se vuoi utilizzare l'app dovrai consentire l'accesso alla posizione da impostazioni.",
                         "Ok", "Voglio proseguire senza permessi", (dialog, which) ->
                                 ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MyPermission.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION));
 

@@ -87,10 +87,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         mAuth = FirebaseAuth.getInstance();
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
 
+
         createTable();
 
         getListTrader();
-
     }
 
     @Override
@@ -98,8 +98,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         super.onResume();
         Log.e(TAG, "sono nel resume ");
         initViews();
-        startService(new Intent(MapsActivityClient.this, MyFirebaseMessagingServices.class));
-        startService(new Intent(MapsActivityClient.this, ExitService.class));
+        startService(new Intent(this, MyFirebaseMessagingServices.class));
+        startService(new Intent(this, ExitService.class));
     }
 
     @Override
