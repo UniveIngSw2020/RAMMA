@@ -34,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -56,6 +57,7 @@ public class MyMapClient extends MyMap {
     private final FusedLocationProviderClient mFusedLocationClient;
     private boolean mLocationPermissionGranted = false;
     private Location actualLocation;
+    private LatLng posMarker = null;
 
     LocationManager manager;
 
@@ -93,8 +95,7 @@ public class MyMapClient extends MyMap {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         //passo una lambda nulla
-        MyPermission permission = new MyPermission(context, context, location -> {
-        });
+        MyPermission permission = new MyPermission(context, context, location -> { });
 
         boolean bol = permission.checkMapServices(
                 "L'applicazione per funzionare correttamente ha bisogno che la geolocalizzazione sia attiva dalle impostazioni.",
@@ -121,26 +122,40 @@ public class MyMapClient extends MyMap {
 
         getmMap().setOnMarkerClickListener(marker -> {
 
-
-            marker.showInfoWindow();
-
+            //marker.showInfoWindow();
             Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
-
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader) {
 
                 if (trader.getFirst().getDelimited_area() != null) {
 
                     if (marker.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))) {
 
-                        int col = Color.HSVToColor(new float[]{trader.getSecond().getFirst(), 0.2f, 1.0f});
-                        trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
-                        trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
+                        LatLng pos = marker.getPosition();
 
-                    } else {
-                        //lasciare commentato se si vuole far confrontare le areee
+                        if(trader.getSecond().getSecond().isVisible()){
+                            //voglio far scomparire l'area limitata e l'info window del rispettivo marker
 
-                        trader.getSecond().getSecond().setVisible(false);
-                        trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                            if(posMarker == null || !posMarker.equals(pos)){
+                                Log.e(TAG, "Rimostro l'info window");
+                                marker.showInfoWindow();
+                                posMarker = pos;
+                            }else{
+                                Log.e(TAG, "Cancello l'aree limitata");
+                                marker.hideInfoWindow();
+                                posMarker = null;
+                                trader.getSecond().getSecond().setVisible(false);
+                                trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                            }
+                        }else{
+                            //voglio far mostrare l'area limitata e l'info window del rispettivo marker
+                            marker.showInfoWindow();
+                            Log.e(TAG, "Mostro l'area limitata");
+                            posMarker = pos;
+                            int col = Color.HSVToColor(new float[]{trader.getSecond().getFirst(), 0.2f, 1.0f});
+                            trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
+                            trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
+                        }
+
                     }
                 }
             }
@@ -148,8 +163,10 @@ public class MyMapClient extends MyMap {
         });
 
         getmMap().setOnMapClickListener(latLng -> {
+            //markerClicked.clear();
             for(Pair<User, Pair<Float, Polygon>> trader : listTrader){
                 if(trader.getFirst().getDelimited_area() != null ){
+                    Log.e(TAG, "Cancello tutte le aree limitate");
                     trader.getSecond().getSecond().setVisible(false);
                     trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
                 }
@@ -167,31 +184,15 @@ public class MyMapClient extends MyMap {
                     .setPositiveButton( "Sì", (dialogInterface, i) -> {
                         Log.e(TAG,"SI creo la navigazione");
 
-
                         String uri = "http://maps.google.com/maps?saddr=" + actualLocation.getLatitude() + "," + actualLocation.getLongitude() + "&daddr=" + marker.getPosition().latitude + "," + marker.getPosition().longitude;
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                         context.startActivity(intent);
-
-
-
-
-
-
 
                         dialogInterface.dismiss();
                     }).setNegativeButton("No", ((dialogInterface, i) -> dialogInterface.cancel()));
             final AlertDialog alert = builder.create();
             alert.show();
         });
-
-
-        //TODO: NAVIGAZIONE
-                        /*
-                        String url = getRequestedUrl(new LatLng(actualLocation.getLatitude(), actualLocation.getLongitude()), marker.getPosition());
-                        Log.e("onMapClick", url);
-                        FetchUrl FetchUrl = new FetchUrl();
-                        FetchUrl.execute(url);
-                        */
     }
 
 
