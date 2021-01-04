@@ -62,6 +62,18 @@ public class NewRunActivityTrader extends AppCompatActivity {
         m=findViewById(R.id.minuti);
         m.setMaxValue(59);
         m.setMinValue(5);
+        m.setValue(5);
+
+        h.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            if(newVal!=0){
+                m.setMinValue(0);
+                m.setValue(0);
+            }
+            else{
+                m.setMinValue(5);
+                m.setValue(5);
+            }
+        });
     }
 
 
@@ -104,16 +116,22 @@ public class NewRunActivityTrader extends AppCompatActivity {
                     if(vehicle.getVehicleType()!=null) {
 
                         int durataMin=m.getValue() + h.getValue()*60;
-                        long durataMillisec= (long) (durataMin*60)*1000;
+                        if(durataMin>=5){
+                            long durataMillisec= (long) (durataMin*60)*1000;
 
-                        String durataString=""+durataMillisec;
+                            String durataString=""+durataMillisec;
 
-                        Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
-                        String str = UserClient.getUser().getUser_id() + " " + vehicle.getVehicleUID() + " " + durataString;
-                        Log.w(TAG, "APRO IL QR: "+str);
-                        intent.putExtra(ToQR, str);
+                            Intent intent = new Intent(getApplicationContext(), QRGeneratorTrader.class);
+                            String str = UserClient.getUser().getUser_id() + " " + vehicle.getVehicleUID() + " " + durataString;
+                            Log.w(TAG, "APRO IL QR: "+str);
+                            intent.putExtra(ToQR, str);
 
-                        startActivity(intent);
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),"Durata della corsa troppo breve! Almeno 5 minuti ",Toast.LENGTH_LONG).show();
+                        }
+
                     }
                     else {
                         Toast.makeText(getApplicationContext(),"Seleziona un veicolo prima!!!!! ",Toast.LENGTH_LONG).show();

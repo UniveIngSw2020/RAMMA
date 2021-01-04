@@ -3,7 +3,6 @@ package com.example.rent_scio1.Client;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.example.rent_scio1.R;
@@ -13,10 +12,8 @@ import com.google.android.gms.maps.model.Marker;
 public class CustomInfoWindowAdapterClient implements GoogleMap.InfoWindowAdapter{
 
     private final View mWindow;
-    private final Context mContext;
 
     public CustomInfoWindowAdapterClient(Context context) {
-        mContext = context;
         mWindow = LayoutInflater.from(context).inflate(R.layout.costum_info_window_client, null);
     }
 

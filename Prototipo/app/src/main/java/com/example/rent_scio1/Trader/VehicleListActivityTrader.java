@@ -82,7 +82,7 @@ public class VehicleListActivityTrader extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.add_one_vehicle) {
             if(vehicleArrayList.size()>=Vehicle.maxVehicles){
-                Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di 10 veicoli",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"ATTENZIONE: non puoi inserire più di " +Vehicle.maxVehicles+" veicoli",Toast.LENGTH_LONG).show();
             }
             else{
                 Intent toNewVehicleActivityTrader =new Intent(getApplicationContext(),NewVehicleActivityTrader.class);

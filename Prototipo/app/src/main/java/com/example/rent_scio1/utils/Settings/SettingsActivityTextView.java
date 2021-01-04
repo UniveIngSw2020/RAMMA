@@ -22,7 +22,6 @@ import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.Trader.SettingsTrader;
-import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -30,7 +29,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SettingsActivityTextView extends AppCompatActivity {
 
