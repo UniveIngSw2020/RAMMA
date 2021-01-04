@@ -162,6 +162,7 @@ public class MyPermission {
 
                     Intent enableApplicationDetails = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
                     activity.startActivity(enableApplicationDetails);
+                    activity.finishAffinity();
                 })
                 .setNegativeButton(negativeArgs, (dialog, which) -> {
                     NavigationView navigationView = activity.findViewById(R.id.navigationView_Map_Client);
