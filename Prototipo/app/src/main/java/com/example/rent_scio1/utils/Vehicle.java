@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 public class Vehicle {
 
     //campo per visualizzazione massima veicoli
-    public static final int maxVehicles=10;
+    public static final int maxVehicles=20;
 
     //tipo veicolo, posti, ID , noleggiato(bool)
     private String vehicleType;
