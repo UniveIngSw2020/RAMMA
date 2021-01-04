@@ -139,8 +139,8 @@ public class MyMapClient extends MyMap {
                     } else {
                         //lasciare commentato se si vuole far confrontare le areee
 
-                        //trader.getSecond().getSecond().setVisible(false);
-                        //trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
+                        trader.getSecond().getSecond().setVisible(false);
+                        trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
                     }
                 }
             }

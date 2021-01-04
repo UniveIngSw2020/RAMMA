@@ -7,7 +7,7 @@
     android:padding="10dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:orientation="vertical"
@@ -15,20 +15,25 @@
 
         <TextView
             android:id="@+id/title_marker_info_trader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:textAlignment="center"
+            android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:textColor="@color/back"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/text_marker_info_trader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/back"
-            android:textSize="12sp"
-            android:text="Clicca qua per avviare \n la navigazione"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/comfortaa_regular"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:text="@string/clicca_qui_per_ricondurti_n_al_negozio"
+            android:textStyle="italic"/>
 
     </LinearLayout>
 

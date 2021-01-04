@@ -10,6 +10,7 @@
     <color name="cursor">#54f6b1</color>
     <color name="back">#033249</color>
     <color name="text">#7198f1</color>
+    <color name="back_view">#9BB6F5</color>
     <color name="mid_stroke">#0954ff</color>
     <color name="stroke_delimited">#6f5f6f</color>
 </resources>
