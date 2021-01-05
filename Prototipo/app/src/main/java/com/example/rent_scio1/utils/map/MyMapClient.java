@@ -22,20 +22,20 @@ import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.Clustering.ClusterMarker;
+import com.example.rent_scio1.utils.Clustering.MyClusterManagerRenderer;
 import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.User;
-import com.example.rent_scio1.utils.Vehicle;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.CancellationToken;
@@ -43,10 +43,13 @@ import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MyMapClient extends MyMap {
@@ -58,6 +61,8 @@ public class MyMapClient extends MyMap {
     private boolean mLocationPermissionGranted = false;
     private Location actualLocation;
     private LatLng posMarker = null;
+    private ClusterManager<ClusterMarker> clusterManager;
+    private MyClusterManagerRenderer mClusterManagerRenderer;
 
     LocationManager manager;
 
@@ -65,7 +70,7 @@ public class MyMapClient extends MyMap {
 
     private StorageReference mStorageRef;
 
-    public MyMapClient(AppCompatActivity context, LocationManager manager, DialogInterface.OnClickListener listener, ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader, Vehicle vehicleRun) {
+    public MyMapClient(AppCompatActivity context, LocationManager manager, DialogInterface.OnClickListener listener, ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader) {
         super();
         this.context = context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
@@ -118,38 +123,50 @@ public class MyMapClient extends MyMap {
 
         setMarkerDelimitedTraderNotify();
 
-        getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
+        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
+        getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
+        getmMap().setOnCameraIdleListener(clusterManager);
 
-        getmMap().setOnMarkerClickListener(marker -> {
 
-            //marker.showInfoWindow();
-            Log.e(TAG, "MARKER CLICCATOOOOOOOOOOOOO");
+
+        clusterManager.setOnClusterItemClickListener(item -> {
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader) {
-
                 if (trader.getFirst().getDelimited_area() != null) {
-
-                    if (marker.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))) {
-
-                        LatLng pos = marker.getPosition();
-
+                    if (item.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))) {
+                        LatLng pos = item.getPosition();
                         if(trader.getSecond().getSecond().isVisible()){
-                            //voglio far scomparire l'area limitata e l'info window del rispettivo marker
 
                             if(posMarker == null || !posMarker.equals(pos)){
                                 Log.e(TAG, "Rimostro l'info window");
-                                marker.showInfoWindow();
+
+                                for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                                    if(m.getPosition().equals(item.getPosition())){
+                                        m.showInfoWindow();
+                                        Log.e(TAG, "Mostro l'area limitata");
+                                    }
+                                }
                                 posMarker = pos;
+
                             }else{
-                                Log.e(TAG, "Cancello l'aree limitata");
-                                marker.hideInfoWindow();
+
+                                for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                                    if(m.getPosition().equals(item.getPosition())){
+                                        m.hideInfoWindow();
+                                        Log.e(TAG, "Cancello l'aree limitata");
+                                    }
+                                }
                                 posMarker = null;
                                 trader.getSecond().getSecond().setVisible(false);
                                 trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
                             }
                         }else{
-                            //voglio far mostrare l'area limitata e l'info window del rispettivo marker
-                            marker.showInfoWindow();
-                            Log.e(TAG, "Mostro l'area limitata");
+                            for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                                if(m.getPosition().equals(item.getPosition())){
+                                    m.showInfoWindow();
+                                    Log.e(TAG, "Mostro l'area limitata con area limitata");
+                                }
+                            }
+
                             posMarker = pos;
                             int col = Color.HSVToColor(new float[]{trader.getSecond().getFirst(), 0.2f, 1.0f});
                             trader.getSecond().getSecond().setFillColor(Color.argb(130, Color.red(col), Color.green(col), Color.blue(col)));
@@ -157,10 +174,20 @@ public class MyMapClient extends MyMap {
                         }
 
                     }
+                }else{
+                    for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                        if(m.getPosition().equals(item.getPosition())){
+                            m.showInfoWindow();
+                            Log.e(TAG, "Mostro linfowindow senza arealimitata");
+                        }
+                    }
                 }
             }
             return true;
         });
+
+        getmMap().setOnMarkerClickListener(clusterManager);
+
 
         getmMap().setOnMapClickListener(latLng -> {
             //markerClicked.clear();
@@ -172,7 +199,6 @@ public class MyMapClient extends MyMap {
                 }
             }
         });
-
 
 
         getmMap().setOnInfoWindowClickListener(marker -> {
@@ -196,6 +222,7 @@ public class MyMapClient extends MyMap {
     }
 
 
+
     public Bitmap resizeMapIcons(String filePath, int width, int height){
         Bitmap imageBitmap = BitmapFactory.decodeFile(filePath);
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
@@ -212,55 +239,90 @@ public class MyMapClient extends MyMap {
         return bitmap;
     }
 
+
+    public boolean isMarkerPresent(LatLng pos){
+        boolean flag = false;
+        for(Marker m : clusterManager.getClusterMarkerCollection().getMarkers()){
+            if(m.getPosition().equals(pos))
+                flag = true;
+        }
+        return !flag;
+    }
+
+
+
     private void setMarkerDelimitedTraderNotify(){
-        Log.e(TAG, "setMarkerDelimitedTraderNotify " + listTrader.size());
-        for (Pair<User, Pair<Float, Polygon>> trader : listTrader) {
-            Log.e(TAG, "                    " + trader.getFirst().toString());
-            if (trader.getFirst().getTraderPosition() != null) {
-                MarkerOptions markerOptionsTrader= new MarkerOptions()
-                        .position(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))
-                        .title(trader.getFirst().getShopName());
+        if(getmMap() != null){
+            clusterManager = new ClusterManager<>(context, getmMap());
+            if(mClusterManagerRenderer == null){
+                mClusterManagerRenderer = new MyClusterManagerRenderer(
+                        context,
+                        getmMap(),
+                        clusterManager
+                );
+                clusterManager.setRenderer(mClusterManagerRenderer);
+            }
+            //getmMap().setOnInfoWindowClickListener(this);
 
-                try {
-                    StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");
-                    File localFile = File.createTempFile( trader.getFirst().getUser_id() , "jpg");
+            for (Pair<User, Pair<Float, Polygon>> trader : listTrader) {
+                Log.e(TAG, "                    " + trader.getFirst().toString());
+                if (trader.getFirst().getTraderPosition() != null) {
+                    GeoPoint pos = trader.getFirst().getTraderPosition();
+                    String title = trader.getFirst().getShopName();
+                    try {
+                        StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");
+                        File localFile = File.createTempFile( trader.getFirst().getUser_id() , "jpg");
 
-                    islandRef.getFile(localFile)
-                            .addOnSuccessListener(taskSnapshot ->{
-                                        //icona personalizzata
-                                        markerOptionsTrader.icon( BitmapDescriptorFactory.fromBitmap( resizeMapIcons(localFile.getPath(),100,100)) );
-                                        getmMap().addMarker(markerOptionsTrader);
-                                    })
-                            .addOnFailureListener( exception ->{
-                                        //icona di default
-                                        markerOptionsTrader.icon( BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),100,100,false) ));
-                                        getmMap().addMarker(markerOptionsTrader);
-                                    });
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        islandRef.getFile(localFile)
+                                .addOnCompleteListener(task -> {
+                                    Bitmap image;
+                                    if(task.isSuccessful() && isMarkerPresent(new LatLng(pos.getLatitude(), pos.getLongitude()))){
+                                        image = resizeMapIcons(localFile.getPath(),100,100);
+                                    }else{
+                                        image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
+                                    }
+                                    Log.e(TAG, "aggiunto marker");
+                                    clusterManager.addItem(new ClusterMarker(pos.getLatitude(), pos.getLongitude(), title, image));
+                                });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
-            }
+                List<LatLng> latLngs = new ArrayList<>();
+                if(trader.getFirst().getDelimited_area() != null){
+                    for (GeoPoint a: trader.getFirst().getDelimited_area()) {
+                        latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+                    }
 
-            List<LatLng> latLngs = new ArrayList<>();
-            if(trader.getFirst().getDelimited_area() != null){
-                for (GeoPoint a: trader.getFirst().getDelimited_area()) {
-                    latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+                    PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(false);
+                    Polygon polygon=getmMap().addPolygon(polygonOptions);
+                    polygon.setVisible(false);
+                    float [] col = new float[] { trader.getSecond().getFirst(), 1.0f, 1.0f };
+                    Log.e(TAG, trader.getSecond().getFirst() + "         " + col[0]);
+                    polygon.setStrokeColor(Color.HSVToColor(col));
+                    polygon.setStrokeWidth(5.0f);
+                    trader.getSecond().setSecond(polygon);
                 }
-
-                PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(false);
-                Polygon polygon=getmMap().addPolygon(polygonOptions);
-                polygon.setVisible(false);
-                float [] col = new float[] { trader.getSecond().getFirst(), 1.0f, 1.0f };
-                Log.e(TAG, trader.getSecond().getFirst() + "         " + col[0]);
-                polygon.setStrokeColor(Color.HSVToColor(col));
-                polygon.setStrokeWidth(5.0f);
-                trader.getSecond().setSecond(polygon);
             }
-
+            clusterManager.cluster();
         }
     }
+
+    /*public GoogleMap.OnCameraMoveListener getCameraChangeListener()
+    {
+        return new GoogleMap.OnCameraMoveListener()
+        {
+            @Override
+            public void onCameraMove() {
+                if (position.zoom < [minimum desired position]) {
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo( [float value of desired zoom level] );
+                }else{
+                    clusterManager.set(mMap.getCameraPosition());
+                }
+            }
+        }
+    }*/
 
     private void getLastKnownLocation() {
         Log.d(TAG, "getLastKnownLocation: called.");
@@ -300,165 +362,4 @@ public class MyMapClient extends MyMap {
         }
     }
 
-
-
-
-
-/*
-
-    private String getRequestedUrl(LatLng origin, LatLng destination) {
-        String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
-        String strDestination = "destination=" + destination.latitude + "," + destination.longitude;
-        String sensor = "sensor=false";
-        String mode = "mode=driving";
-
-        String param = strOrigin + "&" + strDestination + "&" + sensor + "&" + mode;
-        String output = "json";
-        String APIKEY = "AIzaSyAufu7FvGg-AIzaSyB4cHCVsFMmJEBrYM1lkNpG_BgwoxMM8vo";
-
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + APIKEY;
-        return url;
-    }
-
-
-    private class FetchUrl extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... url) {
-
-            // For storing data from web service
-            String data = "";
-
-            try {
-                // Fetching the data from web service
-                data = downloadUrl(url[0]);
-                Log.d("Background Task data", data.toString());
-            } catch (Exception e) {
-                Log.d("Background Task", e.toString());
-            }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            ParserTask parserTask = new ParserTask();
-
-            // Invokes the thread for parsing the JSON data
-            parserTask.execute(result);
-
-        }
-    }
-
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(strUrl);
-
-            // Creating an http connection to communicate with url
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            // Connecting to url
-            urlConnection.connect();
-
-            // Reading data from url
-            iStream = urlConnection.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
-            StringBuffer sb = new StringBuffer();
-
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-            data = sb.toString();
-            Log.d("downloadUrl", data.toString());
-            br.close();
-
-        } catch (Exception e) {
-            Log.d("Exception", e.toString());
-        } finally {
-            iStream.close();
-            urlConnection.disconnect();
-        }
-        return data;
-    }
-
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-
-        // Parsing the data in non-ui thread
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
-
-            JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
-
-            try {
-                jObject = new JSONObject(jsonData[0]);
-                Log.d("ParserTask", jsonData[0]);
-                DataParser parser = new DataParser();
-                Log.d("ParserTask", parser.toString());
-
-                // Starts parsing data
-                routes = parser.parse(jObject);
-                Log.d("ParserTask","Executing routes");
-                Log.d("ParserTask",routes.toString());
-
-            } catch (Exception e) {
-                Log.d("ParserTask",e.toString());
-                e.printStackTrace();
-            }
-            return routes;
-        }
-
-        // Executes in UI thread, after the parsing process
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList<LatLng> points;
-            PolylineOptions lineOptions = null;
-
-            // Traversing through all the routes
-            for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList<>();
-                lineOptions = new PolylineOptions();
-
-                // Fetching i-th route
-                List<HashMap<String, String>> path = result.get(i);
-
-                // Fetching all the points in i-th route
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap<String, String> point = path.get(j);
-
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
-
-                    points.add(position);
-                }
-
-                // Adding all the points in the route to LineOptions
-                lineOptions.addAll(points);
-                lineOptions.width(10);
-                lineOptions.color(Color.RED);
-
-                Log.d("onPostExecute","onPostExecute lineoptions decoded");
-
-            }
-
-            // Drawing polyline in the Google Map for the i-th route
-            if(lineOptions != null) {
-                getmMap().addPolyline(lineOptions);
-            }
-            else {
-                Log.d("onPostExecute","without Polylines drawn");
-            }
-        }
-    }
-
-*/
 }

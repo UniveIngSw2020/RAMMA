@@ -75,7 +75,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
 
     private final ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader = new ArrayList<>();
-    private Vehicle v = null;
+    //private Vehicle v = null;
 
     //Polygon delimitedArea;
 
@@ -154,7 +154,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
             }
 
-            if(UserClient.getRun() != null){
+            /*if(UserClient.getRun() != null){
                 Query getVehicle= db.collection("vehicles").whereEqualTo("user_id", UserClient.getRun().getVehicle());
 
                 getVehicle.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
@@ -165,7 +165,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                 });
             }else{
                 openMap();
-            }
+            }*/
+            openMap();
         });
     }
 
@@ -179,7 +180,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
             Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivityForResult(enableGpsIntent, MyPermission.PERMISSIONS_REQUEST_ENABLE_GPS);
-        }, listTrader, v);
+        }, listTrader);
         Log.e(TAG, "aziono la mappa ");
         mapFragment.getMapAsync(myMapClient);
     }
