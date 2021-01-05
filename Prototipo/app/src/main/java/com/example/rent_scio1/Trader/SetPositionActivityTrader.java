@@ -39,6 +39,7 @@ import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SetPositionActivityTrader extends AppCompatActivity implements OnMapReadyCallback,GoogleMap.OnMarkerDragListener {
 
@@ -68,6 +69,8 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
     public void initViews(){
         toolbar_map = findViewById(R.id.toolbar_map_permission_delimited);
         setSupportActionBar(toolbar_map);
+        /*Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
     }
 
     @Override
