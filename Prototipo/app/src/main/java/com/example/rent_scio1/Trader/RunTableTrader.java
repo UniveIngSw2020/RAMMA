@@ -159,7 +159,13 @@ public class RunTableTrader extends AppCompatActivity {
                         minutesText="0"+minutesText;
                     }
 
-                    timeText.setText(String.format("%s:%s:%d",hoursText, minutesText, seconds));
+                    String secondText=""+seconds;
+                    if(seconds<10){
+
+                        secondText="0"+seconds;
+                    }
+
+                    timeText.setText(String.format("%s:%s:%d",hoursText, minutesText, secondText));
                 }
                 else{
 
@@ -169,14 +175,16 @@ public class RunTableTrader extends AppCompatActivity {
                         minutesText="0"+minutesText;
                     }
 
-                    timeText.setText(String.format("%s:%d", minutesText, seconds));
+                    String secondText=""+seconds;
+                    if(seconds<10){
 
-                    if(minutes<10){
-                        timeText.setTextColor(Color.YELLOW);
+                        secondText="0"+seconds;
                     }
 
-                    if(minutes<5){
-                        timeText.setTextColor(Color.RED);
+                    timeText.setText(String.format("%s:%d", minutesText, secondText));
+
+                    if(minutes<10){
+                        timeText.setTextColor(Color.rgb(236, 124, 124));
                     }
                 }
 
