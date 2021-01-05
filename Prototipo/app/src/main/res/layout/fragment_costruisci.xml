@@ -124,6 +124,7 @@
                 android:fontFamily="@font/comfortaa_regular"
                 android:gravity="center"
                 android:paddingTop="50dp"
+                android:paddingBottom="30dp"
                 android:text="@string/nota_bene_che_per_poter_disegnare_l_area_devono_esserci_minimo_3_marker_escluso_avatar_del_tuo_negozio"
                 android:textColor="@color/back"
                 android:textSize="18sp"
