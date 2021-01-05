@@ -30,6 +30,7 @@ public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapte
     public CustomInfoWindowAdapterTrader(Context context) {
         mContext = context;
         mWindow = LayoutInflater.from(context).inflate(R.layout.costum_info_window, null);
+        mWindow.setClickable(false);
     }
 
 
