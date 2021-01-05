@@ -18,18 +18,16 @@
         android:theme="@style/ToolbarTheme_inverted"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/settings_trader_scrollview"
+        app:layout_constraintBottom_toTopOf="@id/listview_final"
         app:layout_constraintTop_toTopOf="parent"
         app:title="Impostazioni"
         app:titleTextAppearance="@style/Style_TextView"
         app:titleTextColor="@color/back" />
 
-    <ScrollView
-        android:id="@+id/settings_trader_scrollview"
+    <ListView
+        android:id="@+id/listview_final"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
-        android:onClick="hideKeyboard"
         android:background="@color/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar_settings_trader"
         app:layout_constraintVertical_bias="0.0">
 
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -57,8 +55,8 @@
                 android:id="@+id/listview_settings_shop_info"
                 android:padding="10dp"/>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
-    </ScrollView>
+    </ListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

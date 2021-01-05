@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Settings.SetAvatarActivity;
 import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SettingsTrader extends AppCompatActivity {
 
@@ -30,12 +34,98 @@ public class SettingsTrader extends AppCompatActivity {
         intentTextView=new Intent(getApplicationContext(), SettingsActivityTextView.class);
 
         initViews();
-        createListView_Personal_Info();
-        createListView_Shop_Info();
+        /*createListView_Personal_Info();
+        createListView_Shop_Info();*/
+        createListViewFinal();
 
     }
 
-    public void createListView_Personal_Info(){
+    public void createListViewFinal(){
+        AtomicBoolean flag = new AtomicBoolean(true);
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
+
+        String[] items = { "INFORMAZIONI PERSONALI", "Cambia Nome","Cambia Cognome","Cambia Email", "Cambia Password", "Cambia Numero di telefono","INFORMAZIONI NEGOZIO", "Cambia Nome Negozio", "Cambia la posizione del negozio", "Cambia avatar del negozio"};
+        ListView listView = findViewById(R.id.listview_final);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.format_info_settings, items){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                TextView view = (TextView)super.getView(position, convertView, parent);
+                if(position == 0 || position == 6){
+                    view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    view.setTextColor(getColor(R.color.teal_200));
+                    view.setTypeface(typeface);
+                    view.setTextSize(20);
+                    view.setClickable(false);
+                }
+                return view;
+            }
+        };
+        listView.setAdapter(arrayAdapter);
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+
+            switch(position){
+                //CAMBIA NOME
+                case 1:
+                    flag.set(true);
+                    intentTextView.putExtra("type","name");
+                    intentTextView.putExtra("textType","Scrivi il tuo nome!");
+                    break;
+                //CAMBIA COGNOME
+                case 2:
+                    flag.set(true);
+                    intentTextView.putExtra("type","surname");
+                    intentTextView.putExtra("textType","Scrivi il tuo cognome!");
+                    break;
+                //CAMBIA EMAIL
+                case 3:
+                    flag.set(true);
+                    intentTextView.putExtra("type","email");
+                    intentTextView.putExtra("textType","Scrivi la tua email");
+                    break;
+                //CAMBIA PASSWORD
+                case 4:
+                    flag.set(true);
+                    intentTextView.putExtra("type","password");
+                    intentTextView.putExtra("textType","Scrivi la tua password");
+                    break;
+                //CAMBIA TELEFONO
+                case 5:
+                    flag.set(true);
+                    intentTextView.putExtra("type","phone");
+                    intentTextView.putExtra("textType","Scrivi il tuo numero di telefono!");
+                    break;
+                case 7:
+                    flag.set(true);
+                    intentTextView.putExtra("type","shopName");
+                    intentTextView.putExtra("textType","Scrivi il nome del tuo negozio!");
+                    break;
+                //POSIZIONE NEGOZIO
+                case 8:
+                    flag.set(false);
+                    startActivity(new Intent(getApplicationContext(),SetPositionActivityTrader.class));
+                    break;
+                //CAMBIO AVATAR NEGOZIO
+                case 9:
+                    flag.set(false);
+                    startActivity(new Intent(getApplicationContext(), SetAvatarActivity.class));
+                    break;
+
+                default:
+                    flag.set(false);
+                    break;
+            }
+
+            if(flag.get()){
+                startActivity(intentTextView);
+            }
+
+        });
+
+    }
+
+   /* public void createListView_Personal_Info(){
 
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
@@ -56,32 +146,33 @@ public class SettingsTrader extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
 
             switch(position){
-                /*CAMBIA NOME*/
+                //CAMBIA NOME
                 case 1:
                     intentTextView.putExtra("type","name");
                     intentTextView.putExtra("textType","Scrivi il tuo nome!");
                     break;
-                /*CAMBIA COGNOME*/
+                //CAMBIA COGNOME
                 case 2:
                     intentTextView.putExtra("type","surname");
                     intentTextView.putExtra("textType","Scrivi il tuo cognome!");
                     break;
-                /*CAMBIA EMAIL*/
+                //CAMBIA EMAIL
                 case 3:
                     intentTextView.putExtra("type","email");
                     intentTextView.putExtra("textType","Scrivi la tua email");
                     break;
-                /*CAMBIA PASSWORD*/
+                //CAMBIA PASSWORD
                 case 4:
                     intentTextView.putExtra("type","password");
                     intentTextView.putExtra("textType","Scrivi la tua password");
                     break;
-                /*CAMBIA TELEFONO*/
+                //CAMBIA TELEFONO
                 case 5:
                     intentTextView.putExtra("type","phone");
                     intentTextView.putExtra("textType","Scrivi il tuo numero di telefono!");
                     break;
                 default:
+                    break;
             }
             startActivity(intentTextView);
         });
@@ -108,30 +199,31 @@ public class SettingsTrader extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
 
             switch(position){
-                /*CAMBIA NOME*/
+                //CAMBIA NOME
                 case 1:
                     intentTextView.putExtra("type","shopName");
                     intentTextView.putExtra("textType","Scrivi il nome del tuo negozio!");
                     startActivity(intentTextView);
                     break;
-                /*POSIZIONE NEGOZIO*/
+                //POSIZIONE NEGOZIO
                 case 2:
                     startActivity(new Intent(getApplicationContext(),SetPositionActivityTrader.class));
                     break;
-                /*CAMBIO AVATAR NEGOZIO*/
+                //CAMBIO AVATAR NEGOZIO
                 case 3:
                     startActivity(new Intent(getApplicationContext(), SetAvatarActivity.class));
                     break;
 
                 default:
+                    break;
             }
         });
     }
-
+*/
     public void initViews(){
         Toolbar settings_toolbar = findViewById(R.id.toolbar_settings_trader);
         setSupportActionBar(settings_toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
