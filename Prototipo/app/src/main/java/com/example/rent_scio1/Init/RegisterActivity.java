@@ -102,31 +102,31 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean chekForm() {
         boolean flag = true;
-        if (TextUtils.isEmpty(mPassword.getText().toString().trim())) {
-            mPassword.setError("Password Richesta!");
+        if (TextUtils.isEmpty(mPassword.getText().toString().trim()) || mPassword.getText().length() < 6) {
+            mPassword.setError("Immetti una password di almeno 6 caratteri!");
             flag = false;
         }
         if (TextUtils.isEmpty(mName.getText().toString().trim())) {
-            mName.setError("Nome Richeisto!");
+            mName.setError("Nome eichiesto!");
             flag = false;
         }
         if (TextUtils.isEmpty(mSurname.getText().toString().trim())) {
-            mSurname.setError("Cognome Richiesto!");
+            mSurname.setError("Cognome richiesto!");
             flag = false;
         }
         if (TextUtils.isEmpty(mEmail.getText().toString().trim())) {
-            mEmail.setError("Email Richeista!");
+            mEmail.setError("Email richiesta!");
             flag = false;
         }
         if (TextUtils.isEmpty(mPhone.getText().toString().trim())) {
-            mPhone.setError("Numero di Cellulare Richiesto!");
+            mPhone.setError("Numero di cellulare richiesto!");
             flag = false;
         }
 
         if (mTrader.isChecked()) {
 
             if (TextUtils.isEmpty(mShopname.getText().toString().trim())) {
-                mShopname.setError("Nome del Negozio Richiesto!");
+                mShopname.setError("Nome del negozio richiesto!");
                 flag = false;
             }
         }

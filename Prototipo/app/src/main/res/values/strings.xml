@@ -146,6 +146,7 @@
     <string name="crea_area">Crea area</string>
     <string name="elimina_marker">Elimina marker</string>
     <string name="clicca_qui_per_ricondurti_n_al_negozio">Clicca qui per tornare \n al negozio</string>
+    <string name="password_almeno_6_caratteri">Password (almeno 6 caratteri)</string>
 
 
 </resources>

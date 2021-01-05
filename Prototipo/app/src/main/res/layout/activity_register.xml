@@ -139,7 +139,7 @@
                 android:backgroundTint="@color/text"
                 android:ems="10"
                 android:fontFamily="@font/comfortaa_regular"
-                android:hint="@string/password_register"
+                android:hint="@string/password_almeno_6_caratteri"
                 android:inputType="textPassword"
                 android:textColor="@color/teal_200"
                 android:textColorHint="@color/text"
