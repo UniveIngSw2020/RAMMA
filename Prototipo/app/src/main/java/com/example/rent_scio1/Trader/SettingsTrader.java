@@ -3,6 +3,7 @@ package com.example.rent_scio1.Trader;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.widget.TextViewCompat;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -55,8 +56,8 @@ public class SettingsTrader extends AppCompatActivity {
                     view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                     view.setTextColor(getColor(R.color.teal_200));
                     view.setTypeface(typeface);
-                    view.setTextSize(20);
                     view.setClickable(false);
+                    TextViewCompat.setAutoSizeTextTypeWithDefaults(view, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
                 }
                 return view;
             }
