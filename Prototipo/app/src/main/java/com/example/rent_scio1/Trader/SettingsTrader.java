@@ -35,10 +35,8 @@ public class SettingsTrader extends AppCompatActivity {
         intentTextView=new Intent(getApplicationContext(), SettingsActivityTextView.class);
 
         initViews();
-        /*createListView_Personal_Info();
-        createListView_Shop_Info();*/
-        createListViewFinal();
 
+        createListViewFinal();
     }
 
     public void createListViewFinal(){
@@ -126,101 +124,6 @@ public class SettingsTrader extends AppCompatActivity {
 
     }
 
-   /* public void createListView_Personal_Info(){
-
-        Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
-
-        TextView tv = new TextView(this);
-        tv.setText("INFORMAZIONI PERSONALI");
-        tv.setTextSize(23);
-        tv.setTextColor(getColor(R.color.teal_200));
-        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        tv.setTypeface(typeface);
-
-        String[] items = {"Cambia Nome","Cambia Cognome","Cambia Email", "Cambia Password", "Cambia Numero di telefono"};
-        ListView listView = findViewById(R.id.listview_settings_personal_info);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,R.layout.format_info_settings, items);
-
-        listView.setAdapter(arrayAdapter);
-        listView.addHeaderView(tv);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-
-            switch(position){
-                //CAMBIA NOME
-                case 1:
-                    intentTextView.putExtra("type","name");
-                    intentTextView.putExtra("textType","Scrivi il tuo nome!");
-                    break;
-                //CAMBIA COGNOME
-                case 2:
-                    intentTextView.putExtra("type","surname");
-                    intentTextView.putExtra("textType","Scrivi il tuo cognome!");
-                    break;
-                //CAMBIA EMAIL
-                case 3:
-                    intentTextView.putExtra("type","email");
-                    intentTextView.putExtra("textType","Scrivi la tua email");
-                    break;
-                //CAMBIA PASSWORD
-                case 4:
-                    intentTextView.putExtra("type","password");
-                    intentTextView.putExtra("textType","Scrivi la tua password");
-                    break;
-                //CAMBIA TELEFONO
-                case 5:
-                    intentTextView.putExtra("type","phone");
-                    intentTextView.putExtra("textType","Scrivi il tuo numero di telefono!");
-                    break;
-                default:
-                    break;
-            }
-            startActivity(intentTextView);
-        });
-    }
-
-    public void createListView_Shop_Info(){
-
-        Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
-
-        TextView tv = new TextView(this);
-        tv.setText("INFORMAZIONI NEGOZIO");
-        tv.setTextSize(25);
-        tv.setTextColor(getColor(R.color.teal_200));
-        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        tv.setTypeface(typeface);
-
-        String[] items = { "Cambia Nome Negozio", "Cambia la posizione del negozio", "Cambia avatar del negozio"};
-        ListView listView = findViewById(R.id.listview_settings_shop_info);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,R.layout.format_info_settings, items);
-
-        listView.setAdapter(arrayAdapter);
-        listView.addHeaderView(tv);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-
-            switch(position){
-                //CAMBIA NOME
-                case 1:
-                    intentTextView.putExtra("type","shopName");
-                    intentTextView.putExtra("textType","Scrivi il nome del tuo negozio!");
-                    startActivity(intentTextView);
-                    break;
-                //POSIZIONE NEGOZIO
-                case 2:
-                    startActivity(new Intent(getApplicationContext(),SetPositionActivityTrader.class));
-                    break;
-                //CAMBIO AVATAR NEGOZIO
-                case 3:
-                    startActivity(new Intent(getApplicationContext(), SetAvatarActivity.class));
-                    break;
-
-                default:
-                    break;
-            }
-        });
-    }
-*/
     public void initViews(){
         Toolbar settings_toolbar = findViewById(R.id.toolbar_settings_trader);
         setSupportActionBar(settings_toolbar);
