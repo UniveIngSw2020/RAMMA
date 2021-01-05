@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
             flag = false;
         }
         if (TextUtils.isEmpty(mName.getText().toString().trim())) {
-            mName.setError("Nome eichiesto!");
+            mName.setError("Nome richiesto!");
             flag = false;
         }
         if (TextUtils.isEmpty(mSurname.getText().toString().trim())) {
