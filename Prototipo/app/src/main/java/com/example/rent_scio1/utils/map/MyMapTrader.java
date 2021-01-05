@@ -74,10 +74,8 @@ public class MyMapTrader extends MyMap{
         getmMap().setOnMarkerClickListener(marker -> {
 
             marker.showInfoWindow();
-
             return true;
         });
-
     }
 
 
@@ -139,7 +137,13 @@ public class MyMapTrader extends MyMap{
                         minutesText="0"+minutesText;
                     }
 
-                    costumer.setSnippet( (run.getSpeed())+" "+hoursText+":"+minutesText+":"+seconds );
+                    String secondText=""+seconds;
+                    if(seconds<10){
+
+                        secondText="0"+seconds;
+                    }
+
+                    costumer.setSnippet( (run.getSpeed())+" "+hoursText+":"+minutesText+":"+secondText );
                 }
                 else{
 
@@ -149,7 +153,13 @@ public class MyMapTrader extends MyMap{
                         minutesText="0"+minutesText;
                     }
 
-                    costumer.setSnippet((run.getSpeed())+" "+minutesText+":"+seconds );
+                    String secondText=""+seconds;
+                    if(seconds<10){
+
+                        secondText="0"+seconds;
+                    }
+
+                    costumer.setSnippet((run.getSpeed())+" "+minutesText+":"+secondText );
                 }
 
                 if(costumer.isInfoWindowShown())
