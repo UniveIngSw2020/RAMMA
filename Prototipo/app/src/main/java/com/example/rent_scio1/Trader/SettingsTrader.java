@@ -103,7 +103,11 @@ public class SettingsTrader extends AppCompatActivity {
                 //POSIZIONE NEGOZIO
                 case 8:
                     flag.set(false);
-                    startActivity(new Intent(getApplicationContext(),SetPositionActivityTrader.class));
+
+                    Intent intent=new Intent(getApplicationContext(),SetPositionActivityTrader.class);
+                    intent.putExtra("IMPOSTAZIONI",true);
+
+                    startActivity(intent);
                     break;
                 //CAMBIO AVATAR NEGOZIO
                 case 9:

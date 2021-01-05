@@ -69,8 +69,18 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
     public void initViews(){
         toolbar_map = findViewById(R.id.toolbar_map_permission_delimited);
         setSupportActionBar(toolbar_map);
-        /*Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);*/
+
+        Intent intent=getIntent();
+        if(intent.getBooleanExtra("IMPOSTAZIONI",false)){
+
+            Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        else{
+
+            Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
     }
 
     @Override
@@ -169,7 +179,13 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
                 }
 
                 break;
+            case android.R.id.home:
 
+                Intent intent=new Intent(this,SettingsTrader.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                startActivity(intent);
+                break;
             default:
                 super.onOptionsItemSelected(item);
                 break;
