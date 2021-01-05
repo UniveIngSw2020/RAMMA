@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Rent-Sciò</string>
     <string name="title_activity_maps">Map</string>
     <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
@@ -88,7 +88,7 @@
     <string name="tempo_rimasto">Tempo rimasto</string>
     <string name="assistenza">Assistenza</string>
     <string name="ritorno_al_negozio">Ritorno al negozio</string>
-    <string name="non_ci_sono_corse_attive_al_momento">Non ci sono corse attive al momento.</string>
+    <string name="non_ci_sono_corse_attive_al_momento" tools:ignore="Typos">Non ci sono corse attive al momento.</string>
     <string name="rimasti">Rimasti</string>
     <string name="elimina_corsa_trader_table">Elimina</string>
     <string name="elimina___">Elimina</string>
