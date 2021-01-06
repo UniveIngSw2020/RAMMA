@@ -1,5 +1,6 @@
 package com.example.rent_scio1.utils.Settings;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -22,11 +23,21 @@ import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.Trader.SettingsTrader;
+import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
@@ -101,6 +112,10 @@ public class SettingsActivityTextView extends AppCompatActivity {
                 editText1.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 editText1.setVisibility(View.VISIBLE);
                 break;
+            case "Elimina_account":
+                format = "elimina account";
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                break;
         }
 
         //setto cosa deve fare il tasto conferma
@@ -167,6 +182,43 @@ public class SettingsActivityTextView extends AppCompatActivity {
                     } else{
                         Toast.makeText(this,"Le password non corrispondono",Toast.LENGTH_LONG).show();
                     }
+                    break;
+                case "Elimina_account":
+                    check = false;
+                    String psw = "123456";
+                    AuthCredential hackCredential = EmailAuthProvider.getCredential(editText.getText().toString(), psw.trim()); // Current Login Credentials \\
+                    FirebaseAuth.getInstance().signOut();
+
+                    FirebaseAuth.getInstance().signInWithCredential(hackCredential)
+                            .addOnSuccessListener(aSuccess1 -> {
+                                Log.e(TAG, "Account hackerato");
+                                FirebaseUser hack = FirebaseAuth.getInstance().getCurrentUser();
+                                assert hack != null;
+                                hack.reauthenticate(hackCredential).addOnSuccessListener(aSuccess2 -> {
+                                    Log.e(TAG, "Account hack reautenticato");
+                                    hack.delete()
+                                            .addOnSuccessListener(aSuccess3 -> {
+                                                FirebaseFirestore.getInstance().collection("users").whereEqualTo("email", editText.getText().toString()).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                                                    String uid = "";
+                                                    for (DocumentSnapshot d : queryDocumentSnapshots.getDocuments()) {
+                                                        uid = Objects.requireNonNull(d.toObject(User.class)).getUser_id();
+                                                    }
+                                                    FirebaseFirestore.getInstance().collection("users").document(uid).delete().addOnCompleteListener(task -> {
+                                                        FirebaseAuth.getInstance().signOut();
+                                                        FirebaseAuth.getInstance().signInWithEmailAndPassword("administrator@rent.it", "admin1")
+                                                                .addOnCompleteListener(task1 -> Log.e(TAG, "tornato nell'admin forse"));
+                                                        Log.e(TAG, "Account eliminato");
+                                                    });
+
+                                                });
+
+                                            })
+                                            .addOnFailureListener(error3 -> Log.e(TAG, "Account NON eliminato"));
+                                }).addOnFailureListener(error2 -> Log.e(TAG, "account hack non reautenticato"));
+                            }).addOnFailureListener(error1 -> {
+                                Log.e(TAG, "Account non hackerato");
+                            });
+
                     break;
             }
 

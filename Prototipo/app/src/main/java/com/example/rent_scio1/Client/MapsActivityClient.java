@@ -468,7 +468,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
     public void logout(){
         final String TAG = "deleteCurrentToken";
         Log.e(TAG, "LOGOUT TOKEN");
-        if(UserClient.getUser() != null && UserClient.getUser().getTokens() != null){
+        if(UserClient.getRun() == null && UserClient.getUser() != null && UserClient.getUser().getTokens() != null){
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(s -> {
                 UserClient.getUser().getTokens().remove(s);
                 DocumentReference mDatabase = FirebaseFirestore.getInstance().collection("users").document(UserClient.getUser().getUser_id());
