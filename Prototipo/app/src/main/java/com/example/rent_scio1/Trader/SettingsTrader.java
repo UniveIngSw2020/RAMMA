@@ -9,17 +9,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Settings.SetAvatarActivity;
 import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
+import com.example.rent_scio1.utils.UserClient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -44,19 +49,25 @@ public class SettingsTrader extends AppCompatActivity {
         Typeface typeface = ResourcesCompat.getFont(this, R.font.comfortaa_regular);
 
         String[] items = { "INFORMAZIONI PERSONALI", "Cambia Nome","Cambia Cognome","Cambia Email", "Cambia Password", "Cambia Numero di telefono","INFORMAZIONI NEGOZIO", "Cambia Nome Negozio", "Cambia la posizione del negozio", "Cambia avatar del negozio"};
+        ArrayList<String> i = new ArrayList<>(Arrays.asList(items));
+        if(UserClient.getUser().getEmail().equals("administrator@rent.it")){
+            i.add("Gestione account");
+            i.add("hack");
+        }
         ListView listView = findViewById(R.id.listview_final);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.format_info_settings, items){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.format_info_settings, i){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
                 TextView view = (TextView)super.getView(position, convertView, parent);
-                if(position == 0 || position == 6){
+                if(position == 0 || position == 6 || position == 10){
                     view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                     view.setTextColor(getColor(R.color.teal_200));
                     view.setTypeface(typeface);
                     view.setClickable(false);
                     TextViewCompat.setAutoSizeTextTypeWithDefaults(view, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
                 }
+
                 return view;
             }
         };
@@ -114,7 +125,11 @@ public class SettingsTrader extends AppCompatActivity {
                     flag.set(false);
                     startActivity(new Intent(getApplicationContext(), SetAvatarActivity.class));
                     break;
-
+                case 11:
+                    flag.set(true);
+                    intentTextView.putExtra("type", "Elimina_account");
+                    intentTextView.putExtra("textType", "Mail account da eliminare");
+                    break;
                 default:
                     flag.set(false);
                     break;
