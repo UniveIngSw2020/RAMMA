@@ -128,6 +128,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                 startLocationService(rawValue);
                                 Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                                 startActivity(intent);
+                                finishAffinity();
                             }
                             break;
                         case DELETE:
@@ -223,8 +224,8 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     UserClient.setRun(null);
                     UserClient.setTrader(null);
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finishAffinity();
                 });
 
         Log.e(TAG,"AREA ELIMINATA");

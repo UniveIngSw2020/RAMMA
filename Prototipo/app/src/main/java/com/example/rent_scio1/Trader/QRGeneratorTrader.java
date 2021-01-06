@@ -71,7 +71,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                 if(code.split(" ").length==3 && dc.getDocument().toObject(Run.class).getVehicle().equals(code.split(" ")[1])){
                                     Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
                                     startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-                                    Toast.makeText(QRGeneratorTrader.this, "Corsa Creaata con Successo!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(QRGeneratorTrader.this, "Corsa Creata con Successo!", Toast.LENGTH_SHORT).show();
                                 }
                                 break;
                             case REMOVED:
