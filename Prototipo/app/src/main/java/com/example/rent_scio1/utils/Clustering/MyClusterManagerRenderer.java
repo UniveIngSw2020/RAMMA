@@ -1,15 +1,12 @@
 package com.example.rent_scio1.utils.Clustering;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
-import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.map.MyMapClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -46,6 +43,11 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
     protected void onBeforeClusterItemRendered(ClusterMarker item, MarkerOptions markerOptions) {
         imageView.setImageBitmap(item.getImage());
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon())).title(item.getTitle());
+    }
+
+    @Override
+    protected boolean shouldRenderAsCluster(Cluster<ClusterMarker> cluster){
+        return super.shouldRenderAsCluster(cluster) || MyMapClient.shouldCluster_zoom;
     }
 
 

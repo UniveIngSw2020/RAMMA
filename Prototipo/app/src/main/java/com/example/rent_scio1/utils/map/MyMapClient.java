@@ -14,6 +14,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.util.Log;
+import android.webkit.WebSettings;
+import android.webkit.WebSettings.ZoomDensity;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,6 +66,7 @@ public class MyMapClient extends MyMap {
     private LatLng posMarker = null;
     private ClusterManager<ClusterMarker> clusterManager;
     private MyClusterManagerRenderer mClusterManagerRenderer;
+    public static boolean shouldCluster_zoom;
 
     LocationManager manager;
 
@@ -90,6 +94,7 @@ public class MyMapClient extends MyMap {
             getLastKnownLocation();
         }
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -125,14 +130,18 @@ public class MyMapClient extends MyMap {
 
         clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
         getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
-        getmMap().setOnCameraIdleListener(clusterManager);
 
+        getmMap().setOnCameraIdleListener(() -> {
+            shouldCluster_zoom = getmMap().getCameraPosition().zoom < 12;
+            Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
+            clusterManager.onCameraIdle();
+        });
 
 
         clusterManager.setOnClusterItemClickListener(item -> {
             for(Pair<User, Pair<Float, Polygon>> trader: listTrader) {
-                if (trader.getFirst().getDelimited_area() != null) {
-                    if (item.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))) {
+                if (item.getPosition().equals(new LatLng(trader.getFirst().getTraderPosition().getLatitude(), trader.getFirst().getTraderPosition().getLongitude()))) {
+                    if (trader.getFirst().getDelimited_area() != null) {
                         LatLng pos = item.getPosition();
                         if(trader.getSecond().getSecond().isVisible()){
 
@@ -173,18 +182,21 @@ public class MyMapClient extends MyMap {
                             trader.getSecond().getSecond().setVisible(!trader.getSecond().getSecond().isVisible());
                         }
 
-                    }
-                }else{
-                    for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
-                        if(m.getPosition().equals(item.getPosition())){
-                            m.showInfoWindow();
-                            Log.e(TAG, "Mostro linfowindow senza arealimitata");
+                    }else{
+                        Toast.makeText(context, "Il negozio " + trader.getFirst().getShopName() + " non ha un area limitata", Toast.LENGTH_LONG).show();
+                        for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                            if(m.getPosition().equals(item.getPosition())){
+                                m.showInfoWindow();
+                                Log.e(TAG, "Mostro linfowindow senza arealimitata");
+                            }
                         }
                     }
                 }
             }
             return true;
         });
+
+
 
         getmMap().setOnMarkerClickListener(clusterManager);
 
@@ -246,7 +258,7 @@ public class MyMapClient extends MyMap {
             if(m.getPosition().equals(pos))
                 flag = true;
         }
-        return !flag;
+        return flag;
     }
 
 
@@ -262,30 +274,31 @@ public class MyMapClient extends MyMap {
                 );
                 clusterManager.setRenderer(mClusterManagerRenderer);
             }
-            //getmMap().setOnInfoWindowClickListener(this);
 
             for (Pair<User, Pair<Float, Polygon>> trader : listTrader) {
                 Log.e(TAG, "                    " + trader.getFirst().toString());
                 if (trader.getFirst().getTraderPosition() != null) {
                     GeoPoint pos = trader.getFirst().getTraderPosition();
                     String title = trader.getFirst().getShopName();
-                    try {
-                        StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");
-                        File localFile = File.createTempFile( trader.getFirst().getUser_id() , "jpg");
+                    if(!isMarkerPresent(new LatLng(pos.getLatitude(), pos.getLongitude()))){
+                        try {
+                            StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");
+                            File localFile = File.createTempFile( trader.getFirst().getUser_id() , "jpg");
 
-                        islandRef.getFile(localFile)
-                                .addOnCompleteListener(task -> {
-                                    Bitmap image;
-                                    if(task.isSuccessful() && isMarkerPresent(new LatLng(pos.getLatitude(), pos.getLongitude()))){
-                                        image = resizeMapIcons(localFile.getPath(),100,100);
-                                    }else{
-                                        image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
-                                    }
-                                    Log.e(TAG, "aggiunto marker");
-                                    clusterManager.addItem(new ClusterMarker(pos.getLatitude(), pos.getLongitude(), title, image));
-                                });
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            islandRef.getFile(localFile)
+                                    .addOnCompleteListener(task -> {
+                                        Bitmap image;
+                                        if(task.isSuccessful()){
+                                            image = resizeMapIcons(localFile.getPath(),100,100);
+                                        }else{
+                                            image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
+                                        }
+                                        Log.e(TAG, "                                                                                    aggiunto marker al cluster");
+                                        clusterManager.addItem(new ClusterMarker(pos.getLatitude(), pos.getLongitude(), title, image));
+                                    });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -309,20 +322,6 @@ public class MyMapClient extends MyMap {
         }
     }
 
-    /*public GoogleMap.OnCameraMoveListener getCameraChangeListener()
-    {
-        return new GoogleMap.OnCameraMoveListener()
-        {
-            @Override
-            public void onCameraMove() {
-                if (position.zoom < [minimum desired position]) {
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo( [float value of desired zoom level] );
-                }else{
-                    clusterManager.set(mMap.getCameraPosition());
-                }
-            }
-        }
-    }*/
 
     private void getLastKnownLocation() {
         Log.d(TAG, "getLastKnownLocation: called.");
