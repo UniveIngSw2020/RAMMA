@@ -129,13 +129,13 @@ public class MyLocationService extends Service {
                 //TODO QUESTO CICLO POTREBBE SOSTITUIRE TUTTO IL MyNotify
                 for (String token : UserClient.getUser().getTokens()){
                     Log.e(TAG, "messaggio per il cliente");
-                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "sei fuori dall'area consentita"); // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
+                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Posizione non consentita", "Rientra nell'area limitata al più presto!"); // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
                 }
 
 
                 for (String token : UserClient.getTrader().getTokens()){
                     Log.e(TAG, "messaggio per il trader");
-                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Il Cliente" + UserClient.getUser().getName() + " fa il furbo e scappa");
+                    MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Posizione non consentita", "Il Cliente " + UserClient.getUser().getName() + " è uscito dall'area limitata.");
                 }
 
 
@@ -148,11 +148,11 @@ public class MyLocationService extends Service {
                 Log.e(TAG,"ENTRATO QUA: notifica velocità");
                 if(speed > Objects.requireNonNull(documentSnapshot.toObject(Vehicle.class)).getMaxSpeedKMH()) {
                     for (String token : UserClient.getUser().getTokens()) // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
-                        MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Vai piano per piacere");
+                        MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Velocità non consentita", "Attenzione! Hai superato il limite di velocità consentito.");
 
                     if (UserClient.getTrader() != null) {
                         for (String token : UserClient.getTrader().getTokens())
-                            MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Ciao fra", "Il Cliente" + UserClient.getUser().getName() + " sta correndo come un pazzo");
+                            MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Velocità non consentita", "Il Cliente " + UserClient.getUser().getName() + " ha superato i limiti di velocità consentiti.");
                     }
                 }
             });
