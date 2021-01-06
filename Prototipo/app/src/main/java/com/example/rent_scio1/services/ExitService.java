@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ExitService extends Service {
@@ -33,7 +34,8 @@ public class ExitService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         System.out.println("onTaskRemoved called");
         super.onTaskRemoved(rootIntent);
-        FirebaseAuth.getInstance().signOut();
+        if(UserClient.getRun() == null)
+            FirebaseAuth.getInstance().signOut();
         //stop service
         Log.e(TAG, "ExitService FERMATO");
         this.stopSelf();
