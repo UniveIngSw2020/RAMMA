@@ -21,6 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
+import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.RequestQueueSingleton;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,6 +33,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -39,7 +41,7 @@ import java.util.Random;
 public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     private final String TAG = "MyFirebaseMessagingServices";
     private final String ADMIN_CHANNEL_ID ="admin_channel";
-
+    private final HashMap<String, Integer> checkNotify = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -56,6 +58,7 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
                     // Log and toast
                     Log.d(TAG, "TOKEN: "+token);
                 });
+        checkNotify.clear();
     }
 
     @Override
@@ -84,17 +87,24 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.ic_not_permitted);
 
-        Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_not_permitted)
-                .setLargeIcon(largeIcon)
-                .setContentTitle(remoteMessage.getData().get("title"))
-                .setContentText(remoteMessage.getData().get("message"))
-                .setAutoCancel(true)
-                .setSound(notificationSoundUri)
-                .setContentIntent(pendingIntent);
+        if(!checkNotify.containsKey(remoteMessage.getData().get("mittente")) || checkNotify.get(remoteMessage.getData().get("mittente")) % 10 == 0) {
+            checkNotify.put(remoteMessage.getData().get("mittente"), 1);
+            Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_not_permitted)
+                    .setLargeIcon(largeIcon)
+                    .setContentTitle(remoteMessage.getData().get("title"))
+                    .setContentText(remoteMessage.getData().get("message"))
+                    .setAutoCancel(true)
+                    .setSound(notificationSoundUri)
+                    .setContentIntent(pendingIntent);
 
-        notificationManager.notify(notificationID, notificationBuilder.build());
+            notificationManager.notify(notificationID, notificationBuilder.build());
+        }else{
+            int i = checkNotify.get(remoteMessage.getData().get("mittente"));
+            checkNotify.remove(remoteMessage.getData().get("mittente"));
+            checkNotify.put(remoteMessage.getData().get("mittente"), i+1);
+        }
     }
 
 
@@ -150,6 +160,7 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
             notificationBody.put("message", msg);
             notification.put("to", destinationTopic);
             notification.put("data", notificationBody);
+            notification.put("mittente", UserClient.getUser().getTokens());
         }catch (JSONException e){
             Log.e("sendNotification", "onCreate: " + e.getMessage() );
         }
