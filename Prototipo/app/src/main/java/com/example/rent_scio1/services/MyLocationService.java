@@ -67,6 +67,7 @@ public class MyLocationService extends Service {
             updateUserLocation(location, speed);
             setCameraView(location);
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
+
             if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 30000){
                 lastNotificationArea = Calendar.getInstance().getTime().getTime();
                 checkAreaLimit(location);

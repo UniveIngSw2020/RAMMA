@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MyMapTrader extends MyMap{
 
@@ -53,6 +54,8 @@ public class MyMapTrader extends MyMap{
     private final Context context;
 
     private StorageReference mStorageRef;
+
+    private final Map<String,Run> mapRuns=new HashMap<>();
 
 
     @Override
@@ -117,9 +120,11 @@ public class MyMapTrader extends MyMap{
 
             @Override
             public void onTick(long millisUntilFinished) {
+
                 int minutes=(int) (millisUntilFinished / 1000) / 60;
                 int seconds=(int) (millisUntilFinished / 1000) % 60;
 
+                int speed=mapRuns.get(run.getRunUID()).getSpeed();
 
                 if(minutes>=60){
                     int hours=minutes/60;
@@ -143,7 +148,7 @@ public class MyMapTrader extends MyMap{
                         secondText="0"+seconds;
                     }
 
-                    costumer.setSnippet( (run.getSpeed())+" "+hoursText+":"+minutesText+":"+secondText );
+                    costumer.setSnippet(speed+" "+hoursText+":"+minutesText+":"+secondText );
                 }
                 else{
 
@@ -159,8 +164,10 @@ public class MyMapTrader extends MyMap{
                         secondText="0"+seconds;
                     }
 
-                    costumer.setSnippet((run.getSpeed())+" "+minutesText+":"+secondText );
+                    costumer.setSnippet(speed+" "+minutesText+":"+secondText );
                 }
+
+
 
                 if(costumer.isInfoWindowShown())
                     costumer.showInfoWindow();
@@ -191,7 +198,13 @@ public class MyMapTrader extends MyMap{
                         Log.e(TAG, "PRE SWITCH");
                         switch (dc.getType()) {
                             case ADDED:
+
                                 Log.e(TAG, "ADDED");
+
+                                Run run=dc.getDocument().toObject(Run.class);
+                                mapRuns.put(run.getRunUID(),run);
+
+
                                 Query getVehiclesTrader = FirebaseFirestore.getInstance().collection("users").whereEqualTo("user_id", dc.getDocument().toObject(Run.class).getUser());
 
                                 getVehiclesTrader.get().addOnCompleteListener(task -> {
@@ -253,6 +266,7 @@ public class MyMapTrader extends MyMap{
             if(costumer!=null){
 
                 costumer.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
+                mapRuns.put(run.getRunUID(),run);
             }
 
         }

@@ -109,6 +109,8 @@ public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapte
         textView2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView2.setTypeface(typeface);
         textView2.setTextColor(Color.rgb(3,50,73));
+
+
         textView2.setText(speed + " km/h");
 
         rowNumbers.addView(textView1);

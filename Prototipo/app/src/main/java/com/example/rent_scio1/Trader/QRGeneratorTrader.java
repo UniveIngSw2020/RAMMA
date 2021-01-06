@@ -90,7 +90,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                     Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
-                                    
+
                                     Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
 
                                 }
