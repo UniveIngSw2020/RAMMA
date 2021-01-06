@@ -47,7 +47,8 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
 
     @Override
     protected boolean shouldRenderAsCluster(Cluster<ClusterMarker> cluster){
-        return super.shouldRenderAsCluster(cluster) || MyMapClient.shouldCluster_zoom;
+        super.shouldRenderAsCluster(cluster);
+        return MyMapClient.shouldCluster_zoom;
     }
 
 

@@ -86,12 +86,13 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
         mAuth = FirebaseAuth.getInstance();
         Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
+        createTable();
+        getListTrader();
     }
 
     @Override
     protected void onResume() {
-        createTable();
-        getListTrader();
+
         super.onResume();
         Log.e(TAG, "sono nel resume ");
         initViews();

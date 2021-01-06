@@ -64,8 +64,8 @@ public class MyMapClient extends MyMap {
     private boolean mLocationPermissionGranted = false;
     private Location actualLocation;
     private LatLng posMarker = null;
-    private ClusterManager<ClusterMarker> clusterManager;
-    private MyClusterManagerRenderer mClusterManagerRenderer;
+    private ClusterManager<ClusterMarker> clusterManager = null;
+    private MyClusterManagerRenderer mClusterManagerRenderer = null;
     public static boolean shouldCluster_zoom;
 
     LocationManager manager;
@@ -94,6 +94,7 @@ public class MyMapClient extends MyMap {
             getLastKnownLocation();
         }
     }
+
 
 
     @Override
@@ -126,16 +127,24 @@ public class MyMapClient extends MyMap {
 
         location();
 
-        setMarkerDelimitedTraderNotify();
-
-        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
-        getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
+        clusterManager = new ClusterManager<>(context, getmMap());
+        if(mClusterManagerRenderer == null){
+            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
+            clusterManager.setRenderer(mClusterManagerRenderer);
+        }
 
         getmMap().setOnCameraIdleListener(() -> {
             shouldCluster_zoom = getmMap().getCameraPosition().zoom < 12;
             Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
             clusterManager.onCameraIdle();
         });
+
+        setMarkerDelimitedTrader();
+
+        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
+        getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
+        //getmMap().setOnCameraIdleListener(clusterManager);
+
 
 
         clusterManager.setOnClusterItemClickListener(item -> {
@@ -263,34 +272,24 @@ public class MyMapClient extends MyMap {
 
 
 
-    private void setMarkerDelimitedTraderNotify(){
-        if(getmMap() != null){
-            clusterManager = new ClusterManager<>(context, getmMap());
-            if(mClusterManagerRenderer == null){
-                mClusterManagerRenderer = new MyClusterManagerRenderer(
-                        context,
-                        getmMap(),
-                        clusterManager
-                );
-                clusterManager.setRenderer(mClusterManagerRenderer);
-            }
-
+    private void setMarkerDelimitedTrader(){
+        if(clusterManager.getMarkerCollection().getMarkers().size() == 0) {
             for (Pair<User, Pair<Float, Polygon>> trader : listTrader) {
                 Log.e(TAG, "                    " + trader.getFirst().toString());
                 if (trader.getFirst().getTraderPosition() != null) {
                     GeoPoint pos = trader.getFirst().getTraderPosition();
                     String title = trader.getFirst().getShopName();
-                    if(!isMarkerPresent(new LatLng(pos.getLatitude(), pos.getLongitude()))){
+                    if (!isMarkerPresent(new LatLng(pos.getLatitude(), pos.getLongitude()))) {
                         try {
                             StorageReference islandRef = mStorageRef.child("users/" + trader.getFirst().getUser_id() + "/avatar.jpg");
-                            File localFile = File.createTempFile( trader.getFirst().getUser_id() , "jpg");
+                            File localFile = File.createTempFile(trader.getFirst().getUser_id(), "jpg");
 
                             islandRef.getFile(localFile)
                                     .addOnCompleteListener(task -> {
                                         Bitmap image;
-                                        if(task.isSuccessful()){
-                                            image = resizeMapIcons(localFile.getPath(),100,100);
-                                        }else{
+                                        if (task.isSuccessful()) {
+                                            image = resizeMapIcons(localFile.getPath(), 100, 100);
+                                        } else {
                                             image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
                                         }
                                         Log.e(TAG, "                                                                                    aggiunto marker al cluster");
@@ -303,15 +302,15 @@ public class MyMapClient extends MyMap {
                 }
 
                 List<LatLng> latLngs = new ArrayList<>();
-                if(trader.getFirst().getDelimited_area() != null){
-                    for (GeoPoint a: trader.getFirst().getDelimited_area()) {
-                        latLngs.add(new LatLng(a.getLatitude(),a.getLongitude()));
+                if (trader.getFirst().getDelimited_area() != null) {
+                    for (GeoPoint a : trader.getFirst().getDelimited_area()) {
+                        latLngs.add(new LatLng(a.getLatitude(), a.getLongitude()));
                     }
 
-                    PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(false);
-                    Polygon polygon=getmMap().addPolygon(polygonOptions);
+                    PolygonOptions polygonOptions = new PolygonOptions().addAll(latLngs).clickable(false);
+                    Polygon polygon = getmMap().addPolygon(polygonOptions);
                     polygon.setVisible(false);
-                    float [] col = new float[] { trader.getSecond().getFirst(), 1.0f, 1.0f };
+                    float[] col = new float[]{trader.getSecond().getFirst(), 1.0f, 1.0f};
                     Log.e(TAG, trader.getSecond().getFirst() + "         " + col[0]);
                     polygon.setStrokeColor(Color.HSVToColor(col));
                     polygon.setStrokeWidth(5.0f);
@@ -360,5 +359,6 @@ public class MyMapClient extends MyMap {
         } catch (Exception e) {
         }
     }
+
 
 }
