@@ -70,16 +70,29 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                 //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE CONfERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
                                 if(code.split(" ").length==3 && dc.getDocument().toObject(Run.class).getVehicle().equals(code.split(" ")[1])){
                                     Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
-                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                     Toast.makeText(QRGeneratorTrader.this, "Corsa Creata con Successo!", Toast.LENGTH_SHORT).show();
+
+                                    finishAffinity();
+
+                                    Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+
+
                                 }
                                 break;
                             case REMOVED:
                                 Log.e(TAG, "SWITCH DELETE");
                                 if(code.split(" ").length==1){
                                     Log.e(TAG, "ABBIAMO UN PROBLEMA REMOVE");
-                                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                                    finishAffinity();
+
+                                    Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    
                                     Toast.makeText(QRGeneratorTrader.this, "Corsa Terminata con Successo!", Toast.LENGTH_SHORT).show();
+
                                 }
                                 break;
                         }

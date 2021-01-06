@@ -126,9 +126,11 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
                             }else {
                                 startLocationService(rawValue);
-                                Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-                                startActivity(intent);
                                 finishAffinity();
+
+                                Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                             }
                             break;
                         case DELETE:
@@ -223,9 +225,13 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     UserClient.setRun(null);
                     UserClient.setTrader(null);
-                    Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-                    startActivity(intent);
+
                     finishAffinity();
+
+                    Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+
                 });
 
         Log.e(TAG,"AREA ELIMINATA");
