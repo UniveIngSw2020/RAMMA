@@ -285,19 +285,21 @@ public class MyLocationService extends Service {
 
         MyMapClient.stopNotification();
         */
-        stopForeground(true);
+        if(UserClient.getRun() == null) {
+            stopForeground(true);
+            stopSelf();
 
-        stopSelf();
 
-        if (mLocationManager != null) {
-            for (LocationListener mLocationListener : mLocationListeners) {
-                try {
-                    if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        return;
+            if (mLocationManager != null) {
+                for (LocationListener mLocationListener : mLocationListeners) {
+                    try {
+                        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        mLocationManager.removeUpdates(mLocationListener);
+                    } catch (Exception ex) {
+                        Log.i(TAG, "fail to remove location listener, ignore", ex);
                     }
-                    mLocationManager.removeUpdates(mLocationListener);
-                } catch (Exception ex) {
-                    Log.i(TAG, "fail to remove location listener, ignore", ex);
                 }
             }
         }
