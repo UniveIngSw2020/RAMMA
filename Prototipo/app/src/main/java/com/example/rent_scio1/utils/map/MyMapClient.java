@@ -205,13 +205,9 @@ public class MyMapClient extends MyMap {
             return true;
         });
 
-
-
         getmMap().setOnMarkerClickListener(clusterManager);
 
-
         getmMap().setOnMapClickListener(latLng -> {
-            //markerClicked.clear();
             for(Pair<User, Pair<Float, Polygon>> trader : listTrader){
                 if(trader.getFirst().getDelimited_area() != null ){
                     Log.e(TAG, "Cancello tutte le aree limitate");
@@ -221,25 +217,28 @@ public class MyMapClient extends MyMap {
             }
         });
 
+        clusterManager.setOnClusterItemInfoWindowClickListener(
+                item -> {
+                    Log.e(TAG,"Click infowindow");
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        getmMap().setOnInfoWindowClickListener(marker -> {
-            Log.e(TAG,"Click infowindow");
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("Vuoi attivare la navigazione?")
+                            .setCancelable(true)
+                            .setPositiveButton( "Sì", (dialogInterface, i) -> {
+                                Log.e(TAG,"SI creo la navigazione");
 
-            builder.setMessage("Vuoi attivare la navigazione?")
-                    .setCancelable(true)
-                    .setPositiveButton( "Sì", (dialogInterface, i) -> {
-                        Log.e(TAG,"SI creo la navigazione");
+                                String uri = "http://maps.google.com/maps?saddr=" + actualLocation.getLatitude() + "," + actualLocation.getLongitude() + "&daddr=" + item.getPosition().latitude + "," + item.getPosition().longitude;
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                context.startActivity(intent);
 
-                        String uri = "http://maps.google.com/maps?saddr=" + actualLocation.getLatitude() + "," + actualLocation.getLongitude() + "&daddr=" + marker.getPosition().latitude + "," + marker.getPosition().longitude;
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                        context.startActivity(intent);
+                                dialogInterface.dismiss();
+                            }).setNegativeButton("No", ((dialogInterface, i) -> dialogInterface.cancel()));
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+                });
 
-                        dialogInterface.dismiss();
-                    }).setNegativeButton("No", ((dialogInterface, i) -> dialogInterface.cancel()));
-            final AlertDialog alert = builder.create();
-            alert.show();
-        });
+        getmMap().setOnInfoWindowClickListener(clusterManager);
+
     }
 
 
