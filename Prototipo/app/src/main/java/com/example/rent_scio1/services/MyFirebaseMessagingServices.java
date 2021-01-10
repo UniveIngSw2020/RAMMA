@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.rent_scio1.Client.MapsActivityClient;
+import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.utils.Pair;
@@ -65,10 +66,13 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.e(TAG, "caspiterina è arrivato un messaggio");
         Intent intent;
-        if(UserClient.getUser().getTrader())
-            intent = new Intent(this, MapsActivityTrader.class);
+        if(UserClient.getUser() == null)
+            intent = new Intent(this, StartActivity.class);
         else
-            intent = new Intent(this, MapsActivityClient.class);
+            if(UserClient.getUser().getTrader())
+                intent = new Intent(this, MapsActivityTrader.class);
+            else
+                intent = new Intent(this, MapsActivityClient.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
@@ -160,7 +164,7 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
             notificationBody.put("message", msg);
             notification.put("to", destinationTopic);
             notification.put("data", notificationBody);
-            notification.put("mittente", UserClient.getUser().getTokens());
+            notification.put("mittente", UserClient.getUser().getUser_id()+"/"+title);
         }catch (JSONException e){
             Log.e("sendNotification", "onCreate: " + e.getMessage() );
         }

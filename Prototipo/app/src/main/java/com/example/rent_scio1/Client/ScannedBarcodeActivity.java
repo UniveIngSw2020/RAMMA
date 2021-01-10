@@ -113,7 +113,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
                     String rawValue = barcodes.valueAt(0).rawValue;
-                    String message = "Te si drio lezar el cu erre sbaglià";
+                    String message = "Stai leggendo il QR sbagliato";
                     int length = rawValue.split(" ").length;
                     Log.w(TAG, rawValue);
 

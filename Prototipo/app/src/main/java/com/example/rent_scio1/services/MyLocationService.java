@@ -49,37 +49,78 @@ public class MyLocationService extends Service {
     private  long lastNotificationSpeed;
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
-
+        long mLastTime;
 
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
-
+            mLastTime = Calendar.getInstance().getTime().getTime();
         }
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
             Log.e(TAG, "POSIZIONE CAMBIATA");
 
-            mLastLocation.set(location);
-            int speed= (int)(mLastLocation.getSpeed() *3.6);
+            long curTime = Calendar.getInstance().getTime().getTime();
 
+            double s =distance(location.getLatitude(), mLastLocation.getLatitude(), location.getLongitude(), mLastLocation.getLongitude(), location.getAltitude(), mLastLocation.getAltitude());
+
+            int speed= (int)((s/(curTime-mLastTime)) *3.6);
+            mLastLocation.set(location);
+            mLastTime = curTime;
             updateUserLocation(location, speed);
             setCameraView(location);
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
 
             if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 30000){
                 lastNotificationArea = Calendar.getInstance().getTime().getTime();
-                checkAreaLimit(location);
+                try {
+                    checkAreaLimit(location);
+                }catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
 
             if(Calendar.getInstance().getTime().getTime() - lastNotificationSpeed > 30000) {
                 lastNotificationSpeed = Calendar.getInstance().getTime().getTime();
-                checkSpeedLimit(speed);
+                try {
+                    checkSpeedLimit(speed);
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
             }
 
         }
 
+
+        /**
+         * Calculate distance between two points in latitude and longitude taking
+         * into account height difference. If you are not interested in height
+         * difference pass 0.0. Uses Haversine method as its base.
+         *
+         * lat1, lon1 Start point lat2, lon2 End point el1 Start altitude in meters
+         * el2 End altitude in meters
+         * @returns Distance in Meters
+         */
+        private double distance(double lat1, double lat2, double lon1,
+                                              double lon2, double el1, double el2) {
+
+            final int R = 6371; // Radius of the earth
+
+            double latDistance = Math.toRadians(lat2 - lat1);
+            double lonDistance = Math.toRadians(lon2 - lon1);
+            double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                    + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                    * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            double distance = R * c * 1000; // convert to meters
+
+            double height = el1 - el2;
+
+            distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+            return Math.sqrt(distance);
+        }
 
         @Override
         public void onProviderEnabled(@NonNull String provider) { }
@@ -120,7 +161,7 @@ public class MyLocationService extends Service {
             }
         }
 
-        private void checkAreaLimit(@NonNull Location location){
+        private void checkAreaLimit(@NonNull Location location) throws NullPointerException{
             LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
             Log.e(TAG,"PRE notifica area limitata");
 
@@ -143,7 +184,7 @@ public class MyLocationService extends Service {
             }
         }
 
-        private void checkSpeedLimit(double speed){
+        private void checkSpeedLimit(double speed) throws NullPointerException{
             Log.e(TAG,"PRE notifica velocità");
             db.collection("vehicles").document(UserClient.getRun().getVehicle()).get().addOnSuccessListener(documentSnapshot -> {
                 Log.e(TAG,"ENTRATO QUA: notifica velocità");

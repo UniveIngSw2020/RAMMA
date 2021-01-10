@@ -68,8 +68,11 @@ public class MyMapTrader extends MyMap{
 
 
         areaLimitata();
-        searchCustomers();
-
+        try {
+            searchCustomers();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapterTrader(context));
