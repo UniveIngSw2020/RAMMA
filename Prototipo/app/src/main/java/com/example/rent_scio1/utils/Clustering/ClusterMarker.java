@@ -11,6 +11,7 @@ public class ClusterMarker implements ClusterItem {
     private LatLng position;
     private String title;
     private Bitmap image;
+    private String snippet;
 
     public ClusterMarker(double lat, double lng, String title, Bitmap image) {
         this.image = image;
@@ -36,5 +37,21 @@ public class ClusterMarker implements ClusterItem {
 
     public Bitmap getImage() {
         return image;
+    }
+
+    public void setPosition(LatLng position) {
+        this.position = position;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public void setSnippet(String snippet) {
+        this.snippet = snippet;
     }
 }

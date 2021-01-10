@@ -129,8 +129,7 @@ public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapte
 
     @Override
     public View getInfoContents(Marker marker) {
-        rendowWindowText(marker, mWindow);
-        return mWindow;
+        return null;
     }
 
 }

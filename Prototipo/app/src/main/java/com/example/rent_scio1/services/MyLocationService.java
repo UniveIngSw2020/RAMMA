@@ -69,7 +69,7 @@ public class MyLocationService extends Service {
             mLastLocation.set(location);
             mLastTime = curTime;
             updateUserLocation(location, speed);
-            setCameraView(location);
+            //setCameraView(location);
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
 
             if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 30000){
@@ -129,7 +129,7 @@ public class MyLocationService extends Service {
         public void onProviderDisabled(@NonNull String provider) { }
 
 
-        private void setCameraView(Location location) {
+        /*private void setCameraView(Location location) {
             try {
                 double bottomBundary = location.getLatitude() - .01;
                 double leftBoundary = location.getLongitude() - .01;
@@ -144,7 +144,7 @@ public class MyLocationService extends Service {
                 getmMap().moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
             } catch (Exception e) {
             }
-        }
+        }*/
 
 
         private void updateUserLocation(Location location, int speed){

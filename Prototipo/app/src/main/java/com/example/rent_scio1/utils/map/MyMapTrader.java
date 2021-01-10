@@ -10,8 +10,11 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import androidx.core.content.ContextCompat;
 
+import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.CustomInfoWindowAdapterTrader;
+import com.example.rent_scio1.utils.Clustering.ClusterMarker;
+import com.example.rent_scio1.utils.Clustering.MyClusterManagerRenderer;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -33,6 +36,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,13 +53,15 @@ public class MyMapTrader extends MyMap{
 
     private final FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     //private GoogleMap mMap;
-    private final HashMap<String, Marker> listMarker = new HashMap<>();
+    private final HashMap<String, ClusterMarker> listMarker = new HashMap<>();
 
     private final Context context;
 
     private StorageReference mStorageRef;
 
     private final Map<String,Run> mapRuns=new HashMap<>();
+    private ClusterManager<ClusterMarker> clusterManager = null;
+    private MyClusterManagerRenderer mClusterManagerRenderer = null;
 
 
     @Override
@@ -66,22 +72,43 @@ public class MyMapTrader extends MyMap{
 
         //setCameraView(googleMap);
 
+        clusterManager = new ClusterManager<>(context, getmMap());
+        if(mClusterManagerRenderer == null){
+            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
+            clusterManager.setRenderer(mClusterManagerRenderer);
+        }
+        getmMap().setOnCameraIdleListener(clusterManager);
 
-        areaLimitata();
+        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterTrader(context));
+        getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
+
+        delimitedArea();
         try {
             searchCustomers();
         }catch (Exception e){
             e.printStackTrace();
         }
+
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        getmMap().setInfoWindowAdapter(new CustomInfoWindowAdapterTrader(context));
 
-        getmMap().setOnMarkerClickListener(marker -> {
 
-            marker.showInfoWindow();
+
+
+        clusterManager.setOnClusterItemClickListener(item -> {
+            for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                if(m.getPosition().equals(item.getPosition())){
+                    m.showInfoWindow();
+                    Log.e(TAG, "Mostro l'info window sul commerciante");
+                }
+            }
             return true;
         });
+
+
+        getmMap().setOnMarkerClickListener(clusterManager);
+
+
     }
 
 
@@ -106,19 +133,16 @@ public class MyMapTrader extends MyMap{
         return bitmap;
     }
 
-    private void addDocument(MarkerOptions markerOptions,DocumentChange dc){
-
+    private void addDocument(ClusterMarker item, DocumentChange dc){
         Run run=dc.getDocument().toObject(Run.class);
 
-        if(run.getGeoPoint()!=null)
+        /*if(run.getGeoPoint()!=null)
             markerOptions.position(new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude()));
         else
-            markerOptions.position(new LatLng(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude()));
-        Marker costumer = getmMap().addMarker(markerOptions);
-
-
+            markerOptions.position(new LatLng(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude()));*/
+        //Marker costumer = getmMap().addMarker(markerOptions);
+        clusterManager.addItem(item);
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
-
         new CountDownTimer(time,1000){
 
             @Override
@@ -126,7 +150,6 @@ public class MyMapTrader extends MyMap{
 
                 int minutes=(int) (millisUntilFinished / 1000) / 60;
                 int seconds=(int) (millisUntilFinished / 1000) % 60;
-
                 int speed=mapRuns.get(run.getRunUID()).getSpeed();
 
                 if(minutes>=60){
@@ -135,13 +158,11 @@ public class MyMapTrader extends MyMap{
 
                     String hoursText=""+hours;
                     if(hours<10){
-
                         hoursText="0"+hoursText;
                     }
 
                     String minutesText=""+minutes;
                     if(minutes<10){
-
                         minutesText="0"+minutesText;
                     }
 
@@ -150,14 +171,12 @@ public class MyMapTrader extends MyMap{
 
                         secondText="0"+seconds;
                     }
-
-                    costumer.setSnippet(speed+" "+hoursText+":"+minutesText+":"+secondText );
+                    item.setSnippet(speed+" "+hoursText+":"+minutesText+":"+secondText );
                 }
                 else{
 
                     String minutesText=""+minutes;
                     if(minutes<10){
-
                         minutesText="0"+minutesText;
                     }
 
@@ -167,25 +186,26 @@ public class MyMapTrader extends MyMap{
                         secondText="0"+seconds;
                     }
 
-                    costumer.setSnippet(speed+" "+minutesText+":"+secondText );
+                    item.setSnippet(speed+" "+minutesText+":"+secondText );
                 }
 
-
-
-                if(costumer.isInfoWindowShown())
-                    costumer.showInfoWindow();
+                clusterManager.cluster();
             }
 
             @Override
             public void onFinish() {
-                costumer.setSnippet( run.getSpeed()+" "+"TERMINATO");
+                item.setSnippet( run.getSpeed()+" "+"TERMINATO");
+                for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                    if(m.getPosition().equals(item.getPosition())){
+                        m.showInfoWindow();
+                        Log.e(TAG, "Mostro l'info window sul commerciante");
+                    }
+                }
 
-                if(costumer.isInfoWindowShown())
-                    costumer.showInfoWindow();
             }
         }.start();
 
-        listMarker.put(dc.getDocument().toObject(Run.class).getUser(),costumer);
+        listMarker.put(dc.getDocument().toObject(Run.class).getUser(),item);
     }
 
     private void searchCustomers() {
@@ -207,7 +227,6 @@ public class MyMapTrader extends MyMap{
                                 Run run=dc.getDocument().toObject(Run.class);
                                 mapRuns.put(run.getRunUID(),run);
 
-
                                 Query getVehiclesTrader = FirebaseFirestore.getInstance().collection("users").whereEqualTo("user_id", dc.getDocument().toObject(Run.class).getUser());
 
                                 getVehiclesTrader.get().addOnCompleteListener(task -> {
@@ -217,29 +236,26 @@ public class MyMapTrader extends MyMap{
 
                                             StorageReference islandRef = mStorageRef.child("users/" + user.getUser_id() + "/avatar.jpg");
                                             Log.e(TAG, "COGNOME: "+user.getSurname());
-                                            MarkerOptions markerOptions=new MarkerOptions().title(user.getName() + " " + user.getSurname());
+                                            //MarkerOptions markerOptions=new MarkerOptions().title(user.getName() + " " + user.getSurname());
 
                                             File localFile;
 
                                             try {
                                                 localFile = File.createTempFile("images", "jpg");
                                                 islandRef.getFile(localFile)
-                                                        .addOnSuccessListener(taskSnapshot -> {
-
-                                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),150,150)));
-                                                            addDocument(markerOptions,dc);
-
-                                                        })
-                                                        .addOnFailureListener(exception -> {
-                                                            Log.e(TAG, "NON caricata");
-                                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(R.drawable.logo_vettorizzato_transp),250,250,false) ));
-                                                            addDocument(markerOptions,dc);
+                                                        .addOnCompleteListener(taskSnapshot -> {
+                                                            Bitmap image;
+                                                            if (taskSnapshot.isSuccessful()) {
+                                                                image = resizeMapIcons(localFile.getPath(), 100, 100);
+                                                            } else {
+                                                                image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
+                                                            }
+                                                            Log.e(TAG, "                                                                                    aggiunto marker al cluster");
+                                                            //clusterManager.addItem(new ClusterMarker(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude(), user.getName() + " " + user.getSurname(), image));
+                                                            addDocument(new ClusterMarker(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude(), user.getName() + " " + user.getSurname(), image),dc);
                                                         });
-
-
-                                            } catch (IOException ioException) {
-                                                Log.e(TAG, "Errore nel caricamento dell'immaigne");
-                                                ioException.printStackTrace();
+                                            } catch (IOException e1) {
+                                                e1.printStackTrace();
                                             }
 
                                         }
@@ -264,11 +280,12 @@ public class MyMapTrader extends MyMap{
 
     private void modifyMarker(Run run){
         if(run.getGeoPoint() != null){
-            Marker costumer=listMarker.get(run.getUser());
+            ClusterMarker costumer=listMarker.get(run.getUser());
 
             if(costumer!=null){
 
                 costumer.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
+                mClusterManagerRenderer.setUpdateMarker(costumer);
                 mapRuns.put(run.getRunUID(),run);
             }
 
@@ -276,9 +293,15 @@ public class MyMapTrader extends MyMap{
     }
 
     private void clearMarker(Run run){
-        Marker m = listMarker.get(run.getUser());
+        ClusterMarker item = listMarker.get(run.getUser());
+        for (Marker m : clusterManager.getMarkerCollection().getMarkers()){
+            if(item.getPosition().equals(m.getPosition())){
+                m.remove();
+                clusterManager.removeItem(item);
+            }
+        }
         listMarker.remove(run.getUser());
-        m.remove();
+        //item.remove();
     }
 
     //questo metodo va completamente eliminato
@@ -350,7 +373,7 @@ public class MyMapTrader extends MyMap{
         }
     }
 
-    private void areaLimitata(){
+    private void delimitedArea(){
         if(UserClient.getUser()!=null && UserClient.getUser().getDelimited_area()!=null){
             List<LatLng> latLngs = new ArrayList<>();
 

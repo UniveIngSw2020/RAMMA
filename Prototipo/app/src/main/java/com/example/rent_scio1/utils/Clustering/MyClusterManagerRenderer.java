@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import com.example.rent_scio1.utils.map.MyMapClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -51,5 +52,11 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
         return MyMapClient.shouldCluster_zoom;
     }
 
+    public void setUpdateMarker(ClusterMarker clusterMarker) {
+        Marker marker = getMarker(clusterMarker);
+        if (marker != null) {
+            marker.setPosition(clusterMarker.getPosition());
+        }
+    }
 
 }
