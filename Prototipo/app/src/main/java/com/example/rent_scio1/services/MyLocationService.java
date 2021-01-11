@@ -167,8 +167,8 @@ public class MyLocationService extends Service {
 
 
                 OnFailureListener onFailureListener= e -> {
-                    stopSelf();
                     UserClient.setRun(null);
+                    stopSelf();
                 };
 
                 DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());

@@ -261,7 +261,7 @@ public class RunTableTrader extends AppCompatActivity {
                 intent.putExtra("eliminazione",true);
                 intent.putExtra(ToQR, run.getRunUID());
                 intent.putExtra("IDVEICOLO",run.getVehicle());
-
+                intent.putExtra("customerID", run.getUser());
                 startActivity(intent);
             });
             builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());

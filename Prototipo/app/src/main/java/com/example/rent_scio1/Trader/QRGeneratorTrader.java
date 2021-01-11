@@ -14,10 +14,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.services.MyFirebaseMessagingServices;
+import com.example.rent_scio1.services.MyLocationService;
 import com.example.rent_scio1.utils.Run;
+import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.WriterException;
 import androidmads.library.qrgenearator.QRGContents;
@@ -53,9 +58,8 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
                 builder.setPositiveButton("Sì", (dialog, id) -> {
                     dialog.dismiss();
+                    deleteRunAndNotify(code, getIntent().getStringExtra("IDVEICOLO"), getIntent().getStringExtra("customerID"));
 
-                    unlockVehiclebyID(getIntent().getStringExtra("IDVEICOLO"));
-                    deleteRun(code);
 
                 });
                 builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
@@ -79,6 +83,19 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
         //quando il cliente ha stabile la connessione devo ritornare alla mappa principale
         redirectMasActivityTrader(code);
+
+    }
+
+    private void deleteRunAndNotify(String runID, String vehicleID, String customerID){
+
+        FirebaseFirestore.getInstance().collection("users").document(customerID).get().addOnSuccessListener(documentSnapshot -> {
+            User x = documentSnapshot.toObject(User.class);
+            for (String token : x.getTokens())
+                MyFirebaseMessagingServices.sendNotification(QRGeneratorTrader.this, token, "Chiusura forzata della corsa", "Riavvia l'applicazione nel dispositivo in uso per ripristinare la schermata principale");
+
+            unlockVehiclebyID(vehicleID);
+            deleteRun(runID);
+        });
 
     }
 
