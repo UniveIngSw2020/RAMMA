@@ -10,7 +10,6 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import androidx.core.content.ContextCompat;
 
-import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.CustomInfoWindowAdapterTrader;
 import com.example.rent_scio1.utils.Clustering.ClusterMarker;
@@ -134,12 +133,11 @@ public class MyMapTrader extends MyMap{
         ClusterMarker item;
         if(run.getGeoPoint()!=null){
             item = new ClusterMarker(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude(), title, image);
-            clusterManager.addItem(item);
 
         }else{
             item = new ClusterMarker(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude(), title, image);
-            clusterManager.addItem(item);
         }
+        clusterManager.addItem(item);
         clusterManager.cluster();
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
@@ -176,10 +174,8 @@ public class MyMapTrader extends MyMap{
                         secondText="0"+seconds;
                     }
 
-
-                    item.setSnippet(speed+" "+hoursText+":"+minutesText+":"+secondText );
-
-                    mClusterManagerRenderer.setUpdateInfoWindow(item);
+                    if( item!=null)
+                        item.setSnippet(speed+" "+hoursText+":"+minutesText+":"+secondText );
 
                     //Log.e(TAG, "                                                                                                " + item.getTitle());
 
@@ -196,13 +192,13 @@ public class MyMapTrader extends MyMap{
                         secondText="0"+seconds;
                     }
 
-                    item.setSnippet(speed+" "+minutesText+":"+secondText );
-
-                    mClusterManagerRenderer.setUpdateInfoWindow(item);
+                    if( item!=null)
+                        item.setSnippet(speed+" "+minutesText+":"+secondText );
 
                     //Log.e(TAG, "                                                                                                " + item.toString());
 
                 }
+                mClusterManagerRenderer.setUpdateInfoWindow(item);
 
                 clusterManager.cluster();
             }
@@ -210,11 +206,12 @@ public class MyMapTrader extends MyMap{
             @Override
             public void onFinish() {
                 ClusterMarker item = listMarker.get(run.getUser());
-                item.setSnippet( run.getSpeed()+" "+"TERMINATO");
+                if( item!=null)
+                    item.setSnippet( run.getSpeed()+" "+"TERMINATO");
                 mClusterManagerRenderer.setUpdateInfoWindow(item);
                 clusterManager.cluster();
                 for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
-                    if(m.getPosition().equals(item.getPosition())){
+                    if(( item!=null) && m.getPosition().equals(item.getPosition())){
                         m.showInfoWindow();
                         Log.e(TAG, "Mostro l'info window sul commerciante");
                     }

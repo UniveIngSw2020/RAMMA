@@ -255,8 +255,13 @@ public class RunTableTrader extends AppCompatActivity {
             builder.setPositiveButton("Sì", (dialog, id) -> {
                 dialog.dismiss();
                 Log.e(TAG, "Sto eliminando la corsa: " + run.getRunUID());
+
                 Intent intent=new Intent(getApplicationContext(), QRGeneratorTrader.class);
+
+                intent.putExtra("eliminazione",true);
                 intent.putExtra(ToQR, run.getRunUID());
+                intent.putExtra("IDVEICOLO",run.getVehicle());
+
                 startActivity(intent);
             });
             builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());

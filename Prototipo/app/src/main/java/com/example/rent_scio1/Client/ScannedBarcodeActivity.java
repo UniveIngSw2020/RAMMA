@@ -141,10 +141,8 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                 if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
                                     stopService(new Intent(getApplicationContext(), MyLocationService.class));
 
-                                    //TODO POI TOLGO ANCHE QUESTO LO GIURO
                                     unlockVehiclebyID(UserClient.getRun().getVehicle());
                                     deleteRun(rawValue);
-                                    //startActivity(intent);
                                 }else{
                                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
                                 }
@@ -216,7 +214,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     }
 
 
-    //TODO POI LO TOLGO LO GIURO
     private void deleteRun(String PK_run){
         FirebaseFirestore.getInstance().collection("run").document(PK_run)
                 .delete()

@@ -73,6 +73,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
     private ScannedBarcodeActivity.Action LastAction;
 
+    CountDownTimer countDownTimer;
+
 
     private final ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader = new ArrayList<>();
     //private Vehicle v = null;
@@ -96,6 +98,10 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         super.onResume();
         Log.e(TAG, "sono nel resume ");
         initViews();
+        if(UserClient.getRun()==null && countDownTimer!=null){
+            countDownTimer.cancel();
+            createTable();
+        }
         startService(new Intent(this, MyFirebaseMessagingServices.class));
         startService(new Intent(this, ExitService.class));
     }
@@ -190,7 +196,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
 
-        new CountDownTimer(time, 100) {
+        countDownTimer=new CountDownTimer(time, 100) {
             @SuppressLint({"DefaultLocale", "SetTextI18n"})
             @Override
             public void onTick(long millisUntilFinished) {
