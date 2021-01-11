@@ -100,7 +100,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         initViews();
         if(UserClient.getRun()==null && countDownTimer!=null){
             countDownTimer.cancel();
-            createTable();
+            countDownTimer=null;
+            recreate();
         }
         startService(new Intent(this, MyFirebaseMessagingServices.class));
         startService(new Intent(this, ExitService.class));

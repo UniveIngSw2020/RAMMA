@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.maps.android.PolyUtil;
 
+import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -163,16 +165,15 @@ public class MyLocationService extends Service {
                 UserClient.getRun().setGeoPoint(geoPoint);
                 UserClient.getRun().setSpeed(speed);
 
-                DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
-                mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "push posizione")).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        stopSelf();
-                        UserClient.setRun(null);
 
-                    }
-                });
-                mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "push speed"));
+                OnFailureListener onFailureListener= e -> {
+                    stopSelf();
+                    UserClient.setRun(null);
+                };
+
+                DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
+                mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "push posizione")).addOnFailureListener(onFailureListener);
+                mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "push speed")).addOnFailureListener(onFailureListener);
             }
         }
 
