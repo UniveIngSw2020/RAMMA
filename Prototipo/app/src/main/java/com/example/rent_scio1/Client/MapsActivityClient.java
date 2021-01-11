@@ -490,8 +490,11 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
                             FirebaseAuth.getInstance().signOut();
                             getSharedPreferences("loginPrefs", MODE_PRIVATE).edit().clear().apply();
                             UserClient.setUser(null);
-                            finishAffinity();
-                            startActivity(new Intent(getApplicationContext(), StartActivity.class));
+
+                            Intent intent=new Intent(getApplicationContext(), StartActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+
                             Log.d(TAG, "terminato tentativo di rimozione token");
                         });
             });

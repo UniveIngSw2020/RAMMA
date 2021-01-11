@@ -79,8 +79,6 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
             case R.id.logout:
 
                 logout();
-
-                //finishAffinity();
                 break;
             case R.id.nuova_corsa:
                 startActivity(new Intent(getApplicationContext(), NewRunActivityTrader.class));
@@ -115,8 +113,11 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
                             FirebaseAuth.getInstance().signOut();
                             getSharedPreferences("loginPrefs", MODE_PRIVATE).edit().clear().apply();
                             UserClient.setUser(null);
-                            finishAffinity();
-                            startActivity(new Intent(getApplicationContext(), StartActivity.class));
+
+                            Intent intent=new Intent(getApplicationContext(), StartActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+
                             Log.d(TAG, "terminato tentativo di rimozione token");
                         });
             });

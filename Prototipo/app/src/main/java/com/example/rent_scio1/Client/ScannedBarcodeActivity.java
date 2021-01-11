@@ -126,7 +126,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
                             }else {
                                 startLocationService(rawValue);
-                                finishAffinity();
 
                                 Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -222,8 +221,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     UserClient.setRun(null);
                     UserClient.setTrader(null);
-
-                    finishAffinity();
 
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -20,14 +20,17 @@ public class StartActivity extends AppCompatActivity {
 
         if(UserClient.getUser()!=null){
 
+            Intent intent;
+
             if(UserClient.getUser().getTrader()){
-                startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                intent = new Intent(getApplicationContext(), MapsActivityTrader.class);
             }
             else{
-                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
+                intent = new Intent(getApplicationContext(), MapsActivityClient.class);
             }
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            finishAffinity();
+            startActivity(intent);
         }
         else{
 
