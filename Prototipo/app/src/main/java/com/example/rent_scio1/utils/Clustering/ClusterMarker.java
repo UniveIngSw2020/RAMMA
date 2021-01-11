@@ -14,12 +14,14 @@ public class ClusterMarker implements ClusterItem {
     private String title;
     private Bitmap image;
     private String snippet;
+    private String runId;
 
-    public ClusterMarker(double lat, double lng, String title, Bitmap image) {
+    public ClusterMarker(double lat, double lng, String title, Bitmap image, String runId) {
         this.image = image;
         position = new LatLng(lat, lng);
         this.title = title;
         this.snippet = "";
+        this.runId = runId;
     }
 
     @NotNull
@@ -57,5 +59,13 @@ public class ClusterMarker implements ClusterItem {
 
     public void setSnippet(String snippet) {
         this.snippet = snippet;
+    }
+
+    public String getRunId() {
+        return runId;
+    }
+
+    public void setRunId(String runId) {
+        this.runId = runId;
     }
 }

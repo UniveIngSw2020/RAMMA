@@ -1,13 +1,19 @@
 package com.example.rent_scio1.utils.map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
@@ -26,6 +32,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,9 +42,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,10 +104,12 @@ public class MyMapTrader extends MyMap{
 
 
         clusterManager.setOnClusterItemClickListener(item -> {
-            for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
-                if(m.getPosition().equals(item.getPosition())){
-                    m.showInfoWindow();
-                    Log.e(TAG, "Mostro l'info window sul commerciante");
+            if(item.getRunId() != null){
+                for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                    if(m.getPosition().equals(item.getPosition())){
+                        m.showInfoWindow();
+                        Log.e(TAG, "Mostro l'info window sul commerciante");
+                    }
                 }
             }
             return true;
@@ -103,6 +118,30 @@ public class MyMapTrader extends MyMap{
 
         getmMap().setOnMarkerClickListener(clusterManager);
 
+
+        clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
+            if(item.getRunId() != null){
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Query getRun = db.collection("run").whereEqualTo("runUID", item.getRunId());
+                getRun.get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Query getUser = db.collection("users").whereEqualTo("user_id", new Run(document.toObject(Run.class)).getUser());
+                        getUser.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                            String phone = "";
+                            for (QueryDocumentSnapshot document1 : queryDocumentSnapshots1) {
+                                phone = document1.toObject(User.class).getPhone();
+                            }
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setData(Uri.parse("tel:" + phone));
+                            context.startActivity(intent);
+                        });
+                    }
+                });
+            }
+        });
+
+        getmMap().setOnInfoWindowClickListener(clusterManager);
 
     }
 
@@ -132,10 +171,9 @@ public class MyMapTrader extends MyMap{
         Run run=dc.getDocument().toObject(Run.class);
         ClusterMarker item;
         if(run.getGeoPoint()!=null){
-            item = new ClusterMarker(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude(), title, image);
-
+            item = new ClusterMarker(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude(), title, image, run.getRunUID());
         }else{
-            item = new ClusterMarker(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude(), title, image);
+            item = new ClusterMarker(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude(), title, image, run.getRunUID());
         }
         clusterManager.addItem(item);
         clusterManager.cluster();
@@ -360,25 +398,26 @@ public class MyMapTrader extends MyMap{
         //questo richiamo va cancellato
 
 
-        MarkerOptions markerOptions=new MarkerOptions()
-                .position(new LatLng(mTrader.getTraderPosition().getLatitude(), mTrader.getTraderPosition().getLongitude()))
-                .title(UserClient.getUser().getShopName());
 
         StorageReference islandRef = mStorageRef.child("users/" + UserClient.getUser().getUser_id() + "/avatar.jpg");
         File localFile;
         try {
             localFile = File.createTempFile("images", "jpg");
             islandRef.getFile(localFile)
-                    .addOnSuccessListener(taskSnapshot -> {
-
-                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),150,150)));
-                        googleMap.addMarker(markerOptions);
-
-                    })
-                    .addOnFailureListener(exception -> {
-                        Log.e(TAG, "NON caricata");
-                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(R.drawable.negozio_vettorizzato),150,150,false) ));
-                        googleMap.addMarker(markerOptions);
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            clusterManager.addItem(new ClusterMarker(mTrader.getTraderPosition().getLatitude(),
+                                    mTrader.getTraderPosition().getLongitude(),
+                                    UserClient.getUser().getShopName(),
+                                    resizeMapIcons(localFile.getPath(), 150, 150), null));
+                        }else{
+                            Log.e(TAG, "NON caricata");
+                            clusterManager.addItem(new ClusterMarker(mTrader.getTraderPosition().getLatitude(),
+                                    mTrader.getTraderPosition().getLongitude(),
+                                    UserClient.getUser().getShopName(),
+                                    Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),150, 158, false), null));
+                        }
+                        clusterManager.cluster();
                     });
 
 
@@ -402,4 +441,5 @@ public class MyMapTrader extends MyMap{
             polygon.setStrokeColor(Color.rgb( 111,163,167));
         }
     }
+
 }

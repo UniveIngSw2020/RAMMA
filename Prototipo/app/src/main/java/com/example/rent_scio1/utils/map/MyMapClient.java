@@ -292,7 +292,7 @@ public class MyMapClient extends MyMap {
                                             image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
                                         }
                                         Log.e(TAG, "                                                                                    aggiunto marker al cluster");
-                                        clusterManager.addItem(new ClusterMarker(pos.getLatitude(), pos.getLongitude(), title, image));
+                                        clusterManager.addItem(new ClusterMarker(pos.getLatitude(), pos.getLongitude(), title, image, null));
                                     });
                         } catch (IOException e) {
                             e.printStackTrace();
