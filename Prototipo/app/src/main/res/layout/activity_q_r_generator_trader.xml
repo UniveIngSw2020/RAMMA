@@ -25,7 +25,27 @@
         android:layout_height="350dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_new_trade_qr"
+        app:layout_constraintVertical_bias="0.177"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/forza_delete"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/QR_code"
+        app:layout_constraintVertical_bias="0.36"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/comfortaa_regular"
+        android:textColor="@color/back"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:text="@string/forza_eliminazione"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
