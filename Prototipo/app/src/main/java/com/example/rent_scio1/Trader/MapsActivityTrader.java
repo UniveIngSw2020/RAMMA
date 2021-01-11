@@ -46,7 +46,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapDelimiter);
-        mapFragment.getMapAsync(new MyMapTrader(this));
+        mapFragment.getMapAsync(new MyMapTrader(this.getApplicationContext()));
         thisContext = MapsActivityTrader.this;
         startService(new Intent(MapsActivityTrader.this, MyFirebaseMessagingServices.class));
         startService(new Intent(MapsActivityTrader.this, ExitService.class));

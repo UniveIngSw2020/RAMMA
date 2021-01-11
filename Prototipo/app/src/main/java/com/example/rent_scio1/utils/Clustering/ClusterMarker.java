@@ -7,6 +7,8 @@ import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ClusterMarker implements ClusterItem {
     private LatLng position;
     private String title;
@@ -17,8 +19,10 @@ public class ClusterMarker implements ClusterItem {
         this.image = image;
         position = new LatLng(lat, lng);
         this.title = title;
+        this.snippet = "";
     }
 
+    @NotNull
     @Override
     public LatLng getPosition() {
         return position;
@@ -32,7 +36,7 @@ public class ClusterMarker implements ClusterItem {
     @Nullable
     @Override
     public String getSnippet() {
-        return null;
+        return this.snippet;
     }
 
     public Bitmap getImage() {

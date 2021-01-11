@@ -1,6 +1,7 @@
 package com.example.rent_scio1.utils.Clustering;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -16,6 +17,7 @@ import com.google.maps.android.ui.IconGenerator;
 
 public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker> {
 
+    private final String TAG = "MyClusterManagerRenderer";
     private final IconGenerator iconGenerator;
     private final ImageView imageView;
 
@@ -56,6 +58,17 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
         Marker marker = getMarker(clusterMarker);
         if (marker != null) {
             marker.setPosition(clusterMarker.getPosition());
+        }
+    }
+
+    public void setUpdateInfoWindow(ClusterMarker clusterMarker){
+        Marker marker = getMarker(clusterMarker);
+        if (marker != null) {
+            Log.e(TAG, "prima " + marker.getSnippet());
+            marker.setSnippet(clusterMarker.getSnippet());
+            if(marker.isInfoWindowShown())
+                marker.showInfoWindow();
+            Log.e(TAG, "dopo " + marker.getSnippet());
         }
     }
 

@@ -69,29 +69,25 @@ public class MyMapTrader extends MyMap{
         super.onMapReady(googleMap);
 
         getUserDetails(googleMap);
-
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         //setCameraView(googleMap);
 
         clusterManager = new ClusterManager<>(context, getmMap());
-        if(mClusterManagerRenderer == null){
-            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
-            clusterManager.setRenderer(mClusterManagerRenderer);
-        }
-        getmMap().setOnCameraIdleListener(clusterManager);
+        mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
+        clusterManager.setRenderer(mClusterManagerRenderer);
 
-        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterTrader(context));
-        getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
+        getmMap().setOnCameraIdleListener(clusterManager);
 
         delimitedArea();
         try {
             searchCustomers();
         }catch (Exception e){
+            Log.e(TAG, "ERROREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
             e.printStackTrace();
         }
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
-
+        clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterTrader(context));
+        getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
 
 
 
@@ -133,20 +129,28 @@ public class MyMapTrader extends MyMap{
         return bitmap;
     }
 
-    private void addDocument(ClusterMarker item, DocumentChange dc){
+    private void addDocument(String title, Bitmap image, DocumentChange dc){
         Run run=dc.getDocument().toObject(Run.class);
+        ClusterMarker item;
+        if(run.getGeoPoint()!=null){
+            item = new ClusterMarker(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude(), title, image);
+            clusterManager.addItem(item);
 
-        /*if(run.getGeoPoint()!=null)
-            markerOptions.position(new LatLng(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude()));
-        else
-            markerOptions.position(new LatLng(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude()));*/
-        //Marker costumer = getmMap().addMarker(markerOptions);
-        clusterManager.addItem(item);
+        }else{
+            item = new ClusterMarker(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude(), title, image);
+            clusterManager.addItem(item);
+        }
+        clusterManager.cluster();
         long time=run.getStartTime() + run.getDuration() - Calendar.getInstance().getTime().getTime();
-        new CountDownTimer(time,1000){
 
+        listMarker.put(dc.getDocument().toObject(Run.class).getUser(),item);
+
+        new CountDownTimer(time,1000){
             @Override
             public void onTick(long millisUntilFinished) {
+
+                ClusterMarker item = listMarker.get(run.getUser());
+
 
                 int minutes=(int) (millisUntilFinished / 1000) / 60;
                 int seconds=(int) (millisUntilFinished / 1000) % 60;
@@ -171,9 +175,15 @@ public class MyMapTrader extends MyMap{
 
                         secondText="0"+seconds;
                     }
+
+
                     item.setSnippet(speed+" "+hoursText+":"+minutesText+":"+secondText );
-                }
-                else{
+
+                    mClusterManagerRenderer.setUpdateInfoWindow(item);
+
+                    //Log.e(TAG, "                                                                                                " + item.getTitle());
+
+                }else{
 
                     String minutesText=""+minutes;
                     if(minutes<10){
@@ -187,6 +197,11 @@ public class MyMapTrader extends MyMap{
                     }
 
                     item.setSnippet(speed+" "+minutesText+":"+secondText );
+
+                    mClusterManagerRenderer.setUpdateInfoWindow(item);
+
+                    //Log.e(TAG, "                                                                                                " + item.toString());
+
                 }
 
                 clusterManager.cluster();
@@ -194,7 +209,10 @@ public class MyMapTrader extends MyMap{
 
             @Override
             public void onFinish() {
+                ClusterMarker item = listMarker.get(run.getUser());
                 item.setSnippet( run.getSpeed()+" "+"TERMINATO");
+                mClusterManagerRenderer.setUpdateInfoWindow(item);
+                clusterManager.cluster();
                 for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
                     if(m.getPosition().equals(item.getPosition())){
                         m.showInfoWindow();
@@ -204,8 +222,6 @@ public class MyMapTrader extends MyMap{
 
             }
         }.start();
-
-        listMarker.put(dc.getDocument().toObject(Run.class).getUser(),item);
     }
 
     private void searchCustomers() {
@@ -248,11 +264,11 @@ public class MyMapTrader extends MyMap{
                                                             if (taskSnapshot.isSuccessful()) {
                                                                 image = resizeMapIcons(localFile.getPath(), 100, 100);
                                                             } else {
-                                                                image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
+                                                                image = Bitmap.createScaledBitmap(getBitmap(R.drawable.logo1), 100, 100, false);
                                                             }
                                                             Log.e(TAG, "                                                                                    aggiunto marker al cluster");
                                                             //clusterManager.addItem(new ClusterMarker(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude(), user.getName() + " " + user.getSurname(), image));
-                                                            addDocument(new ClusterMarker(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude(), user.getName() + " " + user.getSurname(), image),dc);
+                                                            addDocument(user.getName() + " " + user.getSurname(), image,dc);
                                                         });
                                             } catch (IOException e1) {
                                                 e1.printStackTrace();
@@ -287,6 +303,7 @@ public class MyMapTrader extends MyMap{
                 costumer.setPosition(new LatLng(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude()));
                 mClusterManagerRenderer.setUpdateMarker(costumer);
                 mapRuns.put(run.getRunUID(),run);
+                clusterManager.cluster();
             }
 
         }
@@ -302,6 +319,7 @@ public class MyMapTrader extends MyMap{
         }
         listMarker.remove(run.getUser());
         //item.remove();
+        clusterManager.cluster();
     }
 
     //questo metodo va completamente eliminato
