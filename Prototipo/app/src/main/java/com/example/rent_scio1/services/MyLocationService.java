@@ -63,7 +63,7 @@ public class MyLocationService extends Service {
 
             long curTime = Calendar.getInstance().getTime().getTime();
 
-            double s =distance(location.getLatitude(), mLastLocation.getLatitude(), location.getLongitude(), mLastLocation.getLongitude(), location.getAltitude(), mLastLocation.getAltitude());
+            double s = distance(location, mLastLocation);
 
             int speed= (int)((s/(curTime-mLastTime)) *3.6);
             mLastLocation.set(location);
@@ -72,7 +72,7 @@ public class MyLocationService extends Service {
             //setCameraView(location);
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
 
-            if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 30000){
+            if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 60000){
                 lastNotificationArea = Calendar.getInstance().getTime().getTime();
                 try {
                     checkAreaLimit(location);
@@ -81,7 +81,7 @@ public class MyLocationService extends Service {
                 }
             }
 
-            if(Calendar.getInstance().getTime().getTime() - lastNotificationSpeed > 30000) {
+            if(Calendar.getInstance().getTime().getTime() - lastNotificationSpeed > 60000) {
                 lastNotificationSpeed = Calendar.getInstance().getTime().getTime();
                 try {
                     checkSpeedLimit(speed);
@@ -94,7 +94,7 @@ public class MyLocationService extends Service {
 
 
         /**
-         * Calculate distance between two points in latitude and longitude taking
+         * Calcola la distanza tra due punti
          * into account height difference. If you are not interested in height
          * difference pass 0.0. Uses Haversine method as its base.
          *
@@ -102,8 +102,15 @@ public class MyLocationService extends Service {
          * el2 End altitude in meters
          * @returns Distance in Meters
          */
-        private double distance(double lat1, double lat2, double lon1,
-                                              double lon2, double el1, double el2) {
+        private double distance(Location location, Location lastLocation) {
+
+            double lat1 = location.getLatitude();
+            double lon1 = location.getLongitude();
+            double el1 = location.getAltitude();
+
+            double lon2 = lastLocation.getLongitude();
+            double lat2 =  lastLocation.getLongitude();
+            double el2 = lastLocation.getAltitude();
 
             final int R = 6371; // Radius of the earth
 
