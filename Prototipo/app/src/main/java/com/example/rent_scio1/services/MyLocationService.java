@@ -24,6 +24,7 @@ import com.example.rent_scio1.utils.Vehicle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -163,7 +164,14 @@ public class MyLocationService extends Service {
                 UserClient.getRun().setSpeed(speed);
 
                 DocumentReference mDatabase = db.collection("run").document(UserClient.getRun().getRunUID());
-                mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "push posizione"));
+                mDatabase.update("geoPoint", geoPoint).addOnSuccessListener(aVoid -> Log.e(TAG, "push posizione")).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        stopSelf();
+                        UserClient.setRun(null);
+
+                    }
+                });
                 mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "push speed"));
             }
         }

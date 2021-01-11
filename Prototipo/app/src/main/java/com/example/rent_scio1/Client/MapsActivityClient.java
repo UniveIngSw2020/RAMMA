@@ -104,6 +104,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         }
         startService(new Intent(this, MyFirebaseMessagingServices.class));
         startService(new Intent(this, ExitService.class));
+
     }
 
     @Override
@@ -325,6 +326,8 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             navigationView.getMenu().findItem(R.id.Assistenza).setVisible(false);
             navigationView.getMenu().findItem(R.id.go_back_shop).setVisible(false);
             navigationView.getMenu().findItem(R.id.end_run).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(true);
+            navigationView.getMenu().findItem(R.id.logout_client).setVisible(true);
             Log.e(TAG, "sono entrato nel ramo else");
         }
 
