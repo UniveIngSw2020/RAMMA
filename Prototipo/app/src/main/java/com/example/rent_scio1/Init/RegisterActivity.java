@@ -180,17 +180,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         Toast.makeText(RegisterActivity.this, "User, Created!", Toast.LENGTH_SHORT).show();
 
+        finishAffinity();
 
         UserClient.setUser(new User(FirebaseAuth.getInstance().getUid(), mName.getText().toString().trim(), mSurname.getText().toString().trim(), mEmail.getText().toString().trim(), mPhone.getText().toString().trim(), mTrader.isChecked(), mShopname.getText().toString().trim(), null, null, null));
 
-        Intent intent;
         if (Objects.equals(user.get("trader"), true)) {
-            intent=new Intent(getApplicationContext(), SetPositionActivityTrader.class);
+            startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
         } else {
-            intent=new Intent(getApplicationContext(), MapsActivityClient.class);
+            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
 
     }
 }

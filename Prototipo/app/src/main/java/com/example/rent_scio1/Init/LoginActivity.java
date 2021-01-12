@@ -149,23 +149,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         }
                                     })
                                     .addOnCompleteListener(task1 -> {
-                                        hideDialog();
                                         Toast.makeText(LoginActivity.this, "Autenticato come: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                                        Intent intent;
-
                                         if (user1.getTrader()) {
-
                                             if (user1.getTraderPosition() == null)
-                                                intent=new Intent(getApplicationContext(), SetPositionActivityTrader.class);
+                                                startActivity(new Intent(getApplicationContext(), SetPositionActivityTrader.class));
                                             else
-                                                intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
-
+                                                startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
                                         } else
-                                            intent=new Intent(getApplicationContext(), MapsActivityClient.class);
+                                            startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
 
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
+                                        hideDialog();
+                                        finishAffinity();
                                     });
                         }else{
                             Log.e(TAG, "L'account è stato eliminato per qualche ragione");      //SUPPONGO CHE SIA COSì :)

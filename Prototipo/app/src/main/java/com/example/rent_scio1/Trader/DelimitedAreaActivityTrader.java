@@ -106,10 +106,8 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
 
                 if(polygon==null || PolyUtil.containsLocation(trader.getPosition(),polygon.getPoints(),true)){
                     storeDelimitedArea();
-
-                    Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
+                    finishAffinity();
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"L'area limitata deve contenere il tuo negozio",Toast.LENGTH_LONG).show();

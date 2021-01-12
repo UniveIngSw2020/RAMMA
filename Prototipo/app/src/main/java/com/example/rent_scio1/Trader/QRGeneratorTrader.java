@@ -118,6 +118,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                     Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
                                     Toast.makeText(QRGeneratorTrader.this, "Corsa Creata con Successo!", Toast.LENGTH_SHORT).show();
 
+                                    finishAffinity();
 
                                     Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -130,6 +131,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                 Log.e(TAG, "SWITCH DELETE");
                                 if(code.split(" ").length==1){
                                     Log.e(TAG, "ABBIAMO UN PROBLEMA REMOVE");
+                                    finishAffinity();
 
                                     Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -156,6 +158,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!"))
                 .addOnFailureListener(e -> Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e))
                 .addOnCompleteListener(task -> {
+                    finishAffinity();
 
                     Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
