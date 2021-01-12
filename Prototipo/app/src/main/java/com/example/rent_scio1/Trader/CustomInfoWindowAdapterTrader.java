@@ -47,9 +47,13 @@ public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapte
         TableLayout table = view.findViewById(R.id.tablelayout_trade);
         table.removeAllViews();
 
+        TextView textView = mWindow.findViewById(R.id.subtitle_marker);
+        textView.setText("");
+        textView.setVisibility(View.INVISIBLE);
+
 
         String snippet = marker.getSnippet();
-        if(snippet!=null){
+        if(snippet!=null && !snippet.equals("")){
 
             String[] strings=snippet.split(" ");
             createTableCustomers(table,strings[0],strings[1]);
@@ -115,8 +119,13 @@ public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapte
 
         rowNumbers.addView(textView1);
         rowNumbers.addView(textView2);
-
         table.addView(rowNumbers);
+
+
+
+        TextView textView3 = mWindow.findViewById(R.id.subtitle_marker);
+        textView3.setText(R.string.tocca_qui_per_chiamare_il_cliente);
+        textView3.setVisibility(View.VISIBLE);
 
     }
 

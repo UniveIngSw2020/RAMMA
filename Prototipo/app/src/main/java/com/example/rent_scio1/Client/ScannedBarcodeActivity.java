@@ -126,10 +126,9 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
                             }else {
                                 startLocationService(rawValue);
-                                finishAffinity();
 
+                                finishAffinity();
                                 Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                             }
                             break;
@@ -139,9 +138,14 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                             //Log.e(TAG, "SWITCH DELETE           " + UserClient.getRun().getRunUID());
                             if(UserClient.getRun() != null){
                                 if(length == 1 && rawValue.equals(UserClient.getRun().getRunUID())) {
-                                    stopService(new Intent(getApplicationContext(), MyLocationService.class));
+
+                                    Intent serviceIntent=new Intent(getApplicationContext(), MyLocationService.class);
+                                    serviceIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                                    stopService(serviceIntent);
 
                                     unlockVehiclebyID(UserClient.getRun().getVehicle());
+
                                     deleteRun(rawValue);
                                 }else{
                                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
@@ -175,7 +179,9 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     private void startLocationService(String rawValue) {
         if (!isLocationServiceRunning()) {
             Log.e(TAG, "RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+
             Intent serviceIntent = new Intent(this, MyLocationService.class);
+            serviceIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             serviceIntent.putExtra(TAG, rawValue);
 
@@ -226,7 +232,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     finishAffinity();
 
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
 
                 });

@@ -33,6 +33,17 @@
             android:background="#ACCACC"
             app:itemTextColor="@color/back"/>
 
+        <TextView
+            android:id="@+id/subtitle_marker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/back"
+            android:clickable="false"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:autoSizeTextType="uniform"
+            android:textAlignment="center" />
+
     </LinearLayout>
 
 </LinearLayout>

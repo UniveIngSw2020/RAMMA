@@ -149,6 +149,7 @@
     <string name="password_almeno_6_caratteri">Password (almeno 6 caratteri)</string>
     <string name="Cellulare">cellulare</string>
     <string name="forza_eliminazione">Forza Eliminazione</string>
+    <string name="tocca_qui_per_chiamare_il_cliente">Tocca qui per chiamare il cliente</string>
 
 
 </resources>

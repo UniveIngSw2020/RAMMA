@@ -72,7 +72,9 @@ public class MyMapTrader extends MyMap{
     private StorageReference mStorageRef;
 
     private final Map<String,Run> mapRuns=new HashMap<>();
+
     private ClusterManager<ClusterMarker> clusterManager = null;
+
     private MyClusterManagerRenderer mClusterManagerRenderer = null;
 
 
@@ -104,12 +106,10 @@ public class MyMapTrader extends MyMap{
 
 
         clusterManager.setOnClusterItemClickListener(item -> {
-            if(item.getRunId() != null){
-                for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
-                    if(m.getPosition().equals(item.getPosition())){
-                        m.showInfoWindow();
-                        Log.e(TAG, "Mostro l'info window sul commerciante");
-                    }
+            for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                if(m.getPosition().equals(item.getPosition())){
+                    m.showInfoWindow();
+                    Log.e(TAG, "Mostro l'info window sul commerciante");
                 }
             }
             return true;
@@ -121,16 +121,22 @@ public class MyMapTrader extends MyMap{
 
         clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
             if(item.getRunId() != null){
+
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 Query getRun = db.collection("run").whereEqualTo("runUID", item.getRunId());
+
                 getRun.get().addOnSuccessListener(queryDocumentSnapshots -> {
+
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Query getUser = db.collection("users").whereEqualTo("user_id", new Run(document.toObject(Run.class)).getUser());
+
                         getUser.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
                             String phone = "";
+
                             for (QueryDocumentSnapshot document1 : queryDocumentSnapshots1) {
                                 phone = document1.toObject(User.class).getPhone();
                             }
+
                             Intent intent = new Intent(Intent.ACTION_DIAL);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.setData(Uri.parse("tel:" + phone));
