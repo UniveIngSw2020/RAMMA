@@ -72,7 +72,7 @@ public class MyLocationService extends Service {
             if(fakeGPS){
                 speed = (int)((s/(curTime-mLastTime)) *3.6);
             }else{
-                speed = (int)mLastLocation.getSpeed();
+                speed = (int)(mLastLocation.getSpeed() * 3.6);
             }
 
             mLastLocation.set(location);
