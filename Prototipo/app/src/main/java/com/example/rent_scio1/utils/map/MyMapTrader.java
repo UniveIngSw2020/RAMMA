@@ -102,10 +102,12 @@ public class MyMapTrader extends MyMap{
 
 
         clusterManager.setOnClusterItemClickListener(item -> {
-            for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
-                if(m.getPosition().equals(item.getPosition())){
-                    m.showInfoWindow();
-                    Log.e(TAG, "Mostro l'info window sul commerciante");
+            if(item.getRunId()!=null) {
+                for (Marker m : clusterManager.getMarkerCollection().getMarkers()) {
+                    if (m.getPosition().equals(item.getPosition())) {
+                        m.showInfoWindow();
+                        Log.e(TAG, "Mostro l'info window sul commerciante");
+                    }
                 }
             }
             return true;
