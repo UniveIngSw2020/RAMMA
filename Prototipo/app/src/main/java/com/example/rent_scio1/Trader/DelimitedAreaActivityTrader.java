@@ -34,11 +34,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.maps.android.PolyUtil;
@@ -258,18 +261,15 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         try {
             localFile = File.createTempFile("images", "jpg");
             islandRef.getFile(localFile)
-                    .addOnSuccessListener(taskSnapshot -> {
-
-                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),150,150)));
-                        trader=mMap.addMarker(markerOptions);
-
-                    })
-                    .addOnFailureListener(exception -> {
-                        Log.e(TAG, "NON caricata");
-                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(),150,150,false) ));
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(localFile.getPath(),100,100)));
+                        }else{
+                            Log.e(TAG, "NON caricata");
+                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(  Bitmap.createScaledBitmap( getBitmap(),100,100,false) ));
+                        }
                         trader=mMap.addMarker(markerOptions);
                     });
-
 
         } catch (IOException ioException) {
             Log.e(TAG, "Errore nel caricamento dell'immaigne");

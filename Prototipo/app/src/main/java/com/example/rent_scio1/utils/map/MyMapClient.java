@@ -16,6 +16,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.ZoomDensity;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +45,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -129,15 +132,19 @@ public class MyMapClient extends MyMap {
 
         clusterManager = new ClusterManager<>(context, getmMap());
         if(mClusterManagerRenderer == null){
-            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
+            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
             clusterManager.setRenderer(mClusterManagerRenderer);
         }
 
-        getmMap().setOnCameraIdleListener(() -> {
-            shouldCluster_zoom = getmMap().getCameraPosition().zoom < 12;
-            Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
-            clusterManager.onCameraIdle();
-        });
+        if(listTrader.size() > 1){
+            getmMap().setOnCameraIdleListener(() -> {
+                shouldCluster_zoom = getmMap().getCameraPosition().zoom < 12;
+                Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
+                clusterManager.onCameraIdle();
+            });
+        }else{
+            getmMap().setOnCameraIdleListener(clusterManager);
+        }
 
         setMarkerDelimitedTrader();
 
@@ -145,6 +152,24 @@ public class MyMapClient extends MyMap {
         getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
         //getmMap().setOnCameraIdleListener(clusterManager);
 
+        clusterManager.setOnClusterClickListener(cluster -> {
+            //Log.e(TAG, "sono qui");
+            StringBuilder comm = new StringBuilder();
+            for(ClusterMarker c : cluster.getItems()){
+                comm.append(c.getTitle()).append("\n");
+            }
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Noleggi presenti")
+                    .setMessage(comm)
+                    .setCancelable(true)
+                    .setNegativeButton( "Chiudi", (dialogInterface, i) -> {
+                        dialogInterface.cancel();
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+
+            return true;
+        });
 
 
         clusterManager.setOnClusterItemClickListener(item -> {

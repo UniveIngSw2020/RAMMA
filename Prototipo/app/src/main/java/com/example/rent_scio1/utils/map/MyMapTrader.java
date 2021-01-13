@@ -1,5 +1,6 @@
 package com.example.rent_scio1.utils.map;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -77,6 +78,8 @@ public class MyMapTrader extends MyMap{
 
     private MyClusterManagerRenderer mClusterManagerRenderer = null;
 
+    public static boolean shouldCluster_zoom2;
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -87,7 +90,7 @@ public class MyMapTrader extends MyMap{
         //setCameraView(googleMap);
 
         clusterManager = new ClusterManager<>(context, getmMap());
-        mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
+        mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
         clusterManager.setRenderer(mClusterManagerRenderer);
 
         getmMap().setOnCameraIdleListener(clusterManager);
@@ -117,6 +120,33 @@ public class MyMapTrader extends MyMap{
 
 
         getmMap().setOnMarkerClickListener(clusterManager);
+
+
+        getmMap().setOnCameraIdleListener(() -> {
+            shouldCluster_zoom2 = getmMap().getCameraPosition().zoom < 10;
+            Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
+            clusterManager.onCameraIdle();
+        });
+
+        clusterManager.setOnClusterClickListener(cluster -> {
+            StringBuilder comm = new StringBuilder();
+            for(ClusterMarker c : cluster.getItems()){
+                if(!c.getPosition().equals(new LatLng(mTrader.getTraderPosition().getLatitude(),mTrader.getTraderPosition().getLongitude())))
+                    comm.append(c.getTitle()).append("\n");
+            }
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Clienti presentii")
+                    .setMessage(comm)
+                    .setCancelable(true)
+                    .setNegativeButton( "Chiudi", (dialogInterface, i) -> {
+                        dialogInterface.cancel();
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+
+            return true;
+        });
 
 
         clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
@@ -420,8 +450,8 @@ public class MyMapTrader extends MyMap{
                             Log.e(TAG, "NON caricata");
                             clusterManager.addItem(new ClusterMarker(mTrader.getTraderPosition().getLatitude(),
                                     mTrader.getTraderPosition().getLongitude(),
-                                    UserClient.getUser().getShopName(),
-                                    Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),150, 158, false), null));
+                                    "Il mio negozio",
+                                    Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),150, 150, false), null));
                         }
                         clusterManager.cluster();
                     });
