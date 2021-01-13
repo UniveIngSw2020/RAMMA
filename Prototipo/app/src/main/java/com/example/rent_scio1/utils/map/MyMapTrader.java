@@ -87,7 +87,11 @@ public class MyMapTrader extends MyMap{
         mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
         clusterManager.setRenderer(mClusterManagerRenderer);
 
-        getmMap().setOnCameraIdleListener(clusterManager);
+        getmMap().setOnCameraIdleListener(() -> {
+            shouldCluster_zoom2 = getmMap().getCameraPosition().zoom < 10;
+            Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
+            clusterManager.onCameraIdle();
+        });
 
         delimitedArea();
         try {
@@ -98,7 +102,6 @@ public class MyMapTrader extends MyMap{
 
         clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterTrader(context));
         getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
-
 
 
         clusterManager.setOnClusterItemClickListener(item -> {
@@ -113,13 +116,6 @@ public class MyMapTrader extends MyMap{
 
 
         getmMap().setOnMarkerClickListener(clusterManager);
-
-
-        getmMap().setOnCameraIdleListener(() -> {
-            shouldCluster_zoom2 = getmMap().getCameraPosition().zoom < 10;
-            Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
-            clusterManager.onCameraIdle();
-        });
 
 
 
