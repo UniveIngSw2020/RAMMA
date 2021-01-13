@@ -15,9 +15,10 @@ grado di tener conto di diverse specifiche relative al viaggio.
 
 Il negoziante avrà a disposizione le seguenti features:
   1. Configurare l'area dove i suoi veicoli potranno circolare;
-  2. Controllo in tempo reale della posizione e dello stato dei suoi veicoli.
+  2. Controllo in tempo reale della posizione e dello stato dei suoi veicoli;
+  3. Notifiche in tempo reale per posizione e velocità non consentite.
 
 Il cliente avrà a disposizione le seguenti features:
-  1. Un catalogo per scegliere il percorso desiderato;
-  2. Notifiche in caso di velocità troppo elevata, posizione non consentita, tempo
-     sufficiente per ritornare al negozio.
+  1. Notifiche in caso di velocità troppo elevata, posizione non consentita, tempo
+     sufficiente per ritornare al negozio;
+  2. Posizione e velocità in tempo reale.
