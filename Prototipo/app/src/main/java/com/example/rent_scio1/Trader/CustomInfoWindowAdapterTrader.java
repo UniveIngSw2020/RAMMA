@@ -104,7 +104,11 @@ public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapte
         textView1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f));
         textView1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         textView1.setTypeface(typeface);
-        textView1.setTextColor(Color.rgb(3,50,73));
+        if(remainingTime.equals("TERMINATO")){
+            textView1.setTextColor(Color.rgb(236, 124, 124));
+        }else{
+            textView1.setTextColor(Color.rgb(3,50,73));
+        }
         textView1.setText(remainingTime);
 
         TextView textView2 = new TextView(mContext);

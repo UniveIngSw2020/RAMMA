@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.ExitService;
@@ -46,7 +47,7 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapDelimiter);
-        mapFragment.getMapAsync(new MyMapTrader(this.getApplicationContext()));
+        mapFragment.getMapAsync(new MyMapTrader(MapsActivityTrader.this));
         thisContext = MapsActivityTrader.this;
         startService(new Intent(MapsActivityTrader.this, MyFirebaseMessagingServices.class));
         startService(new Intent(MapsActivityTrader.this, ExitService.class));

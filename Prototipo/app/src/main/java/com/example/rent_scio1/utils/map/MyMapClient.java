@@ -164,7 +164,7 @@ public class MyMapClient extends MyMap {
                     .setCancelable(true)
                     .setNegativeButton( "Chiudi", (dialogInterface, i) -> {
                         dialogInterface.cancel();
-                    });
+                    }).setIcon(android.R.drawable.ic_dialog_info);
             final AlertDialog alert = builder.create();
             alert.show();
 

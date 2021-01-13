@@ -2,6 +2,7 @@ package com.example.rent_scio1.utils.map;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
@@ -63,21 +65,13 @@ public class MyMapTrader extends MyMap{
 
     private User mTrader;
     private static final String TAG = "MyMapTrader";
-
     private final FirebaseFirestore mStore = FirebaseFirestore.getInstance();
-    //private GoogleMap mMap;
     private final HashMap<String, ClusterMarker> listMarker = new HashMap<>();
-
-    private final Context context;
-
+    private final AppCompatActivity context;
     private StorageReference mStorageRef;
-
     private final Map<String,Run> mapRuns=new HashMap<>();
-
     private ClusterManager<ClusterMarker> clusterManager = null;
-
     private MyClusterManagerRenderer mClusterManagerRenderer = null;
-
     public static boolean shouldCluster_zoom2;
 
 
@@ -99,7 +93,6 @@ public class MyMapTrader extends MyMap{
         try {
             searchCustomers();
         }catch (Exception e){
-            Log.e(TAG, "ERROREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
             e.printStackTrace();
         }
 
@@ -128,25 +121,7 @@ public class MyMapTrader extends MyMap{
             clusterManager.onCameraIdle();
         });
 
-        clusterManager.setOnClusterClickListener(cluster -> {
-            StringBuilder comm = new StringBuilder();
-            for(ClusterMarker c : cluster.getItems()){
-                if(!c.getPosition().equals(new LatLng(mTrader.getTraderPosition().getLatitude(),mTrader.getTraderPosition().getLongitude())))
-                    comm.append(c.getTitle()).append("\n");
-            }
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Clienti presentii")
-                    .setMessage(comm)
-                    .setCancelable(true)
-                    .setNegativeButton( "Chiudi", (dialogInterface, i) -> {
-                        dialogInterface.cancel();
-                    });
-            final AlertDialog alert = builder.create();
-            alert.show();
-
-            return true;
-        });
 
 
         clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
@@ -179,10 +154,39 @@ public class MyMapTrader extends MyMap{
 
         getmMap().setOnInfoWindowClickListener(clusterManager);
 
+
+        clusterManager.setOnClusterClickListener(cluster -> {
+            StringBuilder comm = new StringBuilder();
+            String title = "Clienti presentii";
+            Log.e(TAG, "CLICK CLUSTER IDENTIFICAYTO");
+            for(ClusterMarker c : cluster.getItems()){
+                if(!c.getPosition().equals(new LatLng(mTrader.getTraderPosition().getLatitude(),mTrader.getTraderPosition().getLongitude()))){
+                    comm.append(c.getTitle()).append("\n");
+                }else{
+                    title = "Clienti presenti oltre al tuo Negozio";
+                }
+            }
+            /*new AlertDialog.Builder(context)
+                    .setTitle(title)
+                    .setMessage(comm)
+                    .setCancelable(true)
+                    .setNegativeButton("Chiudi", (dialogInterface, i) -> dialogInterface.cancel())
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .show();*/
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(title).setMessage(comm).setCancelable(true)
+                    .setNegativeButton( "Chiudi", (dialogInterface, i) -> {
+                        dialogInterface.cancel();
+                    }).setIcon(android.R.drawable.ic_dialog_info);
+            final AlertDialog alert = builder.create();
+            alert.show();
+            return true;
+        });
+
     }
 
 
-    public MyMapTrader(Context context) {
+    public MyMapTrader(AppCompatActivity context) {
         this.context = context;
     }
 
@@ -280,16 +284,18 @@ public class MyMapTrader extends MyMap{
             @Override
             public void onFinish() {
                 ClusterMarker item = listMarker.get(run.getUser());
-                if( item!=null)
-                    item.setSnippet( run.getSpeed()+" "+"TERMINATO");
-                mClusterManagerRenderer.setUpdateInfoWindow(item);
-                clusterManager.cluster();
-                for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
+                if(item!=null){
+                    item.setSnippet(run.getSpeed()+" TERMINATO");
+                    mClusterManagerRenderer.setUpdateInfoWindow(item);
+                    clusterManager.cluster();
+                }
+
+                /*for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
                     if(( item!=null) && m.getPosition().equals(item.getPosition())){
                         m.showInfoWindow();
                         Log.e(TAG, "Mostro l'info window sul commerciante");
                     }
-                }
+                }*/
 
             }
         }.start();
@@ -339,7 +345,7 @@ public class MyMapTrader extends MyMap{
                                                             }
                                                             Log.e(TAG, "                                                                                    aggiunto marker al cluster");
                                                             //clusterManager.addItem(new ClusterMarker(run.getGeoPoint().getLatitude(), run.getGeoPoint().getLongitude(), user.getName() + " " + user.getSurname(), image));
-                                                            addDocument(user.getName() + " " + user.getSurname(), image,dc);
+                                                            addDocument(user.getName() + " " + user.getSurname(), image, dc);
                                                         });
                                             } catch (IOException e1) {
                                                 e1.printStackTrace();
