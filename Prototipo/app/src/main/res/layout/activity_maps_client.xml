@@ -56,7 +56,8 @@
             app:layout_constraintTop_toBottomOf="@+id/mapDelimiter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/maps_client_menu">
+            app:menu="@menu/maps_client_menu"
+            android:keepScreenOn="true">
 
             <TableRow>
 

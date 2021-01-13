@@ -230,7 +230,6 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     UserClient.setTrader(null);
 
                     finishAffinity();
-
                     Intent intent = new Intent(getApplicationContext(), MapsActivityClient.class);
                     startActivity(intent);
 
