@@ -60,7 +60,7 @@
                     android:id="@+id/delete_ultimo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/elimina_l_ultimo"
+                    android:text="@string/elimina"
                     android:textAlignment="center"/>
 
                 <com.google.android.material.tabs.TabItem
