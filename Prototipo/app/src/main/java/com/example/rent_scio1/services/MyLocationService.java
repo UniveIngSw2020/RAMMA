@@ -164,8 +164,8 @@ public class MyLocationService extends Service {
                         new LatLng(topBoundary, rightBoundary)
                 );
 
-                assert getmMap() != null;
-                getmMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+                if(getmMap() != null)
+                    getmMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
             } catch (Exception e) {
                 e.printStackTrace();
             }
