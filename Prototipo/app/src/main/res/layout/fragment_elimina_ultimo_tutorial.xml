@@ -80,7 +80,7 @@
                 android:background="@color/text"
                 android:fontFamily="@font/comfortaa_regular"
                 android:gravity="center"
-                android:text="@string/nota_bene_che_se_la_zona_rimane_inclusa_fra_meno_di_3_marker_non_verr_disegnata_in_quanto_ne_occorrono_minimo_3"
+                android:text="@string/secondo_modo_per_eliminare_i_marker"
                 android:textColor="@color/back"
                 android:textSize="18sp"
                 app:autoSizeTextType="uniform"
@@ -89,6 +89,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seconda_freccia_elimina_ultimo" />
+
+            <ImageView
+                android:id="@+id/terza_freccia_elimina_ultimo"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_round_arrow_down"
+                app:layout_constraintEnd_toEndOf="@id/terzo_testo_elimina_ultimo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/terzo_testo_elimina_ultimo" />
+
+            <TextView
+                android:id="@+id/Quarto_testo_elimina_ultimo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text"
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center"
+                android:text="@string/nota_bene_che_se_la_zona_rimane_inclusa_fra_meno_di_3_marker_non_verr_disegnata_in_quanto_ne_occorrono_minimo_3"
+                android:textColor="@color/back"
+                android:textSize="18sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintVertical_bias="0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/terza_freccia_elimina_ultimo" />
 
         </LinearLayout>
     </ScrollView>
