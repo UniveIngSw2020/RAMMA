@@ -47,7 +47,7 @@ public class MyLocationService extends Service {
 
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 7f;
-    private final boolean fakeGPS = false;
+    private final boolean fakeGPS = true;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private  long lastNotificationArea;
@@ -162,8 +162,8 @@ public class MyLocationService extends Service {
                         new LatLng(topBoundary, rightBoundary)
                 );
 
-                assert getmMap() != null;
-                getmMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+                if(getmMap() != null)
+                    getmMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
             } catch (Exception e) {
                 e.printStackTrace();
             }
