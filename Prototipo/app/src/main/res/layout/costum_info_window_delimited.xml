@@ -11,18 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:orientation="vertical">
-
-        <!--<Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/button_elimina_on_marker"
-            android:text="@string/elimina_marker"
-            android:textColor="@color/back"
-            android:fontFamily="@font/comfortaa_regular"
-            android:textStyle="bold"
-            android:background="@drawable/rounded_button"/>-->
-
-    </LinearLayout>
+        android:orientation="vertical"/>
 
 </LinearLayout>

@@ -61,7 +61,7 @@
     <string name="qui_puoi_vedere_i_tuoi_mezzi_tocca_il_pulsante_nuovo_per_aggiungere_un_veicolo_al_tuo_negozio_oppure_tocca_elimina_se_vuoi_levarlo_definitivamente">Qui puoi vedere i tuoi mezzi. Tocca il pulsante Nuovo per aggiungere un veicolo al tuo negozio. Oppure tocca Elimina se vuoi levarlo definitivamente.</string>
     <string name="elimina_veicolo">ELIMINA VEICOLO</string>
     <string name="aggiungi_veicolo">AGGIUNGI VEICOLO</string>
-    <string name="elimina" />
+    <string name="elimina">Elimina</string>
     <string name="nuovo" />
     <string name="seleziona_il_tipo_di_veicolo_e_la_quantit_di_posti_a_sedere_presenti">Seleziona il tipo di veicolo e la quantità di posti a sedere presenti.</string>
     <string name="conferma">Conferma</string>
