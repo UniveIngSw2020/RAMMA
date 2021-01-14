@@ -22,13 +22,11 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
     private final IconGenerator iconGenerator;
     private final ImageView imageView;
     private final Context context;
-    private final Class c;
 
-    public MyClusterManagerRenderer(Context context, GoogleMap googleMap, ClusterManager<ClusterMarker> clusterManager, Class c) {
+    public MyClusterManagerRenderer(Context context, GoogleMap googleMap, ClusterManager<ClusterMarker> clusterManager) {
 
         super(context, googleMap, clusterManager);
         this.context = context;
-        this.c = c;
         iconGenerator = new IconGenerator(context.getApplicationContext());
         imageView = new ImageView(context.getApplicationContext());
         imageView.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
@@ -56,11 +54,7 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
     @Override
     protected boolean shouldRenderAsCluster(Cluster<ClusterMarker> cluster){
         super.shouldRenderAsCluster(cluster);
-        if(c.equals(MyMapClient.class)){
-            return MyMapClient.shouldCluster_zoom;
-        }else{
-            return MyMapTrader.shouldCluster_zoom2;
-        }
+        return MyMapClient.shouldCluster_zoom;
     }
 
     public void setUpdateMarker(ClusterMarker clusterMarker) {

@@ -72,7 +72,7 @@ public class MyMapTrader extends MyMap{
     private final Map<String,Run> mapRuns=new HashMap<>();
     private ClusterManager<ClusterMarker> clusterManager = null;
     private MyClusterManagerRenderer mClusterManagerRenderer = null;
-    public static boolean shouldCluster_zoom2;
+    public static boolean shouldCluster_zoom2 = false;
 
 
     @Override
@@ -84,14 +84,11 @@ public class MyMapTrader extends MyMap{
         //setCameraView(googleMap);
 
         clusterManager = new ClusterManager<>(context, getmMap());
-        mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
+        mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
         clusterManager.setRenderer(mClusterManagerRenderer);
 
-        getmMap().setOnCameraIdleListener(() -> {
-            shouldCluster_zoom2 = getmMap().getCameraPosition().zoom < 10;
-            Log.e(TAG, "ZOOM: " + getmMap().getCameraPosition().zoom);
-            clusterManager.onCameraIdle();
-        });
+
+        getmMap().setOnCameraIdleListener(clusterManager);
 
         delimitedArea();
         try {

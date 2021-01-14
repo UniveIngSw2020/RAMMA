@@ -132,7 +132,7 @@ public class MyMapClient extends MyMap {
 
         clusterManager = new ClusterManager<>(context, getmMap());
         if(mClusterManagerRenderer == null){
-            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
+            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
             clusterManager.setRenderer(mClusterManagerRenderer);
         }
 
@@ -152,7 +152,7 @@ public class MyMapClient extends MyMap {
         getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
         //getmMap().setOnCameraIdleListener(clusterManager);
 
-        clusterManager.setOnClusterClickListener(cluster -> {
+        /*clusterManager.setOnClusterClickListener(cluster -> {
             //Log.e(TAG, "sono qui");
             StringBuilder comm = new StringBuilder();
             for(ClusterMarker c : cluster.getItems()){
@@ -169,7 +169,7 @@ public class MyMapClient extends MyMap {
             alert.show();
 
             return true;
-        });
+        });*/
 
 
         clusterManager.setOnClusterItemClickListener(item -> {
