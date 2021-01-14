@@ -198,11 +198,23 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         mMap.setOnInfoWindowClickListener(marker -> {
 
             if(marker.getTitle()==null) {
+
                 markers.remove(marker);
                 markersStack.remove(marker);
                 marker.remove();
+
                 lastClickedMarker.set(null);
+
                 costruisci();
+                if(markers.size()<3 && polygon!=null){
+                    polygon.remove();
+                    polygon=null;
+                }
+
+                if(markers.size()==0){
+                    map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(true);
+                }
+
             }
         });
 
