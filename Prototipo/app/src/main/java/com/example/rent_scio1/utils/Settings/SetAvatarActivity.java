@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,9 +40,14 @@ import java.util.Objects;
 public class SetAvatarActivity extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
+
     Bitmap bitmapImage;
+
     ImageView imageView;
+
     boolean isDefault=true;
+
+    boolean changed=false;
 
     private Bitmap getBitmap(int drawableRes) {
         Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
@@ -90,10 +97,7 @@ public class SetAvatarActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
         StorageReference avatarRef = storageRef.child("users/"+UserClient.getUser().getUser_id()+"/avatar.jpg");
 
-        avatarRef.delete()
-                .addOnSuccessListener(aVoid -> Toast.makeText(getApplicationContext(),"avatar personalizzato eliminato",Toast.LENGTH_LONG).show())
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"Utilizzi già l'avatar di default",Toast.LENGTH_LONG).show());
-
+        avatarRef.delete();
     }
 
     @Override
@@ -113,6 +117,14 @@ public class SetAvatarActivity extends AppCompatActivity {
 
         initViews();
 
+        Intent intent;
+        if(UserClient.getUser().getTrader()){
+            intent = new Intent(getApplicationContext(), MapsActivityTrader.class);
+        }
+        else{
+            intent = new Intent(getApplicationContext(), MapsActivityClient.class);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         /*elimina avatar*/
         Button delete_avatar = findViewById(R.id.elimina_avatar);
@@ -125,8 +137,11 @@ public class SetAvatarActivity extends AppCompatActivity {
                 imageView.setImageBitmap(getBitmap(R.drawable.ic_logo_vettorizzato));
             }
 
+            if(!isDefault){
+                changed=true;
+            }
+
             bitmapImage=null;
-            deletePrev();
             isDefault=true;
 
         });
@@ -134,15 +149,6 @@ public class SetAvatarActivity extends AppCompatActivity {
 
         //setto il comportamento del bottone conferma
         Button buttonConfirm =  findViewById(R.id.confirm_changes_picture);
-
-        Intent intent;
-        if(UserClient.getUser().getTrader()){
-            intent = new Intent(getApplicationContext(), MapsActivityTrader.class);
-        }
-        else{
-            intent = new Intent(getApplicationContext(), MapsActivityClient.class);
-        }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         buttonConfirm.setOnClickListener(v -> {
 
@@ -154,10 +160,10 @@ public class SetAvatarActivity extends AppCompatActivity {
                     startActivity(intent);
 
                 });
-
             }
             else {
-                Toast.makeText(getApplicationContext(),"avatar personalizzato ripristinato",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"avatar di default ripristinato",Toast.LENGTH_LONG).show();
+                deletePrev();
                 startActivity(intent);
             }
         });
@@ -185,9 +191,11 @@ public class SetAvatarActivity extends AppCompatActivity {
             photoPickerIntent.setType("image/*");
             photoPickerIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityForResult(photoPickerIntent, RESULT_LOAD_IMAGE);
-            return true;
-        } else
-            return super.onOptionsItemSelected(item);
+
+        } else if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return true;
     }
 
     @Override
@@ -205,6 +213,7 @@ public class SetAvatarActivity extends AppCompatActivity {
                 imageView.setImageBitmap(bitmapImage);
 
                 isDefault=false;
+                changed=true;
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -237,6 +246,27 @@ public class SetAvatarActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
 
+        if(changed) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("ATTENZIONE:");
+            builder.setMessage("Sei sicuro di voler uscire dalla schermata senza confermare i cambiamenti?\n");
+
+            builder.setPositiveButton("Sì", (dialog, id) ->{
+                dialog.dismiss();
+                finish();
+            });
+            builder.setNegativeButton("No", (dialog, id) ->{
+                dialog.dismiss();
+            });
+            builder.create().show();
+        }
+        else{
+            finish();
+        }
+    }
 
 }

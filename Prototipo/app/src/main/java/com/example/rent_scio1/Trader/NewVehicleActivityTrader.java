@@ -1,14 +1,18 @@
 package com.example.rent_scio1.Trader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -112,6 +116,41 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
         });
 
         initViews();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //creo oggetti testo per poi estrapolare il contenuto
+        EditText vehicle_type = findViewById(R.id.tipo_veicolo);
+        EditText seats = findViewById(R.id.posti_a_sedere);
+        EditText maxSpeed=findViewById(R.id.maxSpeed);
+
+        if(vehicle_type.getText().toString().length()!=0 || seats.getText().toString().length()!=0 || maxSpeed.getText().toString().length()!=0) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("ATTENZIONE:");
+            builder.setMessage("Sei sicuro di voler uscire dalla schermata senza confermare i cambiamenti?\n");
+
+            builder.setPositiveButton("Sì", (dialog, id) ->{
+                dialog.dismiss();
+                finish();
+            });
+            builder.setNegativeButton("No", (dialog, id) ->{
+                dialog.dismiss();
+            });
+            builder.create().show();
+        }
+        else{
+            finish();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return true;
     }
 
     //metodo richiamato nell'XML

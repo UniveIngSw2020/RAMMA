@@ -180,11 +180,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
 
                 break;
             case android.R.id.home:
-
-                Intent intent=new Intent(this,SettingsTrader.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                startActivity(intent);
+                onBackPressed();
                 break;
             default:
                 super.onOptionsItemSelected(item);
@@ -192,6 +188,35 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
         }
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if(toolbar_map.getMenu().findItem(R.id.confirm_position).isVisible()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("ATTENZIONE:");
+            builder.setMessage("Sei sicuro di voler uscire dalla schermata senza confermare i cambiamenti?\n");
+
+            builder.setPositiveButton("Sì", (dialog, id) -> {
+                dialog.dismiss();
+
+                Intent intent = new Intent(this, SettingsTrader.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                startActivity(intent);
+            });
+            builder.setNegativeButton("No", (dialog, id) -> {
+                dialog.dismiss();
+            });
+            builder.create().show();
+        }
+        else{
+            Intent intent = new Intent(this, SettingsTrader.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            startActivity(intent);
+        }
     }
 
     /**

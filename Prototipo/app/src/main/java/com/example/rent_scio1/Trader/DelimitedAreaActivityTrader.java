@@ -1,6 +1,7 @@
 package com.example.rent_scio1.Trader;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -92,6 +93,29 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
     }
 
     @Override
+    public void onBackPressed() {
+
+        if(map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).isVisible()) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("ATTENZIONE:");
+            builder.setMessage("Sei sicuro di voler uscire dalla schermata senza confermare i cambiamenti?\n");
+
+            builder.setPositiveButton("Sì", (dialog, id) ->{
+                dialog.dismiss();
+                finish();
+            });
+            builder.setNegativeButton("No", (dialog, id) ->{
+                dialog.dismiss();
+            });
+            builder.create().show();
+        }
+        else{
+            finish();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.confirm_changes_limited_area, menu);
         map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).setVisible(false);
@@ -118,7 +142,28 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 break;
 
             case R.id.how_to:
-                startActivity(new Intent(getApplicationContext(), InfoTutorialDelimitedAreaTrader.class));
+
+                if(map_trader_delim.getMenu().findItem(R.id.confirm_changes_limited).isVisible()) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("ATTENZIONE:");
+                    builder.setMessage("Sei sicuro di voler uscire dalla schermata senza confermare i cambiamenti?\n");
+
+                    builder.setPositiveButton("Sì", (dialog, id) -> {
+                        dialog.dismiss();
+                        startActivity(new Intent(getApplicationContext(), InfoTutorialDelimitedAreaTrader.class));
+                    });
+                    builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
+                    builder.create().show();
+                }
+                else{
+                    startActivity(new Intent(getApplicationContext(), InfoTutorialDelimitedAreaTrader.class));
+                }
+
+                break;
+
+            case android.R.id.home:
+                onBackPressed();
                 break;
             default:
                 return super.onOptionsItemSelected(item);

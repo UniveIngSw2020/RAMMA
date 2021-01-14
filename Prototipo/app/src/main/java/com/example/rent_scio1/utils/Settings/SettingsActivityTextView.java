@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -243,9 +244,26 @@ public class SettingsActivityTextView extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("ATTENZIONE:");
+        builder.setMessage("Sei sicuro di voler uscire dalla schermata senza confermare i cambiamenti?\n");
+
+        builder.setPositiveButton("Sì", (dialog, id) ->{
+            dialog.dismiss();
+            startActivity(intent);
+        });
+        builder.setNegativeButton("No", (dialog, id) ->{
+            dialog.dismiss();
+        });
+        builder.create().show();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            startActivity(intent);
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
