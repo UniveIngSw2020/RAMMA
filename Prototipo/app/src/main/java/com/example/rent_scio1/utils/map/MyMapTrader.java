@@ -119,7 +119,7 @@ public class MyMapTrader extends MyMap{
 
 
 
-        clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
+        /*clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
             if(item.getRunId() != null){
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -147,7 +147,7 @@ public class MyMapTrader extends MyMap{
             }
         });
 
-        getmMap().setOnInfoWindowClickListener(clusterManager);
+        getmMap().setOnInfoWindowClickListener(clusterManager);*/
 
 
         clusterManager.setOnClusterClickListener(cluster -> {
