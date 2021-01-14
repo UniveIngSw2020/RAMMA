@@ -201,10 +201,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             builder.setPositiveButton("Sì", (dialog, id) -> {
                 dialog.dismiss();
 
-                Intent intent = new Intent(this, SettingsTrader.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                startActivity(intent);
+                finish();
             });
             builder.setNegativeButton("No", (dialog, id) -> {
                 dialog.dismiss();
@@ -212,10 +209,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             builder.create().show();
         }
         else{
-            Intent intent = new Intent(this, SettingsTrader.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            startActivity(intent);
+            finish();
         }
     }
 
@@ -244,7 +238,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
         }
 
         mMap.setOnMapClickListener(latLng -> {
-            mMap.clear();
+            shop.remove();
             shop=mMap.addMarker(new MarkerOptions().position(latLng));
             shop.setDraggable(true);
             toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
@@ -341,6 +335,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
             PolygonOptions polygonOptions=new PolygonOptions().addAll(latLngs).clickable(true);
             Polygon polygon=mMap.addPolygon(polygonOptions);
             polygon.setStrokeColor(Color.BLACK);
+            polygon.setClickable(false);
         }
     }
 }

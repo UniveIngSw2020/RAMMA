@@ -18,7 +18,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(UserClient.getUser()!=null){
+        /*if(UserClient.getUser()!=null){
 
             if(UserClient.getUser().getTrader()){
                 startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
@@ -29,7 +29,7 @@ public class StartActivity extends AppCompatActivity {
 
             finishAffinity();
         }
-        else{
+        else{*/
 
             setContentView(R.layout.activity_start);
 
@@ -43,7 +43,7 @@ public class StartActivity extends AppCompatActivity {
                 Log.d(TAG, "Tasto premutoooooooooooooo oooooooooooooooo ooooooooooooooo ooooooooooooo ");
                 startActivity(new Intent(StartActivity.this, RegisterActivity.class));
             });
-        }
+        //}
 
     }
 
