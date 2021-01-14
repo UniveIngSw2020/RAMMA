@@ -197,12 +197,15 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
         //setto i listener al click della info window
         mMap.setOnInfoWindowClickListener(marker -> {
 
-            markers.remove(marker);
-            markersStack.remove(marker);
-            marker.remove();
-            lastClickedMarker.set(null);
-            costruisci();
+            if(marker.getTitle()==null) {
+                markers.remove(marker);
+                markersStack.remove(marker);
+                marker.remove();
+                lastClickedMarker.set(null);
+                costruisci();
+            }
         });
+
         mMap.setOnInfoWindowLongClickListener(marker -> {
 
             markers.remove(marker);
