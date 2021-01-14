@@ -17,13 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.example.rent_scio1.utils.Vehicle;
+
+import com.example.rent_scio1.utils.map.MyMap;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -31,11 +33,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.maps.android.PolyUtil;
 
-import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Objects;
 
 import static com.example.rent_scio1.utils.map.MyMap.getmMap;
+
 
 public class MyLocationService extends Service {
 
@@ -44,7 +46,7 @@ public class MyLocationService extends Service {
     private LocationManager mLocationManager = null;
 
     private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static final float LOCATION_DISTANCE = 7f;
     private final boolean fakeGPS = false;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -78,7 +80,15 @@ public class MyLocationService extends Service {
             mLastLocation.set(location);
             mLastTime = curTime;
             updateUserLocation(location, speed);
-            //setCameraView(location);
+            try{
+
+                if(MyMap.followMe) {
+                    Log.d(TAG, "seguo l'utente");
+                    setCameraView(location);
+                }
+            }catch (NullPointerException e){
+                Log.e(TAG, "camera view non pronta");
+            }
             Log.e(TAG,"TIME: "+ (Calendar.getInstance().getTime().getTime() - lastNotificationArea));
 
             if(Calendar.getInstance().getTime().getTime() - lastNotificationArea > 60000){
@@ -104,12 +114,7 @@ public class MyLocationService extends Service {
 
         /**
          * Calcola la distanza tra due punti
-         * into account height difference. If you are not interested in height
-         * difference pass 0.0. Uses Haversine method as its base.
-         *
-         * lat1, lon1 Start point lat2, lon2 End point el1 Start altitude in meters
-         * el2 End altitude in meters
-         * @returns Distance in Meters
+         * se non si vuole considerare l'altitudine passare 0.0
          */
         private double distance(Location location, Location lastLocation) {
 
@@ -145,7 +150,7 @@ public class MyLocationService extends Service {
         public void onProviderDisabled(@NonNull String provider) { }
 
 
-        /*private void setCameraView(Location location) {
+        private void setCameraView(Location location) {
             try {
                 double bottomBundary = location.getLatitude() - .01;
                 double leftBoundary = location.getLongitude() - .01;
@@ -157,10 +162,12 @@ public class MyLocationService extends Service {
                         new LatLng(topBoundary, rightBoundary)
                 );
 
-                getmMap().moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+                assert getmMap() != null;
+                getmMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
             } catch (Exception e) {
+                e.printStackTrace();
             }
-        }*/
+        }
 
 
         private void updateUserLocation(Location location, int speed){

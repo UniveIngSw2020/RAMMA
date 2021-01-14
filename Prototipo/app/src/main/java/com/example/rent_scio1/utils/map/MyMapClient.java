@@ -240,6 +240,7 @@ public class MyMapClient extends MyMap {
                     trader.getSecond().getSecond().setFillColor(android.R.color.transparent);
                 }
             }
+
         });
 
         clusterManager.setOnClusterItemInfoWindowClickListener(
@@ -264,6 +265,25 @@ public class MyMapClient extends MyMap {
 
         getmMap().setOnInfoWindowClickListener(clusterManager);
 
+
+        getmMap().setOnMyLocationButtonClickListener(() -> {
+            Log.d("MyMap", "tasto premuto");
+            followMe = true;
+            location();
+            return true;
+        });
+        getmMap().setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            float previousZoomLevel = -1f;
+
+            @Override
+            public void onCameraMove() {
+                if(previousZoomLevel - getmMap().getCameraPosition().zoom > 0.01 || previousZoomLevel - getmMap().getCameraPosition().zoom < -0.01) {
+                    MyMap.followMe = false;
+                }
+
+                previousZoomLevel = getmMap().getCameraPosition().zoom;
+            }
+        });
     }
 
 
@@ -379,8 +399,10 @@ public class MyMapClient extends MyMap {
                     new LatLng(topBoundary, rightBoundary)
             );
 
-            getmMap().moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+            assert getmMap() != null;
+            getmMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
