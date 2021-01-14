@@ -47,7 +47,7 @@ public class MyLocationService extends Service {
 
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 7f;
-    private final boolean fakeGPS = true;
+
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private  long lastNotificationArea;
@@ -71,6 +71,8 @@ public class MyLocationService extends Service {
             double s = distance(location, mLastLocation);
 
             int speed;
+
+            boolean fakeGPS = false;
             if(fakeGPS){
                 speed = (int)((s/(curTime-mLastTime)) *3.6);
             }else{
