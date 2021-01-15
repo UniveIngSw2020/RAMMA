@@ -204,6 +204,7 @@
                 android:layout_weight="1.0"
                 android:backgroundTint="@color/text"
                 android:ems="10"
+                android:autofillHints=""
                 android:fontFamily="@font/comfortaa_regular"
                 android:hint="@string/nome_del_negozio"
                 android:inputType="textPersonName"

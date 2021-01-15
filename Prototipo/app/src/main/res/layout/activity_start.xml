@@ -46,7 +46,6 @@
         android:background="@drawable/rounded_button"
         android:fontFamily="@font/comfortaa_regular"
         android:gravity="center"
-        android:onClick="@string/accedi"
         android:text="@string/accedi_start"
         android:textColor="@color/back"
         android:textSize="24sp"
