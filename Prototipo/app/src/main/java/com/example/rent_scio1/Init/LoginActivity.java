@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             db.collection("run").whereEqualTo("user", user1.getUser_id()).get()
                                     .addOnSuccessListener(queryDocumentSnapshots -> {
                                         for (DocumentSnapshot d : queryDocumentSnapshots.getDocuments()) {
-                                            Log.e(TAG, "C'è UNA CORSA SOLA SPERO");
+                                            Log.e(TAG, "C'è UNA CORSA SOLA");
                                             UserClient.setRun(d.toObject(Run.class)); // TODO PRENDERE LA CORSA SE C'E
                                             startLocationService(true);
                                         }
@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         finishAffinity();
                                     });
                         }else{
-                            Log.e(TAG, "L'account è stato eliminato per qualche ragione");      //SUPPONGO CHE SIA COSì :)
+                            Log.e(TAG, "L'account è stato eliminato per qualche ragione");
                         }
                     }
                 });
@@ -182,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean isLocationServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            //TODO VEDERE SE SI PUO' METTERE IL PATH IN AUTOMATICO
+
             if ("com.example.rent_scio1.services.MyLocationService".equals(service.service.getClassName())) {
                 Log.d(TAG, "isLocationServiceRunning: location service is already running.");
                 return true;
@@ -194,7 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void startLocationService(Boolean rawValue) {
         if (!isLocationServiceRunning()) {
-            Log.e(TAG, "RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+            Log.e(TAG, "RUN");
             Intent serviceIntent = new Intent(this, MyLocationService.class);
 
             serviceIntent.putExtra(TAG, rawValue);
@@ -224,7 +224,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signIn(){
-        //check if the fields are filled out
+        //controlla che i campi non siano vuoti
         if(!isEmpty(mEmail.getText().toString().trim())
                 && !isEmpty(mPassword.getText().toString().trim())){
             Log.d(TAG, "onClick: attempting to authenticate.");
