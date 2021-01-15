@@ -167,6 +167,7 @@ public class MyMapTrader extends MyMap{
         return bitmap;
     }
 
+    //metodo per l'aggiornamenot effettiva del cluster
     private void addDocument(String title, Bitmap image, DocumentChange dc){
         Run run=dc.getDocument().toObject(Run.class);
         ClusterMarker item;
@@ -181,6 +182,8 @@ public class MyMapTrader extends MyMap{
 
         listMarker.put(dc.getDocument().toObject(Run.class).getUser(),item);
 
+
+        //CountDownTimer per l'aggiornamenot del timer dell'infowindow
         new CountDownTimer(time,1000){
             @Override
             public void onTick(long millisUntilFinished) {
@@ -323,6 +326,7 @@ public class MyMapTrader extends MyMap{
 
     }
 
+    //metodo per la modifica del marker
     private void modifyMarker(Run run){
         if(run.getGeoPoint() != null){
             ClusterMarker costumer=listMarker.get(run.getUser());
@@ -338,6 +342,7 @@ public class MyMapTrader extends MyMap{
         }
     }
 
+    //metodo per la modifica cluster
     private void clearMarker(Run run){
         ClusterMarker item = listMarker.get(run.getUser());
         for (Marker m : clusterManager.getMarkerCollection().getMarkers()){
