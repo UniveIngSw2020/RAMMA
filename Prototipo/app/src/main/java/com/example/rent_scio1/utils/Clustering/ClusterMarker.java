@@ -1,6 +1,8 @@
 package com.example.rent_scio1.utils.Clustering;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+
 import androidx.annotation.Nullable;
 
 import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
@@ -15,13 +17,15 @@ public class ClusterMarker implements ClusterItem {
     private Bitmap image;
     private String snippet;
     private String runId;
+    private Integer color;
 
-    public ClusterMarker(double lat, double lng, String title, Bitmap image, String runId) {
+    public ClusterMarker(double lat, double lng, String title, Bitmap image, String runId, Integer color) {
         this.image = image;
         position = new LatLng(lat, lng);
         this.title = title;
         this.snippet = "";
         this.runId = runId;
+        this.color = color;
     }
 
     @NotNull
@@ -67,5 +71,13 @@ public class ClusterMarker implements ClusterItem {
 
     public void setRunId(String runId) {
         this.runId = runId;
+    }
+
+    public Integer getColor() {
+        return color;
+    }
+
+    public void setColor(Integer color) {
+        this.color = color;
     }
 }

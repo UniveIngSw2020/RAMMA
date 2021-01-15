@@ -22,11 +22,13 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
     private final IconGenerator iconGenerator;
     private final ImageView imageView;
     private final Context context;
+    private final Class c;
 
-    public MyClusterManagerRenderer(Context context, GoogleMap googleMap, ClusterManager<ClusterMarker> clusterManager) {
+    public MyClusterManagerRenderer(Context context, GoogleMap googleMap, ClusterManager<ClusterMarker> clusterManager, Class c) {
 
         super(context, googleMap, clusterManager);
         this.context = context;
+        this.c = c;
         iconGenerator = new IconGenerator(context.getApplicationContext());
         imageView = new ImageView(context.getApplicationContext());
         imageView.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
@@ -48,13 +50,19 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
     @Override
     protected void onBeforeClusterItemRendered(ClusterMarker item, MarkerOptions markerOptions) {
         imageView.setImageBitmap(item.getImage());
+        if(item.getColor() != null)
+            imageView.setBackgroundColor(item.getColor());
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon())).title(item.getTitle());
     }
 
     @Override
     protected boolean shouldRenderAsCluster(Cluster<ClusterMarker> cluster){
-        super.shouldRenderAsCluster(cluster);
-        return MyMapClient.shouldCluster_zoom;
+        if(c.equals(MyMapTrader.class)){
+            return false;
+        }else{
+            super.shouldRenderAsCluster(cluster);
+            return MyMapClient.shouldCluster_zoom;
+        }
     }
 
     public void setUpdateMarker(ClusterMarker clusterMarker) {

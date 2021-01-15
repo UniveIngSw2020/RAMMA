@@ -84,7 +84,7 @@ public class MyMapTrader extends MyMap{
         //setCameraView(googleMap);
 
         clusterManager = new ClusterManager<>(context, getmMap());
-        mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
+        mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
         clusterManager.setRenderer(mClusterManagerRenderer);
 
 
@@ -119,7 +119,7 @@ public class MyMapTrader extends MyMap{
 
 
 
-        /*clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
+        clusterManager.setOnClusterItemInfoWindowClickListener(item -> {
             if(item.getRunId() != null){
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -147,10 +147,10 @@ public class MyMapTrader extends MyMap{
             }
         });
 
-        getmMap().setOnInfoWindowClickListener(clusterManager);*/
+        getmMap().setOnInfoWindowClickListener(clusterManager);
 
 
-        clusterManager.setOnClusterClickListener(cluster -> {
+        /*clusterManager.setOnClusterClickListener(cluster -> {
             StringBuilder comm = new StringBuilder();
             String title = "Clienti presentii";
             Log.e(TAG, "CLICK CLUSTER IDENTIFICAYTO");
@@ -161,13 +161,6 @@ public class MyMapTrader extends MyMap{
                     title = "Clienti presenti oltre al tuo Negozio";
                 }
             }
-            /*new AlertDialog.Builder(context)
-                    .setTitle(title)
-                    .setMessage(comm)
-                    .setCancelable(true)
-                    .setNegativeButton("Chiudi", (dialogInterface, i) -> dialogInterface.cancel())
-                    .setIcon(android.R.drawable.ic_dialog_info)
-                    .show();*/
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(title).setMessage(comm).setCancelable(true)
                     .setNegativeButton( "Chiudi", (dialogInterface, i) -> {
@@ -176,7 +169,7 @@ public class MyMapTrader extends MyMap{
             final AlertDialog alert = builder.create();
             alert.show();
             return true;
-        });
+        });*/
 
     }
 
@@ -206,9 +199,9 @@ public class MyMapTrader extends MyMap{
         Run run=dc.getDocument().toObject(Run.class);
         ClusterMarker item;
         if(run.getGeoPoint()!=null){
-            item = new ClusterMarker(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude(), title, image, run.getRunUID());
+            item = new ClusterMarker(run.getGeoPoint().getLatitude(),run.getGeoPoint().getLongitude(), title, image, run.getRunUID(), null);
         }else{
-            item = new ClusterMarker(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude(), title, image, run.getRunUID());
+            item = new ClusterMarker(UserClient.getUser().getTraderPosition().getLatitude(),UserClient.getUser().getTraderPosition().getLongitude(), title, image, run.getRunUID(), null);
         }
         clusterManager.addItem(item);
         clusterManager.cluster();
@@ -446,13 +439,13 @@ public class MyMapTrader extends MyMap{
                             clusterManager.addItem(new ClusterMarker(mTrader.getTraderPosition().getLatitude(),
                                     mTrader.getTraderPosition().getLongitude(),
                                     UserClient.getUser().getShopName(),
-                                    resizeMapIcons(localFile.getPath(), 150, 150), null));
+                                    resizeMapIcons(localFile.getPath(), 150, 150), null, null));
                         }else{
                             Log.e(TAG, "NON caricata");
                             clusterManager.addItem(new ClusterMarker(mTrader.getTraderPosition().getLatitude(),
                                     mTrader.getTraderPosition().getLongitude(),
                                     "Il mio negozio",
-                                    Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),150, 150, false), null));
+                                    Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato),150, 150, false), null, null));
                         }
                         clusterManager.cluster();
                     });

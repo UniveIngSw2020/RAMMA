@@ -132,7 +132,7 @@ public class MyMapClient extends MyMap {
 
         clusterManager = new ClusterManager<>(context, getmMap());
         if(mClusterManagerRenderer == null){
-            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager);
+            mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
             clusterManager.setRenderer(mClusterManagerRenderer);
         }
 
@@ -337,7 +337,7 @@ public class MyMapClient extends MyMap {
                                             image = Bitmap.createScaledBitmap(getBitmap(R.drawable.negozio_vettorizzato), 100, 100, false);
                                         }
                                         Log.e(TAG, "                                                                                    aggiunto marker al cluster");
-                                        clusterManager.addItem(new ClusterMarker(pos.getLatitude(), pos.getLongitude(), title, image, null));
+                                        clusterManager.addItem(new ClusterMarker(pos.getLatitude(), pos.getLongitude(), title, image, null, Color.HSVToColor(new float[]{trader.getSecond().getFirst(), 1.0f, 1.0f})));
                                     });
                         } catch (IOException e) {
                             e.printStackTrace();
