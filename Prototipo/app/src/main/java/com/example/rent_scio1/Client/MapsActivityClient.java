@@ -91,7 +91,7 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
         setContentView(R.layout.activity_maps_client);
 
         mAuth = FirebaseAuth.getInstance();
-        Log.d(TAG, "CLIENTEEEEEEEEEOOOOOOOOOOOOOOOOOO ");
+        Log.d(TAG, "CLIENTE ");
         createTable();
         getListTrader();
     }
