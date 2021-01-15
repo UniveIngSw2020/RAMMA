@@ -77,8 +77,6 @@ public class MyMapTrader extends MyMap{
 
         getUserDetails(googleMap);
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        //setCameraView(googleMap);
-
         clusterManager = new ClusterManager<>(context, getmMap());
         mClusterManagerRenderer = new MyClusterManagerRenderer(context, getmMap(), clusterManager, this.getClass());
         clusterManager.setRenderer(mClusterManagerRenderer);

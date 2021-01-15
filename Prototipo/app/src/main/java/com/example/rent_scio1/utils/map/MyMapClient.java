@@ -97,12 +97,12 @@ public class MyMapClient extends MyMap {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        //enableMyLocation();
+
         Log.e(TAG, "MAPPA PRONTA");
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        //passo una lambda nulla
+
         MyPermission permission = new MyPermission(context, context, location -> { });
 
         boolean bol = permission.checkMapServices(
@@ -130,6 +130,7 @@ public class MyMapClient extends MyMap {
             clusterManager.setRenderer(mClusterManagerRenderer);
         }
 
+        //controllo per la generazione del cluster
         if(listTrader.size() > 1){
             getmMap().setOnCameraIdleListener(() -> {
                 shouldCluster_zoom = getmMap().getCameraPosition().zoom < 12;
@@ -146,7 +147,6 @@ public class MyMapClient extends MyMap {
         getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
 
         clusterManager.setOnClusterClickListener(cluster -> {
-            //Log.e(TAG, "sono qui");
             StringBuilder comm = new StringBuilder();
             for(ClusterMarker c : cluster.getItems()){
                 comm.append(c.getTitle()).append("\n");
@@ -308,7 +308,7 @@ public class MyMapClient extends MyMap {
     }
 
 
-
+    //metodo per la crazione dei cluster commercianti con le relative aree delimitate
     private void setMarkerDelimitedTrader(){
         if(clusterManager.getMarkerCollection().getMarkers().size() == 0) {
             for (Pair<User, Pair<Float, Polygon>> trader : listTrader) {
