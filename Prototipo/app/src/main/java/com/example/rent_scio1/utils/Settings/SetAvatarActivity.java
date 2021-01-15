@@ -16,15 +16,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.rent_scio1.Client.MapsActivityClient;
-import com.example.rent_scio1.Client.SettingsCustomer;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
-import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,6 +33,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
+
+// Activity di impostazioni avatar negozio (commerciante) e avatar cliente (cliente), qua visualizziamo l'avatar corrente e impostiamo il funzionamento dei tasti "utilizza avatar di default",
+// conferma, e "+". Quest'ultimo consente il caricamento di un avatar personalizzato.
 
 public class SetAvatarActivity extends AppCompatActivity {
 

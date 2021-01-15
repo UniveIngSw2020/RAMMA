@@ -2,48 +2,30 @@ package com.example.rent_scio1.Init;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.rent_scio1.Client.MapsActivityClient;
-import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.R;
-import com.example.rent_scio1.utils.UserClient;
+
+//schermata inziale dell'app, settiamo il comportamento dei due bottoni, oltre a visualizzare il testo di benvenuto.
 
 public class StartActivity extends AppCompatActivity {
-
-    private static final String TAG = "StartActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*if(UserClient.getUser()!=null){
+        setContentView(R.layout.activity_start);
 
-            if(UserClient.getUser().getTrader()){
-                startActivity(new Intent(getApplicationContext(), MapsActivityTrader.class));
-            }
-            else{
-                startActivity(new Intent(getApplicationContext(), MapsActivityClient.class));
-            }
+        Button login_btn = findViewById(R.id.login_btn);
 
-            finishAffinity();
-        }
-        else{*/
+        login_btn.setOnClickListener(v -> startActivity(new Intent(StartActivity.this, LoginActivity.class)));
 
-            setContentView(R.layout.activity_start);
+        Button register_btn = findViewById(R.id.register_btn);
 
-            Button login_btn = findViewById(R.id.login_btn);
+        register_btn.setOnClickListener(v -> {
+            startActivity(new Intent(StartActivity.this, RegisterActivity.class));
+        });
 
-            login_btn.setOnClickListener(v -> startActivity(new Intent(StartActivity.this, LoginActivity.class)));
-
-            Button register_btn = findViewById(R.id.register_btn);
-
-            register_btn.setOnClickListener(v -> {
-                Log.d(TAG, "Tasto premutoooooooooooooo oooooooooooooooo ooooooooooooooo ooooooooooooo ");
-                startActivity(new Intent(StartActivity.this, RegisterActivity.class));
-            });
-        //}
 
     }
 

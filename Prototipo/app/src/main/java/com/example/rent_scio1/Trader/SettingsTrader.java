@@ -9,14 +9,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.utils.Settings.SetAvatarActivity;
@@ -27,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+//activity per le impostazioni commerciante: qua settiamo il funzionamento dei bottoni presenti su impostazioni.
 
 public class SettingsTrader extends AppCompatActivity {
 

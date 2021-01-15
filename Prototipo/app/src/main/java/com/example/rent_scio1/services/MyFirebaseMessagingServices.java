@@ -22,7 +22,6 @@ import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.Trader.MapsActivityTrader;
-import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.RequestQueueSingleton;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,10 +33,11 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+//classe di servizi di notifica: qua gestiamo l'invio di notifiche di posizione non consentita e/o velocità non consentita.
 
 public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     private final String TAG = "MyFirebaseMessagingServices";
@@ -52,17 +52,18 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
                         return;
                     }
 
-                    // Get new FCM registration token
                     String token = task.getResult();
                     sendRegistrationToServer(token);
-                    // Log and toast
+
                     Log.d(TAG, "TOKEN: "+token);
                 });
     }
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        Log.e(TAG, "caspiterina è arrivato un messaggio");
+
+        Log.e(TAG, "E' arrivato un messaggio");
+
         Intent intent;
         if(UserClient.getUser() == null)
             intent = new Intent(this, StartActivity.class);
@@ -74,10 +75,7 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
-      /*
-        Apps targeting SDK 26 or above (Android O) must implement notification channels and add its notifications
-        to at least one of them. Therefore, confirm if version is Oreo or higher, then setup notification channel
-      */
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             setupChannels(notificationManager);
         }
@@ -156,7 +154,7 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
             notificationBody.put("message", msg);
             notification.put("to", destinationTopic);
             notification.put("data", notificationBody);
-            //notification.put("mittente", UserClient.getUser().getUser_id()+"/"+title);
+
         }catch (JSONException e){
             Log.e("sendNotification", "onCreate: " + e.getMessage() );
         }

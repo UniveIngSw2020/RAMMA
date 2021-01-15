@@ -1,8 +1,6 @@
 package com.example.rent_scio1.Trader;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -18,7 +16,7 @@ import com.example.rent_scio1.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-
+//classe rappresentante l'info window dei marker che delimitano l'area limitata del commerciante, oltre che il negozio: a runtime decidiamo se visualizzare il bottone elimina o il nome del negozio.
 
 public class CustomInfoWindowAdapterDelimited implements GoogleMap.InfoWindowAdapter {
 

@@ -1,5 +1,8 @@
 package com.example.rent_scio1.utils;
 
+
+// classe di utilità per rappresentare una coppia di generics.
+
 public class Pair<A, B> {
     private A first;
     private B second;

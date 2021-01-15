@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+// Activity di nuova corsa per il commerciante: qua controlliamo che le impostazioni di corsa siamo corrette e richiamiamo QRGeneratorTrader.
+
 public class NewRunActivityTrader extends AppCompatActivity {
 
     private static final String TAG="NuovaCorsaActivityTrader";

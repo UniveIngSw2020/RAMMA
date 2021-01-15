@@ -6,6 +6,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 
 import javax.annotation.Nullable;
 
+// Classe di utilità utilizzata in MyMapClient e MyMapTrader
+
 public class MyMap implements OnMapReadyCallback{
 
     private static GoogleMap mMap = null;
@@ -23,7 +25,5 @@ public class MyMap implements OnMapReadyCallback{
     public static GoogleMap getmMap() {
         return mMap;
     }
-
-
 
 }

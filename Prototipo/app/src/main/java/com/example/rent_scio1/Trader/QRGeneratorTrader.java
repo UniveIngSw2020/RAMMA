@@ -12,22 +12,24 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.rent_scio1.Client.MapsActivityClient;
+
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.MyFirebaseMessagingServices;
-import com.example.rent_scio1.services.MyLocationService;
+
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
-import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.WriterException;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
+// Activity di generazione di QR tramite parametri inseriti nell'activity NewRunActivityTrader o quando eliminiamo una corsa.
+// Nel secondo caso settiamo il funzionamento del tasto "Forza eliminazione".
 
 public class QRGeneratorTrader extends AppCompatActivity {
 

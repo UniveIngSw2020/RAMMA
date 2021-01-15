@@ -39,7 +39,6 @@ import com.example.rent_scio1.utils.Pair;
 import com.example.rent_scio1.utils.Run;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
-import com.example.rent_scio1.utils.Vehicle;
 import com.example.rent_scio1.utils.map.MyMapClient;
 import com.example.rent_scio1.utils.permissions.MyPermission;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -56,6 +55,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
+
+
+// Schermata principale della modalità cliente, qua:
+// impostiamo il funzionamento del menu laterale;
+// controlliamo i permessi di posizione e fotocamera;
+// costruiamo la visualizzazzione della tabella contenente la velocità e il tempo rimanente della corsa;
+// costruiamo la mappa richiamando MyMapClient.
+
 
 public class MapsActivityClient extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -77,9 +84,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
 
     private final ArrayList<Pair<User, Pair<Float, Polygon>>> listTrader = new ArrayList<>();
-    //private Vehicle v = null;
-
-    //Polygon delimitedArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,18 +167,6 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
 
             }
 
-            /*if(UserClient.getRun() != null){
-                Query getVehicle= db.collection("vehicles").whereEqualTo("user_id", UserClient.getRun().getVehicle());
-
-                getVehicle.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        v = new Vehicle(document.toObject(Vehicle.class));
-                    }
-                    openMap();
-                });
-            }else{
-                openMap();
-            }*/
             openMap();
         });
     }
@@ -497,16 +489,5 @@ public class MapsActivityClient extends AppCompatActivity implements ActivityCom
             });
         }
     }
-    //Mancano poche linee
-    //ce la si sta facendo
-    //manca sempre meno
-    //ci siamo quasi
-    //tutto questo
-    //perchè sono depresso
-    //dai manca poco
-    //sempre meno
-    //ultimi sforzi
-    //poi smetto lo giuro
-    //si vede il traguardo
-    //TODO: CAZZO SI (x500)
+
 }

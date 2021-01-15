@@ -24,6 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+// Activity di nuovo veicolo per il commerciante: qua controlliamo i dati inseriti per il nuovo veicolo e lo creiamo, pushandolo anche su DB.
+
 public class NewVehicleActivityTrader extends AppCompatActivity {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -135,9 +137,7 @@ public class NewVehicleActivityTrader extends AppCompatActivity {
                 dialog.dismiss();
                 finish();
             });
-            builder.setNegativeButton("No", (dialog, id) ->{
-                dialog.dismiss();
-            });
+            builder.setNegativeButton("No", (dialog, id) ->dialog.dismiss());
             builder.create().show();
         }
         else{

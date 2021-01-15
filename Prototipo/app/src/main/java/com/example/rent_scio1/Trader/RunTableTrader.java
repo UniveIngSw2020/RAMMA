@@ -32,6 +32,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Calendar;
 
+// Activity di visualizzazzione corse attive: qua settiamo la tabella, creando opportunamente i timer e settando il comportamento del tasto elimina.
 
 public class RunTableTrader extends AppCompatActivity {
 

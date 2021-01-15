@@ -41,6 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// Activity di impostazione posizione negozio: qua settiamo il comportamento dei tasto conferma, del tasto LOCALIZZAMI (controllando i permessi)
+// e settiamo il comportamento della mappa (aggiunta marker, trascinamento marker)
+
 public class SetPositionActivityTrader extends AppCompatActivity implements OnMapReadyCallback,GoogleMap.OnMarkerDragListener {
 
     private GoogleMap mMap;
@@ -203,9 +206,7 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
 
                 finish();
             });
-            builder.setNegativeButton("No", (dialog, id) -> {
-                dialog.dismiss();
-            });
+            builder.setNegativeButton("No", (dialog, id) -> dialog.dismiss());
             builder.create().show();
         }
         else{

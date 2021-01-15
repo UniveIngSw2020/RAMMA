@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+//classe di utilità per DelimitedAreaActivityTrader: utilizzata per creazione di una lista di marker con dei metodi di utilità.
+
 
 public class PositionIterable implements Iterable<LatLng> {
 
@@ -72,12 +74,12 @@ public class PositionIterable implements Iterable<LatLng> {
         return markers.size();
     }
 
-    public boolean remove(Marker marker){
-        return markers.remove(marker);
+    public void remove(Marker marker){
+        markers.remove(marker);
     }
 
     public void removeAll(){
-        markers.removeAll(markers);
+        markers.clear();
     }
 
 
