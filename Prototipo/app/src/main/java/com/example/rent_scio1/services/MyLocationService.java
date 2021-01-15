@@ -53,6 +53,7 @@ public class MyLocationService extends Service {
 
     private  long lastNotificationArea;
     private  long lastNotificationSpeed;
+
     private class LocationListener implements android.location.LocationListener{
         Location mLastLocation;
         long mLastTime;
@@ -73,6 +74,8 @@ public class MyLocationService extends Service {
 
             int speed;
 
+            // Se fakeGPS è true calcola la velocità con la formula matematica standard (molto imprecisa)
+            // altrimenti utilizza la funzione getSpeed dell'oggetto location generato dal Location manager
             boolean fakeGPS = false;
             if(fakeGPS){
                 speed = (int)((s/(curTime-mLastTime)) *3.6);
@@ -152,7 +155,9 @@ public class MyLocationService extends Service {
         @Override
         public void onProviderDisabled(@NonNull String provider) { }
 
-
+        /**
+         * Sposta con animazione la vista in una posizione passata a parametro
+         */
         private void setCameraView(Location location) {
             try {
                 double bottomBundary = location.getLatitude() - .01;
@@ -172,7 +177,10 @@ public class MyLocationService extends Service {
             }
         }
 
-
+        /**
+         * Aggiorna posizione e velocità sia in locale che nel db
+         * se la corsa è stata eliminata dal db l'aggiornamento fallisce e quindi viene fermato il servizio
+         * */
         private void updateUserLocation(Location location, int speed){
             if(UserClient.getRun() != null) {
                 Log.w(TAG, "update user location ");
@@ -192,7 +200,11 @@ public class MyLocationService extends Service {
                 mDatabase.update("speed", speed).addOnSuccessListener(aVoid -> Log.e(TAG, "push speed")).addOnFailureListener(onFailureListener);
             }
         }
-
+        /**
+         * Controlla se la posizione è al di fuori dell'area limitata
+         * se è al di fuori invia la notifica a tutti i dispositivi registrati del commerciante
+         * e anche al cliente che sta utilizzando l'app
+         * */
         private void checkAreaLimit(@NonNull Location location) throws NullPointerException{
             LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
             Log.e(TAG,"PRE notifica area limitata");
@@ -200,7 +212,7 @@ public class MyLocationService extends Service {
             if(UserClient.getTrader() != null && UserClient.getTrader().getDelimited_area() != null && !PolyUtil.containsLocation(position, UserClient.getTrader().convertDelimited_areaLatLng(), true)) {
                 Log.e(TAG,"ENTRATO QUA: notifica area limitata");
 
-                //TODO QUESTO CICLO POTREBBE SOSTITUIRE TUTTO IL MyNotify
+
                 for (String token : UserClient.getUser().getTokens()){
                     Log.e(TAG, "messaggio per il cliente");
                     MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Posizione non consentita", "Rientra nell'area limitata al più presto!"); // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
@@ -216,10 +228,15 @@ public class MyLocationService extends Service {
             }
         }
 
+        /**
+         * Controlla se la velocità è oltre il limite consentito per quel veicolo
+         * se è true invia la notifica a tutti i dispositivi registrati del commerciante
+         * e anche al cliente che sta utilizzando l'app
+         * */
         private void checkSpeedLimit(double speed) throws NullPointerException{
             Log.e(TAG,"PRE notifica velocità");
             db.collection("vehicles").document(UserClient.getRun().getVehicle()).get().addOnSuccessListener(documentSnapshot -> {
-                Log.e(TAG,"ENTRATO QUA: notifica velocità");
+                Log.e(TAG,"notifica velocità");
                 if(speed > Objects.requireNonNull(documentSnapshot.toObject(Vehicle.class)).getMaxSpeedKMH()) {
                     for (String token : UserClient.getUser().getTokens()) // Eventualmente si può prendere il token corrente e on complete inviare la notifica solo allo smartphone corrente
                         MyFirebaseMessagingServices.sendNotification(MyLocationService.this, token, "Velocità non consentita", "Attenzione! Hai superato il limite di velocità consentito.");
@@ -261,7 +278,7 @@ public class MyLocationService extends Service {
             //Crea un nuovo documento vuoto
             DocumentReference ref = db.collection("vehicles").document();
 
-            //Prendo l'id del documento che conterrà la nuova corsa
+            //Prende l'id del documento che conterrà la nuova corsa
             String runUID = ref.getId();
             UserClient.setRun(new Run(null, null, user, idComm, idVehicle, runUID, Calendar.getInstance().getTime().getTime(),duration,0));
 
@@ -301,7 +318,7 @@ public class MyLocationService extends Service {
             DocumentReference locationRef = db.collection("run").document(run.getRunUID());
             Log.d(TAG, run.getUser());
             locationRef.set(run).addOnCompleteListener(task -> {
-                Log.d(TAG,"run pushata");
+                Log.d(TAG,"run aggiunta al db");
             });
         }catch(NullPointerException e){
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");

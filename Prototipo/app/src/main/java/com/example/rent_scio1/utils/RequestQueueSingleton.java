@@ -6,8 +6,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-//
-
+/**
+ * Singleton utilizzato per gestire l'invio di messaggi in uscita
+ * */
 public class RequestQueueSingleton {
     private  static RequestQueueSingleton instance;
     private RequestQueue requestQueue;
@@ -27,8 +28,6 @@ public class RequestQueueSingleton {
 
     public RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
             requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
         }
         return requestQueue;

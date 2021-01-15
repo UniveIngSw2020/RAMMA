@@ -24,8 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
-// Activity di nuova corsa cliente: qua apriamo la fotocamera per il cliente. Elaboriamo il QR scanerizzato per attivare la corsa.
-
+/**
+ * Activity che apre la fotocamera per scannerizzare il codice QR
+ * */
 public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private static final String TAG = "ScannedBarcodeActivity";
@@ -109,6 +110,9 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
             }
 
+            /**
+             * Evento chiave che indentifica il rilevamento di un QR
+             * */
             @Override
             public void receiveDetections(@NotNull Detector.Detections<Barcode> detections) {
 
@@ -122,7 +126,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                     Log.w(TAG, "PRE SWITCH");
 
                     switch (event){
-                        case ADD:
+                        case ADD:       // Casistica per creare una nuova corsa
                             Log.e(TAG, "SWITCH ADD");
                             if(length == 1){
                                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
@@ -134,7 +138,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                             break;
-                        case DELETE:
+                        case DELETE:    // Casistica per eliminare una nuova corsa
                             Log.e(TAG, "SWITCH DELETE");
                             Log.e(TAG, ""+UserClient.getRun());
                             //Log.e(TAG, "SWITCH DELETE           " + UserClient.getRun().getRunUID());
@@ -155,7 +159,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                             }
                             break;
                         default:
-                            Log.w(TAG, "SWITCH DEFAULT se te riva qua e xe rogne...");
+                            Log.w(TAG, "SWITCH DEFAULT...");
                             break;
                     }
 
@@ -225,8 +229,8 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     private void deleteRun(String PK_run){
         FirebaseFirestore.getInstance().collection("run").document(PK_run)
                 .delete()
-                .addOnSuccessListener(aVoid -> Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!"))
-                .addOnFailureListener(e -> Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e))
+                .addOnSuccessListener(aVoid -> Log.e(TAG, "DocumentSnapshot successfully deleted!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Errore CORSA NON ELIMINATA", e))
                 .addOnCompleteListener(task -> {
                     UserClient.setRun(null);
                     UserClient.setTrader(null);

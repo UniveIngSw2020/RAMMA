@@ -37,7 +37,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-//classe di servizi di notifica: qua gestiamo l'invio di notifiche di posizione non consentita e/o velocità non consentita.
+/**
+ * Servizio che gestisce l'invio e la ricezione dei messaggi
+ * viene gestita anche la registrazione del token necessario per indicare la destinazione del messaggio
+ * */
 
 public class MyFirebaseMessagingServices extends FirebaseMessagingService{
     private final String TAG = "MyFirebaseMessagingServices";
@@ -59,12 +62,15 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
                 });
     }
 
+    /**
+     * Quando viene ricevuto un messaggio viene trasformato in notifica
+     * */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
 
         Log.e(TAG, "E' arrivato un messaggio");
 
-        Intent intent;
+        Intent intent;  //Intent aperto quando viene premuta la notifica
         if(UserClient.getUser() == null)
             intent = new Intent(this, StartActivity.class);
         else
@@ -101,7 +107,9 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
 
     }
 
-
+    /**
+     * Creazione del canale della notifica con varie personalizzazioni
+     * */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupChannels(NotificationManager notificationManager){
         CharSequence adminChannelName = "New notification";
@@ -123,6 +131,11 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
         sendRegistrationToServer(s);
     }
 
+    /**
+     * Viene salvato il token nel db
+     * Per i clienti può essere presente solo un token alla volta riferito al dispositivo in uso
+     * per i commercianti viene aggiunto agli altri token esistenti
+     * */
     private void sendRegistrationToServer(String refreshedToken) {
         if(UserClient.getUser() != null){
             if(!UserClient.getUser().getTrader()){
@@ -142,6 +155,10 @@ public class MyFirebaseMessagingServices extends FirebaseMessagingService{
 
     }
 
+
+    /**
+     * Aggiunge alla coda dei messaggi da inviare un messaggio in formato json
+     * */
     public static void sendNotification(Context context, String destinationTopic, String title, String msg) {
         final String TAG = "sendNotification";
         final String FCM_API = "https://fcm.googleapis.com/fcm/send";
