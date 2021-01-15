@@ -40,13 +40,6 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
 
     }
 
-    /**
-     * Rendering of the individual ClusterItems
-     * @param item
-     * @param markerOptions
-     */
-
-
 
     @Override
     protected void onBeforeClusterItemRendered(ClusterMarker item, MarkerOptions markerOptions) {

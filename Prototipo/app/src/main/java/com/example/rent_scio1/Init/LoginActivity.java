@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     .addOnSuccessListener(queryDocumentSnapshots -> {
                                         for (DocumentSnapshot d : queryDocumentSnapshots.getDocuments()) {
                                             Log.e(TAG, "C'è UNA CORSA SOLA");
-                                            UserClient.setRun(d.toObject(Run.class)); // TODO PRENDERE LA CORSA SE C'E
+                                            UserClient.setRun(d.toObject(Run.class));
                                             startLocationService(true);
                                         }
                                     })
@@ -170,11 +170,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
 
             } else {
-                // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
                 showDialog();
             }
-            // ...
         };
     }
 
