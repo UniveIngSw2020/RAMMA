@@ -92,8 +92,9 @@ public class QRGeneratorTrader extends AppCompatActivity {
 
         FirebaseFirestore.getInstance().collection("users").document(customerID).get().addOnSuccessListener(documentSnapshot -> {
             User x = documentSnapshot.toObject(User.class);
-            for (String token : x.getTokens())
-                MyFirebaseMessagingServices.sendNotification(QRGeneratorTrader.this, token, "Chiusura forzata della corsa", "Riavvia l'applicazione nel dispositivo in uso per ripristinare la schermata principale");
+            if(x != null && x.getTokens() != null)
+                for (String token : x.getTokens())
+                    MyFirebaseMessagingServices.sendNotification(getApplicationContext(), token, "Chiusura forzata della corsa", "Riavvia l'applicazione nel dispositivo in uso per ripristinare la schermata principale");
 
             unlockVehiclebyID(vehicleID);
             deleteRun(runID);
@@ -117,7 +118,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                                 Log.e(TAG, "SWITCH ADD");
                                 //ENTRA NELL'ADD QUANDO PREMO IL PULSANTE CONfERMA ELIMINAZIONE SULL'ALERT DI ELIMINAZIONE DEL COMMERCIANTE, QUESTOM UTILIZZANDO LO SWICH dc.getType()
                                 if(code.split(" ").length==3 && dc.getDocument().toObject(Run.class).getVehicle().equals(code.split(" ")[1])){
-                                    Log.e(TAG, "ABBIAMO UN PROBLEMA ADD");
+                                    Log.e(TAG, "ADD");
                                     Toast.makeText(QRGeneratorTrader.this, "Corsa Creata con Successo!", Toast.LENGTH_SHORT).show();
 
                                     finishAffinity();
@@ -131,7 +132,7 @@ public class QRGeneratorTrader extends AppCompatActivity {
                             case REMOVED:
                                 Log.e(TAG, "SWITCH DELETE");
                                 if(code.split(" ").length==1){
-                                    Log.e(TAG, "ABBIAMO UN PROBLEMA REMOVE");
+                                    Log.e(TAG, "REMOVE");
                                     finishAffinity();
 
                                     Intent intent=new Intent(getApplicationContext(), MapsActivityTrader.class);
@@ -156,8 +157,8 @@ public class QRGeneratorTrader extends AppCompatActivity {
     private void deleteRun(String PK_run){
         FirebaseFirestore.getInstance().collection("run").document(PK_run)
                 .delete()
-                .addOnSuccessListener(aVoid -> Log.e(TAG, "DocumentSnapshot successfully DELETEEEEEEEEEEEEEED!"))
-                .addOnFailureListener(e -> Log.e(TAG, "ERRRRRRRROREEEEEEEEEE CORSA NON ELIMINATA", e))
+                .addOnSuccessListener(aVoid -> Log.e(TAG, "DocumentSnapshot successfully deleted!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Errore CORSA NON ELIMINATA", e))
                 .addOnCompleteListener(task -> {
                     finishAffinity();
 
