@@ -1,7 +1,6 @@
 package com.example.rent_scio1.utils.Clustering;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -15,6 +14,8 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
+
+// classe di utilità per costruire i cluster dei marker visualizzati sulle mappe di cliente e commerciante.
 
 public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker> {
 
@@ -75,11 +76,9 @@ public class MyClusterManagerRenderer extends DefaultClusterRenderer<ClusterMark
     public void setUpdateInfoWindow(ClusterMarker clusterMarker){
         Marker marker = getMarker(clusterMarker);
         if (marker != null) {
-            //Log.e(TAG, "prima " + marker.getSnippet());
             marker.setSnippet(clusterMarker.getSnippet());
             if(marker.isInfoWindowShown())
                 marker.showInfoWindow();
-            //Log.e(TAG, "dopo " + marker.getSnippet());
         }
     }
 

@@ -9,6 +9,8 @@ import com.example.rent_scio1.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+//classe rappresentante l'info window dei marker dei negozi presenti su mappa del cliente: il nome del negozio viene settato a runtime in base a quale marker si preme.
+
 public class CustomInfoWindowAdapterClient implements GoogleMap.InfoWindowAdapter{
 
     private final View mWindow;

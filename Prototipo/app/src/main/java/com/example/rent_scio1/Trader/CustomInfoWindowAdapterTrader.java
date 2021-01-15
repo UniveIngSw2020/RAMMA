@@ -2,12 +2,8 @@ package com.example.rent_scio1.Trader;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.Location;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TableLayout;
@@ -18,8 +14,7 @@ import com.example.rent_scio1.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-import java.util.Locale;
-
+//classe rappresentante l'info window dei marker dei clienti presenti su mappa del commerciante: a runtime aggiorniamo l'infowindow inserendo nome e cognome cliente, il suo tempo rimasto e la sua velocità.  .
 
 public class CustomInfoWindowAdapterTrader implements GoogleMap.InfoWindowAdapter{
 

@@ -15,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.rent_scio1.Client.MapsActivityClient;
 import com.example.rent_scio1.Init.StartActivity;
 import com.example.rent_scio1.R;
 import com.example.rent_scio1.services.ExitService;
@@ -29,12 +28,15 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+// Schermata principale modalità commerciante, qua:
+// impostiamo il funzionamento del menu laterale,
+// creiamo la mappa richimando MyMapTrader.
+
 public class MapsActivityTrader extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, NavigationView.OnNavigationItemSelectedListener {
 
 
 
     private FirebaseAuth mAuth;
-    //private static final String TAG = "MapsActivityTrader";
     public Context thisContext;
 
 
@@ -81,7 +83,6 @@ public class MapsActivityTrader extends AppCompatActivity implements ActivityCom
 
                 logout();
 
-                //finishAffinity();
                 break;
             case R.id.nuova_corsa:
                 startActivity(new Intent(getApplicationContext(), NewRunActivityTrader.class));

@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+//Activity di registrazioni nuovi utenti, qua controlliamo che tutti i campi richiesti siano inseriti e li inseriamo su DB, creando un nuovo utente.
+
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";

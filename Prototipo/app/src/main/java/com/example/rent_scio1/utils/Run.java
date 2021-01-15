@@ -5,6 +5,8 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
+// classe di utilità rappresentante un oggetto corsa
+
 public class Run {
     private GeoPoint geoPoint;
     private @ServerTimestamp Date timestamp;

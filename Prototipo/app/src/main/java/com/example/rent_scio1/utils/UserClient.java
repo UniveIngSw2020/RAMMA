@@ -2,6 +2,8 @@ package com.example.rent_scio1.utils;
 
 import android.app.Application;
 
+// classe di utilità contente informazioni dell'utente registrato
+
 public class UserClient extends Application {
     private static User user = null;
     private static Run run = null;

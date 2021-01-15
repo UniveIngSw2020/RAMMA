@@ -35,14 +35,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.maps.android.PolyUtil;
@@ -55,6 +52,8 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicReference;
 
+// Activity rappresentante l'area limitata del commerciante: qua settiamo il funzionamento dei tasti elimina ultimo, pulisci area, conferma e tasto tutorial, oltre che impostare
+// il funzionamento del disegno dell'area limitata(aggiunta di marker, trascinamento di marker, ecc..).
 
 public class DelimitedAreaActivityTrader extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
 
@@ -105,9 +104,7 @@ public class DelimitedAreaActivityTrader extends AppCompatActivity implements On
                 dialog.dismiss();
                 finish();
             });
-            builder.setNegativeButton("No", (dialog, id) ->{
-                dialog.dismiss();
-            });
+            builder.setNegativeButton("No", (dialog, id) ->dialog.dismiss());
             builder.create().show();
         }
         else{

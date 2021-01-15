@@ -24,6 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
+// Activity di nuova corsa cliente: qua apriamo la fotocamera per il cliente. Elaboriamo il QR scanerizzato per attivare la corsa.
+
 public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private static final String TAG = "ScannedBarcodeActivity";

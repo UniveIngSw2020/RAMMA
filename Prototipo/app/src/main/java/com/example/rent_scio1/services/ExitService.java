@@ -8,6 +8,8 @@ import android.util.Log;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.firebase.auth.FirebaseAuth;
 
+//classe di servizi, qua terminiamo i servizi di foreground.
+
 public class ExitService extends Service {
     private final String TAG = "ExitService";
     public ExitService() {

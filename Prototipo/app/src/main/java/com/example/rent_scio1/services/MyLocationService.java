@@ -38,6 +38,7 @@ import java.util.Objects;
 
 import static com.example.rent_scio1.utils.map.MyMap.getmMap;
 
+//classe di servizi principla e di posizione: qua gestiamo l'aggiornamento della posizione e della velocità oltre a pushare questi valori su DB; inoltre da qui richiamiamo MyFirebaseMessanging.
 
 public class MyLocationService extends Service {
 
@@ -128,7 +129,7 @@ public class MyLocationService extends Service {
             double lat2 =  lastLocation.getLongitude();
             double el2 = lastLocation.getAltitude();
 
-            final int R = 6371; // Radius of the earth
+            final int R = 6371;
 
             double latDistance = Math.toRadians(lat2 - lat1);
             double lonDistance = Math.toRadians(lon2 - lon1);
@@ -136,7 +137,7 @@ public class MyLocationService extends Service {
                     + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
                     * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            double distance = R * c * 1000; // convert to meters
+            double distance = R * c * 1000;
 
             double height = el1 - el2;
 
@@ -256,6 +257,7 @@ public class MyLocationService extends Service {
             String idComm = rawValue.split(" ")[0];
             String idVehicle = rawValue.split(" ")[1];
             long duration = Long.parseLong(rawValue.split(" ")[2]);
+
             //Crea un nuovo documento vuoto
             DocumentReference ref = db.collection("vehicles").document();
 
@@ -351,13 +353,6 @@ public class MyLocationService extends Service {
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
 
-        /* TODO TEMPORANEAMENTE COMMENTATO
-        unlockVehiclebyID(UserClient.getRun().getVehicle());
-
-        deleteRun(UserClient.getRun().getRunUID());
-
-        MyMapClient.stopNotification();
-        */
         if(UserClient.getRun() == null) {
             stopForeground(true);
             stopSelf();

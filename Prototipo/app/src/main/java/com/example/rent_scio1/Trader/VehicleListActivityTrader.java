@@ -27,6 +27,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+// Activity di visualizzazzione veicoli: qua settiamo la tabella, settando tra le altre cose il comportamento del tasto elimina.
+
 public class VehicleListActivityTrader extends AppCompatActivity {
 
     private static final String TAG="VehicleListActivityTrader";

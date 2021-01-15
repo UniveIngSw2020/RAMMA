@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+// classe di utilità rappresentante un oggetto utente.
+
 public class User {
 
     private String user_id;

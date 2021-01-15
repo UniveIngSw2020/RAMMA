@@ -14,10 +14,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.util.Log;
-import android.webkit.WebSettings;
-import android.webkit.WebSettings.ZoomDensity;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,7 +33,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -45,18 +40,17 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+// Classe di utilità per costruzione mappa cliente: qua popoliamo la mappa con i negozi dei commerciante e le loro aree limitate e visualizziamo la posizione in tempo reale.
 
 public class MyMapClient extends MyMap {
 
@@ -150,7 +144,6 @@ public class MyMapClient extends MyMap {
 
         clusterManager.getMarkerCollection().setInfoWindowAdapter(new CustomInfoWindowAdapterClient(context));
         getmMap().setInfoWindowAdapter(clusterManager.getMarkerManager());
-        //getmMap().setOnCameraIdleListener(clusterManager);
 
         clusterManager.setOnClusterClickListener(cluster -> {
             //Log.e(TAG, "sono qui");

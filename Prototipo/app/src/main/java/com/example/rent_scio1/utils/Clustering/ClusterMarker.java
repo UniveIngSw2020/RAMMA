@@ -1,15 +1,15 @@
 package com.example.rent_scio1.utils.Clustering;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 
 import androidx.annotation.Nullable;
 
-import com.example.rent_scio1.Client.CustomInfoWindowAdapterClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
 import org.jetbrains.annotations.NotNull;
+
+// classe di utilità per costruire i cluster dei marker visualizzati sulle mappe di cliente e commerciante.
 
 public class ClusterMarker implements ClusterItem {
     private LatLng position;

@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// Activity rappresentante il tutorial dell'area limitata: qua richiamiamo i fragment di delimitazione interfaccia grafica.
+
 public class InfoTutorialDelimitedAreaTrader extends AppCompatActivity {
 
     @Override

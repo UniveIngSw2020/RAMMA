@@ -38,6 +38,9 @@ import java.util.Objects;
 
 import static android.text.TextUtils.isEmpty;
 
+
+//Activity di login, controlliamo se Email e password inserite corrispondono a un account registrato sul DB.
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "LoginActivity";
@@ -50,9 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText mEmail, mPassword;
     private ProgressBar mProgressBar;
     private CheckBox mCheckBox;
-    private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
-    private Boolean saveLogin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,14 +64,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mProgressBar = findViewById(R.id.progressBarlogin);
         mCheckBox = findViewById(R.id.checkBoxLogin);
 
-        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
 
         setupFirebaseAuth();
         initViews();
         findViewById(R.id.confirmlogin_btn).setOnClickListener(this);
 
-        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
         if (saveLogin) {
             mEmail.setText(loginPreferences.getString("username", ""));
             mPassword.setText(loginPreferences.getString("password", ""));
@@ -239,21 +240,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             mProgressBar.setVisibility(View.INVISIBLE);
                         }
                     })
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
+                    .addOnSuccessListener(authResult -> {
 
 
-                            boolean check = mCheckBox.isChecked();
-                            if (check) {
-                                loginPrefsEditor.putBoolean("saveLogin", true);
-                                loginPrefsEditor.putString("username", mEmail.getText().toString().trim());
-                                loginPrefsEditor.putString("password", mPassword.getText().toString().trim());
-                            }else{
-                                loginPrefsEditor.clear();
-                            }
-                            loginPrefsEditor.commit();
+                        boolean check = mCheckBox.isChecked();
+                        if (check) {
+                            loginPrefsEditor.putBoolean("saveLogin", true);
+                            loginPrefsEditor.putString("username", mEmail.getText().toString().trim());
+                            loginPrefsEditor.putString("password", mPassword.getText().toString().trim());
+                        }else{
+                            loginPrefsEditor.clear();
                         }
+                        loginPrefsEditor.commit();
                     });
         }else{
             check();

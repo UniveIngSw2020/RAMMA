@@ -2,6 +2,8 @@ package com.example.rent_scio1.utils;
 
 import androidx.annotation.NonNull;
 
+// classe di utilità rappresentante un oggetto veicolo.
+
 public class Vehicle {
 
     //campo per visualizzazione massima veicoli

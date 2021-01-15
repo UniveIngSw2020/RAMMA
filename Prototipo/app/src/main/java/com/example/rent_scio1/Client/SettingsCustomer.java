@@ -21,6 +21,8 @@ import com.example.rent_scio1.utils.Settings.SettingsActivityTextView;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+//activity per le impostazioni cliente: qua settiamo il funzionamento dei bottoni presenti su impostazioni.
+
 public class SettingsCustomer extends AppCompatActivity {
 
     private Intent intentTextView;

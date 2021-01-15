@@ -1,6 +1,5 @@
 package com.example.rent_scio1.utils.Settings;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -26,21 +25,16 @@ import com.example.rent_scio1.Trader.MapsActivityTrader;
 import com.example.rent_scio1.Trader.SettingsTrader;
 import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
+
+// Activity di impostazione informazione in forma testuale: qua decidiamo a runtime che cosa visualizzare e permettiamo la modifica caricando il risultato su DB.
 
 public class SettingsActivityTextView extends AppCompatActivity {
 

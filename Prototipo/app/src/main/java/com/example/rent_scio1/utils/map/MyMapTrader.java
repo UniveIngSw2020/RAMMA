@@ -1,8 +1,5 @@
 package com.example.rent_scio1.utils.map;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,10 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
+
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -28,16 +24,14 @@ import com.example.rent_scio1.utils.User;
 import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -45,13 +39,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FileDownloadTask;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.maps.android.clustering.Cluster;
+
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.ui.IconGenerator;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +53,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+// Classe di utilità per costruzione mappa commerciante: qua popoliamo la mappa con i cliente cin corsa attiva e aggiorniamo la posizione in tempo reale,
+// oltre che visualizzare l'icona del negozio.
 
 public class MyMapTrader extends MyMap{
 
@@ -149,28 +145,6 @@ public class MyMapTrader extends MyMap{
 
         getmMap().setOnInfoWindowClickListener(clusterManager);
 
-
-        /*clusterManager.setOnClusterClickListener(cluster -> {
-            StringBuilder comm = new StringBuilder();
-            String title = "Clienti presentii";
-            Log.e(TAG, "CLICK CLUSTER IDENTIFICAYTO");
-            for(ClusterMarker c : cluster.getItems()){
-                if(!c.getPosition().equals(new LatLng(mTrader.getTraderPosition().getLatitude(),mTrader.getTraderPosition().getLongitude()))){
-                    comm.append(c.getTitle()).append("\n");
-                }else{
-                    title = "Clienti presenti oltre al tuo Negozio";
-                }
-            }
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(title).setMessage(comm).setCancelable(true)
-                    .setNegativeButton( "Chiudi", (dialogInterface, i) -> {
-                        dialogInterface.cancel();
-                    }).setIcon(android.R.drawable.ic_dialog_info);
-            final AlertDialog alert = builder.create();
-            alert.show();
-            return true;
-        });*/
-
     }
 
 
@@ -243,7 +217,7 @@ public class MyMapTrader extends MyMap{
                     if( item!=null)
                         item.setSnippet(speed+" "+hoursText+":"+minutesText+":"+secondText );
 
-                    //Log.e(TAG, "                                                                                                " + item.getTitle());
+
 
                 }else{
 
@@ -261,7 +235,7 @@ public class MyMapTrader extends MyMap{
                     if( item!=null)
                         item.setSnippet(speed+" "+minutesText+":"+secondText );
 
-                    //Log.e(TAG, "                                                                                                " + item.toString());
+
 
                 }
                 mClusterManagerRenderer.setUpdateInfoWindow(item);
@@ -277,13 +251,6 @@ public class MyMapTrader extends MyMap{
                     mClusterManagerRenderer.setUpdateInfoWindow(item);
                     clusterManager.cluster();
                 }
-
-                /*for(Marker m : clusterManager.getMarkerCollection().getMarkers()){
-                    if(( item!=null) && m.getPosition().equals(item.getPosition())){
-                        m.showInfoWindow();
-                        Log.e(TAG, "Mostro l'info window sul commerciante");
-                    }
-                }*/
 
             }
         }.start();
@@ -317,7 +284,6 @@ public class MyMapTrader extends MyMap{
 
                                             StorageReference islandRef = mStorageRef.child("users/" + user.getUser_id() + "/avatar.jpg");
                                             Log.e(TAG, "COGNOME: "+user.getSurname());
-                                            //MarkerOptions markerOptions=new MarkerOptions().title(user.getName() + " " + user.getSurname());
 
                                             File localFile;
 
@@ -383,11 +349,11 @@ public class MyMapTrader extends MyMap{
             }
         }
         listMarker.remove(run.getUser());
-        //item.remove();
+
         clusterManager.cluster();
     }
 
-    //questo metodo va completamente eliminato
+
     private void getUserDetails(GoogleMap googleMap){
         if(mTrader == null){
             mTrader = new User();
@@ -417,15 +383,6 @@ public class MyMapTrader extends MyMap{
 
 
         getmMap().moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
-
-        /*
-        int width = context.getResources().getDisplayMetrics().widthPixels;
-        int height = context.getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary,width,height, padding));*/
-
-        //questo richiamo va cancellato
 
 
 
