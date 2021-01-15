@@ -151,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                         generateStoreUser();
                     } else {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(RegisterActivity.this, "Authentication failed: ." + task.getException(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Autentificazione fallita: ." + task.getException(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -180,7 +180,7 @@ public class RegisterActivity extends AppCompatActivity {
         documentReference.set(user).addOnSuccessListener(aVoid -> Log.d(TAG, "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOnSuccess: user Profile is created for: " + user))
                 .addOnFailureListener(e -> System.out.println("onFailure: " + e.toString()));
 
-        Toast.makeText(RegisterActivity.this, "User, Created!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(RegisterActivity.this, "Utente creato correttamente!", Toast.LENGTH_SHORT).show();
 
         finishAffinity();
 
