@@ -150,6 +150,8 @@
     <string name="Cellulare">cellulare</string>
     <string name="forza_eliminazione">Forza Eliminazione</string>
     <string name="tocca_qui_per_chiamare_il_cliente">Tocca qui per chiamare il cliente</string>
+    <string name="numero_di_telefono">Numero di telefono</string>
+    <string name="nome_del_negozio">Nome del negozio</string>
 
 
 </resources>
