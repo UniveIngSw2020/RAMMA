@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.rent_scio1.R;
+import com.example.rent_scio1.utils.UserClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -163,12 +164,13 @@ public class MyPermission {
                     Intent enableApplicationDetails = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
                     activity.startActivity(enableApplicationDetails);
                     activity.finishAffinity();
-                })
-                .setNegativeButton(negativeArgs, (dialog, which) -> {
-                    NavigationView navigationView = activity.findViewById(R.id.navigationView_Map_Client);
-                    navigationView.getMenu().findItem(R.id.nuova_corsa_client).setVisible(false);
-
                 });
+
+        if( UserClient.getUser().getTrader() ) {
+            builder.setNegativeButton(negativeArgs, (dialog, which) -> {
+
+            });
+        }
 
         final AlertDialog alert = builder.create();
         alert.show();
