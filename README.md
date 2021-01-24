@@ -1,6 +1,8 @@
 # RAMMA
 Rent-sciò
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/wDORwenxRm8/0.jpg)](https://www.youtube.com/watch?v=wDORwenxRm8)
+
 Overview del Progetto:
 
 Il progetto, commissionato dal professor Agostino Cortesi per l’esame di Ingegneria del
