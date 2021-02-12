@@ -239,7 +239,10 @@ public class SetPositionActivityTrader extends AppCompatActivity implements OnMa
         }
 
         mMap.setOnMapClickListener(latLng -> {
-            shop.remove();
+            if(shop!=null) {
+                shop.remove();
+            }
+
             shop=mMap.addMarker(new MarkerOptions().position(latLng));
             shop.setDraggable(true);
             toolbar_map.getMenu().findItem(R.id.confirm_position).setVisible(true);
